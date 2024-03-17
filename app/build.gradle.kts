@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
 
 
     testImplementation(libs.junit)
