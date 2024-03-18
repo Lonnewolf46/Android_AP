@@ -11,5 +11,6 @@ data class RegistroUiState(
     //Fin cambios
 
     val correo: String = "",
-    val clave: String = ""
+    val clave: String = "",
+    val claveVisible: Boolean = false
 )

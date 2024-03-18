@@ -14,12 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.android_ap.ui.AP_App
 import com.example.android_ap.ui.theme.Android_APTheme
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.IntegerColumnType
-import org.jetbrains.exposed.sql.VarCharColumnType
-import org.jetbrains.exposed.sql.statements.StatementType
-import org.jetbrains.exposed.sql.transactions.TransactionManager
-import org.jetbrains.exposed.sql.transactions.transaction
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

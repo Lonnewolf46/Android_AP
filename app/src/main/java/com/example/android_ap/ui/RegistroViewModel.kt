@@ -2,8 +2,10 @@ package com.example.android_ap.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.RegistroUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,31 +16,24 @@ class RegistroViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(RegistroUiState())
     val uiState: StateFlow<RegistroUiState> = _uiState.asStateFlow()
 
-    private var estadoSaved by mutableStateOf(false)
+    private var projectExpanded by mutableStateOf(false)
+    private var deptExpanded by mutableStateOf(false)
 
-    fun actualizarDatos(campo: Campo, input: String){
+    fun actualizarDatos(campo: RegistroCampos, input: String){
         when(campo){
-            Campo.NOMBRE -> {_uiState.update { currentState -> currentState.copy(nombre=input)}}
-            Campo.CEDULA -> {_uiState.update { currentState -> currentState.copy(cedula=input)}}
-            Campo.TELEFONO -> {_uiState.update { currentState -> currentState.copy(nombre=input)}}
-            Campo.PROYECTO -> {_uiState.update { currentState -> currentState.copy(proyecto=input)}}
-            Campo.DEPARTAMENTO -> {_uiState.update { currentState -> currentState.copy(departamento=input)}}
-            Campo.EMAIL -> {_uiState.update { currentState -> currentState.copy(correo=input)}}
-            Campo.CLAVE -> {_uiState.update { currentState -> currentState.copy(clave=input)}}
+            RegistroCampos.NOMBRE -> {_uiState.update { currentState -> currentState.copy(nombre=input)}}
+            RegistroCampos.CEDULA -> {_uiState.update { currentState -> currentState.copy(cedula=input)}}
+            RegistroCampos.TELEFONO -> {_uiState.update { currentState -> currentState.copy(telefono=input)}}
+            RegistroCampos.PROYECTO -> {_uiState.update { currentState -> currentState.copy(proyecto=input)}}
+            RegistroCampos.DEPARTAMENTO -> {_uiState.update { currentState -> currentState.copy(departamento=input)}}
+            RegistroCampos.EMAIL -> {_uiState.update { currentState -> currentState.copy(correo=input)}}
+            RegistroCampos.CLAVE -> {_uiState.update { currentState -> currentState.copy(clave=input)}}
         }
     }
 
     fun verClave(estado: Boolean){
-        estadoSaved = estado
-    }
-
-    enum class Campo{
-        NOMBRE,
-        CEDULA,
-        TELEFONO,
-        PROYECTO,
-        DEPARTAMENTO,
-        EMAIL,
-        CLAVE
+        _uiState.update { currentState -> currentState.copy(
+            claveVisible = estado
+        )}
     }
 }

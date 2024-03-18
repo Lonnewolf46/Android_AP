@@ -44,10 +44,12 @@ import com.example.android_ap.ui.theme.Android_APTheme
 @Composable
 fun InicioSesionLayout(nombre: String,
                        clave: String,
-                       estado: Boolean,
+                       passwordVisible: Boolean,
                        onTextInput: (InicioSesionCampos, String) -> Unit,
-                       onViewPassword: (Boolean) -> Unit){
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                       onViewPassword: (Boolean) -> Unit,
+                       onRegistroTextClicked: () -> Unit){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(33.dp)
             .fillMaxSize()
@@ -56,10 +58,11 @@ fun InicioSesionLayout(nombre: String,
             imageVector = ImageVector.vectorResource(R.drawable.login_image),
             contentDescription = null
         )
+
         DatosInicioSesion(
             nombre,
             clave,
-            estado,
+            passwordVisible,
             onTextInput,
             onViewPassword,
             Modifier.padding(14.dp),)
@@ -68,19 +71,19 @@ fun InicioSesionLayout(nombre: String,
             onClick = { /*TODO*/ },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .height(56.dp)
+                .height(46.dp)
                 .fillMaxWidth()
         ) {
             Text(
                 text = "Iniciar Sesión",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center
             )
         }
-        Spacer(Modifier.padding(top=68.dp, bottom = 26.dp))
+        Spacer(Modifier.padding(top=16.dp, bottom = 4.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)){
+            horizontalArrangement = Arrangement.spacedBy(4.dp)){
             Text(
                 text = "¿No tienes una cuenta?",
                 style = TextStyle(
@@ -97,8 +100,7 @@ fun InicioSesionLayout(nombre: String,
                     color = Color(0xFF0063E6),
                     textAlign = TextAlign.End
                 )
-            ) {
-            }
+            ) {onRegistroTextClicked()}
         }
     }
 }
@@ -120,6 +122,7 @@ fun DatosInicioSesion(usuario: String,
                 fontWeight = FontWeight.Bold
             )
         )
+
         OutlinedTextField(
             value = usuario,
             singleLine = true,
@@ -129,7 +132,7 @@ fun DatosInicioSesion(usuario: String,
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
             onValueChange = {onTextInput(InicioSesionCampos.NOMBRE, it)},
-            label = {Text(text="EMAIL")},
+            label = { Text(text="EMAIL") },
             placeholder = { Text("xxxxxx@institucional.cr") },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Next
@@ -139,14 +142,14 @@ fun DatosInicioSesion(usuario: String,
         OutlinedTextField(
             value = password,
             onValueChange = {onTextInput(InicioSesionCampos.CLAVE, it)},//onTextInput,
-            label = {Text(text="CONTRASEÑA")},
+            label = { Text(text="CONTRASEÑA") },
             singleLine = true,
             placeholder = { Text("Contraseña") },
             visualTransformation = if (passwordVisible) VisualTransformation.None
-                else PasswordVisualTransformation(),
+            else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-                val image:ImageVector = if (passwordVisible)
+                val image: ImageVector = if (passwordVisible)
                     ImageVector.vectorResource(R.drawable.eye_open)
                 else ImageVector.vectorResource(R.drawable.eye_closed)
 

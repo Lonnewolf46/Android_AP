@@ -22,7 +22,7 @@ class InicioSesionViewModel: ViewModel() {
 
     fun verClave(estado: Boolean){
         _uiState.update { currentState -> currentState.copy(
-            oculta = estado
+            claveVisible = estado
         )}
     }
 
