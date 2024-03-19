@@ -26,4 +26,18 @@ class InicioSesionViewModel: ViewModel() {
         )}
     }
 
+    fun validarCampos(){
+        if(_uiState.value.usuario != "" &&
+            uiState.value.clave != "")
+        {
+            _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+            //Hacer algo más
+
+        }
+        else _uiState.update { currentState -> currentState.copy(camposLlenos = false)}
+    }
+    fun cerrarEmergente(){
+        _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+    }
+
 }

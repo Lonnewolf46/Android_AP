@@ -36,4 +36,28 @@ class RegistroViewModel: ViewModel() {
             claveVisible = estado
         )}
     }
+
+    fun validarCampos(){
+        if (_uiState.value.nombre!="" &&
+            _uiState.value.cedula!="" &&
+            _uiState.value.telefono!="" &&
+            _uiState.value.nombre!="" &&
+            _uiState.value.correo!="" &&
+            _uiState.value.clave!="")
+        {
+            //Actualizar valor para no mostrar aviso
+            _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+
+            //Hacer solicitud a la BD
+
+
+        }
+        else{
+            _uiState.update { currentState -> currentState.copy(camposLlenos = false)}
+        }
+    }
+
+    fun cerrarEmergente(){
+        _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+    }
 }

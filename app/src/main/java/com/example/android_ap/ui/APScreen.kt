@@ -67,9 +67,12 @@ fun AP_App() {
                     inicioUiState.usuario,
                     inicioUiState.clave,
                     inicioUiState.claveVisible,
+                    inicioUiState.camposLlenos,
                     onTextInput = inicioSesionViewModel::actualizarInfo,
                     onViewPassword = { inicioSesionViewModel.verClave(it)},
-                    onRegistroTextClicked = { navController.navigate(APScreen.Registro.name) }
+                    onIniciarSesionClicked = inicioSesionViewModel::validarCampos,
+                    onRegistroTextClicked = { navController.navigate(APScreen.Registro.name) },
+                    onDialogClose = inicioSesionViewModel::cerrarEmergente
                 )
             }
 
@@ -82,9 +85,12 @@ fun AP_App() {
                     email = registroUiState.correo,
                     clave = registroUiState.clave,
                     passwordVisible = registroUiState.claveVisible,
+                    camposLlenos = registroUiState.camposLlenos,
                     onTextInput = registroViewModel::actualizarDatos,
                     onViewPassword = {registroViewModel.verClave(it)},
-                    onInicioSesionTextClicked = {navController.navigateUp()}
+                    onInicioSesionTextClicked = {navController.navigateUp()},
+                    onRegistroClicked = registroViewModel::validarCampos,
+                    onDialogClose =  registroViewModel::cerrarEmergente
                 )
             }
         }

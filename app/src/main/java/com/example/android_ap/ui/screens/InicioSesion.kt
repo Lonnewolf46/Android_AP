@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_ap.R
 import com.example.android_ap.data.InicioSesionCampos
+import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
 
@@ -45,9 +46,12 @@ import com.example.android_ap.ui.theme.Android_APTheme
 fun InicioSesionLayout(nombre: String,
                        clave: String,
                        passwordVisible: Boolean,
+                       camposLlenos: Boolean,
                        onTextInput: (InicioSesionCampos, String) -> Unit,
                        onViewPassword: (Boolean) -> Unit,
-                       onRegistroTextClicked: () -> Unit){
+                       onIniciarSesionClicked: () -> Unit,
+                       onRegistroTextClicked: () -> Unit,
+                       onDialogClose: () -> Unit ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -68,7 +72,7 @@ fun InicioSesionLayout(nombre: String,
             Modifier.padding(14.dp),)
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onIniciarSesionClicked() },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .height(46.dp)
@@ -103,6 +107,14 @@ fun InicioSesionLayout(nombre: String,
             ) {onRegistroTextClicked()}
         }
     }
+
+    if(!camposLlenos){
+        Warning(
+            texto = "Se requieren llenar todos los campos",
+            onClose = { onDialogClose() })
+
+    }
+
 }
 
 @Composable

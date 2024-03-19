@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,8 +45,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
+import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
 @Composable
@@ -58,9 +59,12 @@ fun RegistroLayout(
     email: String,
     clave: String,
     passwordVisible: Boolean,
+    camposLlenos: Boolean,
     onTextInput: (RegistroCampos, String) -> Unit,
     onViewPassword: (Boolean) -> Unit,
-    onInicioSesionTextClicked: () -> Unit
+    onInicioSesionTextClicked: () -> Unit,
+    onRegistroClicked: () -> Unit,
+    onDialogClose: () -> Unit
 ) {
 
     Column(
@@ -86,7 +90,7 @@ fun RegistroLayout(
         )
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onRegistroClicked() },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .height(48.dp)
@@ -115,6 +119,13 @@ fun RegistroLayout(
             ),
             modifier = Modifier.padding(top = 4.dp)
         ) { onInicioSesionTextClicked() }
+
+    }
+
+    if(!camposLlenos){
+        Warning(
+            texto = "Se requieren llenar todos los campos",
+            onClose = { onDialogClose() })
 
     }
 
@@ -168,7 +179,10 @@ fun DatosRegistro(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
-            onValueChange = { onTextInput(RegistroCampos.CEDULA, it) },
+            onValueChange = { if (it.length <= 11) {
+                if (it.isDigitsOnly())
+                    onTextInput(RegistroCampos.CEDULA, it) }
+            },
             label = { Text(text = "CÉDULA") },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number,
@@ -185,7 +199,10 @@ fun DatosRegistro(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
-            onValueChange = { onTextInput(RegistroCampos.TELEFONO, it) },
+            onValueChange = { if (it.length <= 8) {
+                if (it.isDigitsOnly())
+                    onTextInput(RegistroCampos.TELEFONO, it) }
+                            },
             label = { Text(text = "TELÉFONO") },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number,
