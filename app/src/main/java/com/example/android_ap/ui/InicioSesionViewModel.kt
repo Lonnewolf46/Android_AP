@@ -28,16 +28,20 @@ class InicioSesionViewModel: ViewModel() {
 
     fun validarCampos(){
         if(_uiState.value.usuario != "" &&
-            uiState.value.clave != "")
+            _uiState.value.clave != "")
         {
-            _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+            _uiState.update { currentState -> currentState.copy(camposLlenos = true,primerInicio = false)}
             //Hacer algo más
 
         }
-        else _uiState.update { currentState -> currentState.copy(camposLlenos = false)}
+        else _uiState.update { currentState -> currentState.copy(camposLlenos = false,primerInicio = false)}
     }
     fun cerrarEmergente(){
         _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+    }
+
+    fun resetState() {
+        _uiState.value = InicioSesionUiState()
     }
 
 }

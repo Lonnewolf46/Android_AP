@@ -4,5 +4,6 @@ data class InicioSesionUiState(
     val usuario: String = "",
     val clave: String = "",
     val claveVisible: Boolean = false,
-    val camposLlenos: Boolean = true
+    val camposLlenos: Boolean = false,
+    val primerInicio: Boolean = true
 )

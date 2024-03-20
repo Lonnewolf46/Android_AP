@@ -47,6 +47,7 @@ fun InicioSesionLayout(nombre: String,
                        clave: String,
                        passwordVisible: Boolean,
                        camposLlenos: Boolean,
+                       primerInicio: Boolean,
                        onTextInput: (InicioSesionCampos, String) -> Unit,
                        onViewPassword: (Boolean) -> Unit,
                        onIniciarSesionClicked: () -> Unit,
@@ -108,7 +109,7 @@ fun InicioSesionLayout(nombre: String,
         }
     }
 
-    if(!camposLlenos){
+    if(!camposLlenos && !primerInicio){
         Warning(
             texto = "Se requieren llenar todos los campos",
             onClose = { onDialogClose() })
