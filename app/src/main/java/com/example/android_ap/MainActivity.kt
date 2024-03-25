@@ -33,7 +33,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     AP_App()
                 }
-
                 val apiCall = APICall()
                 apiCall.getPost { post ->
                     // Manejar la respuesta de la API aquí
