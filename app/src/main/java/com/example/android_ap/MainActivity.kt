@@ -13,7 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.android_ap.ui.AP_App
+
 import com.example.android_ap.ui.theme.Android_APTheme
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,3 +49,4 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
