@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -44,7 +44,10 @@ fun Tareas(modifier: Modifier = Modifier){
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween){
             Button(onClick = { /*TODO*/ },
-                modifier = Modifier.weight(1f)) {
+                modifier = Modifier
+                    .weight(1f)
+                    .height(78.dp)
+            ){
                 Text(text = "MIS TAREAS",
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -54,7 +57,8 @@ fun Tareas(modifier: Modifier = Modifier){
             }
             Spacer(Modifier.padding(4.dp))
             Button(onClick = { /*TODO*/ },
-                modifier = Modifier.weight(1f)) {
+                modifier = Modifier.weight(1f)
+                    .height(78.dp)) {
                 Text(text = "TAREAS DEL PROYECTO",
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -65,11 +69,9 @@ fun Tareas(modifier: Modifier = Modifier){
         }
         Divider(thickness = 2.dp,
             modifier = Modifier.padding(vertical = 16.dp))
+
         Text("Tareas y LazyColumn aqui")
 
-        Button(onClick = { /*TODO*/ }) {
-            Image(Icons.Filled.Add, contentDescription = null)
-        }
     }
 }
 
@@ -83,7 +85,8 @@ fun ProyectoActualTopBar(proyecto: String) {
             Text(
                 text = proyecto,
                 style = TextStyle(fontSize = 24.sp),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(8.dp)
             )
             Spacer(Modifier.weight(3f))
             Button(onClick = { /*TODO*/ }) {

@@ -25,11 +25,11 @@ import com.example.android_ap.ui.UIAuxiliar.APAppBar
 import com.example.android_ap.ui.UIAuxiliar.BottomAppBarMenu
 import com.example.android_ap.ui.UIAuxiliar.FABMenuPrincipal
 import com.example.android_ap.ui.UIAuxiliar.FABState
-import com.example.android_ap.ui.UIAuxiliar.MinFab
 import com.example.android_ap.ui.UIAuxiliar.MinFabItem
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
 import com.example.android_ap.ui.screens.ModificarInfoPersonalLayout
+import com.example.android_ap.ui.screens.NotificacionesLayout
 import com.example.android_ap.ui.screens.RegistroLayout
 import com.example.android_ap.ui.screens.TrabajoLayout
 
@@ -38,6 +38,7 @@ enum class APScreen() {
     Registro,
     MenuPrincipal,
     Trabajo,
+    Notificaciones,
     ModificarInfoPersonal
 }
 
@@ -49,11 +50,14 @@ fun AP_App() {
     val registroViewModel: RegistroViewModel = viewModel()
     val modInfoPersonalViewModel: ModificarInfoPersonalViewModel = viewModel()
 
-    //Initialize navigation elements
+    //Inicializando elementos de navegacion
     val navController: NavHostController = rememberNavController()
+
+    //Inicializando componentes de condiciones para Scaffolding
     var showTopBar by rememberSaveable { mutableStateOf(true) }
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
-    var FABState by rememberSaveable { mutableStateOf(FABState.COLLAPSED)}
+    var showFloatingButton by rememberSaveable { mutableStateOf(true) }
+    var fabState by rememberSaveable { mutableStateOf(FABState.COLLAPSED)}
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = APScreen.valueOf(
@@ -64,6 +68,7 @@ fun AP_App() {
         //Pantallas en las que no deberia haber una barra superior
         APScreen.MenuPrincipal.name -> false
         APScreen.Trabajo.name -> false
+        APScreen.Notificaciones.name -> false
         else -> true // en cualquier otro caso, mostrarla
     }
 
@@ -71,6 +76,15 @@ fun AP_App() {
         //Pantallas en las que no deberia haber una barra inferior
         APScreen.InicioSesion.name -> false
         APScreen.Registro.name -> false
+        APScreen.ModificarInfoPersonal.name -> false
+        else -> true // en cualquier otro caso, mostrarla
+    }
+
+    showFloatingButton = when (backStackEntry?.destination?.route) {
+        //Pantallas en las que no deberia haber una barra inferior
+        APScreen.InicioSesion.name -> false
+        APScreen.Registro.name -> false
+        APScreen.Notificaciones.name -> false
         APScreen.ModificarInfoPersonal.name -> false
         else -> true // en cualquier otro caso, mostrarla
     }
@@ -87,11 +101,13 @@ fun AP_App() {
                  },
         bottomBar = {
             if (showBottomBar) BottomAppBarMenu(
-            { navController.popBackStack()
-              navController.navigate(APScreen.MenuPrincipal.name) },
-            { navController.popBackStack()
-              navController.navigate(APScreen.Trabajo.name) },
-            { navController.navigate(APScreen.ModificarInfoPersonal.name) })
+            onInicioClick = { navController.popBackStack()
+                navController.navigate(APScreen.MenuPrincipal.name) },
+            onTrabajoClick = { navController.popBackStack()
+                navController.navigate(APScreen.Trabajo.name) },
+            onAvisosClick = { navController.popBackStack()
+                navController.navigate(APScreen.Notificaciones.name) },
+            onMasClick = { navController.navigate(APScreen.ModificarInfoPersonal.name) })
         },
 
         floatingActionButton = { if (showBottomBar) {
@@ -104,8 +120,8 @@ fun AP_App() {
             )
 
             FABMenuPrincipal(
-                buttonState = FABState,
-                onClick = { FABState = it },
+                buttonState = fabState,
+                onClick = { fabState = it },
                 items = items)
         }
         })
@@ -182,6 +198,11 @@ fun AP_App() {
             //Trabajo
             composable(route = APScreen.Trabajo.name){
                 TrabajoLayout()
+            }
+
+            //Notificaciones
+            composable(route = APScreen.Notificaciones.name){
+                NotificacionesLayout()
             }
         }
     }
