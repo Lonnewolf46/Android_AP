@@ -35,11 +35,9 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val apiCall = APICall()
-                apiCall.getTasks { tasks ->
-                    // Maneja la lista de tareas aquí
-                    for (task in tasks) {
-                        Log.d("TaskInfo", "ID: ${task.id}, Title: ${task.title}")
-                    }
+                apiCall.getPost { post ->
+                    // Manejar la respuesta de la API aquí
+                    Log.d("APIResponse", "UserId: ${post.userId}, Title: ${post.title}")
                 }
             }
         }

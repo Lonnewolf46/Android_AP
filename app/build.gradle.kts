@@ -71,17 +71,12 @@ dependencies {
 
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit)
-
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation (libs.converter.gson)
 
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
