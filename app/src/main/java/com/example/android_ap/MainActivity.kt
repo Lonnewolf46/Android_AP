@@ -15,6 +15,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.android_ap.ui.AP_App
 
 import com.example.android_ap.ui.theme.Android_APTheme
+import android.util.Log
 
 
 
@@ -31,6 +32,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AP_App()
+                }
+
+                val apiCall = APICall()
+                apiCall.getTasks { tasks ->
+                    // Maneja la lista de tareas aquí
+                    for (task in tasks) {
+                        Log.d("TaskInfo", "ID: ${task.id}, Title: ${task.title}")
+                    }
                 }
             }
         }
