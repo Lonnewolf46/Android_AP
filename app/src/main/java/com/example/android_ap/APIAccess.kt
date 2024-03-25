@@ -33,7 +33,6 @@ class APICall {
                     onSuccess(it);
                 }
             }
-
             override fun onFailure(call: Call<Post>, t: Throwable) {}
             })
         }
