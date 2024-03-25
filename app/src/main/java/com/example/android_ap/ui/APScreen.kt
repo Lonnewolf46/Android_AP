@@ -2,21 +2,19 @@ package com.example.android_ap.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Card
@@ -38,62 +36,96 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.android_ap.R
-import com.example.android_ap.data.InicioSesionUiState
-import com.example.android_ap.data.TempNewsData
-import com.example.android_ap.ui.screens.InfoProyecto
+import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
-import com.example.android_ap.ui.screens.Noticias
+import com.example.android_ap.ui.screens.ModificarInfoPersonalLayout
 import com.example.android_ap.ui.screens.RegistroLayout
-import com.example.android_ap.ui.screens.SearchBar
+import com.example.android_ap.ui.screens.TrabajoLayout
 
 enum class APScreen() {
     InicioSesion,
     Registro,
-    MenuPrincipal
+    MenuPrincipal,
+    Trabajo,
+    ModificarInfoPersonal
 }
 
 @Composable
 fun AP_App() {
+
+    //ViewModels
     val inicioSesionViewModel: InicioSesionViewModel = viewModel()
     val registroViewModel: RegistroViewModel = viewModel()
+    val modInfoPersonalViewModel: ModificarInfoPersonalViewModel = viewModel()
 
     //Initialize navigation elements
     val navController: NavHostController = rememberNavController()
+    var showTopBar by rememberSaveable { mutableStateOf(true) }
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = APScreen.valueOf(
         backStackEntry?.destination?.route ?: APScreen.InicioSesion.name
     )
+
+    showTopBar = when (backStackEntry?.destination?.route) {
+        //Pantallas en las que no deberia haber una barra superior
+        APScreen.MenuPrincipal.name -> false
+        APScreen.Trabajo.name -> false
+        else -> true // en cualquier otro caso, mostrarla
+    }
+
     showBottomBar = when (backStackEntry?.destination?.route) {
-        APScreen.InicioSesion.name -> false // on this screen bottom bar should be hidden
-        APScreen.Registro.name -> false // here too
-        else -> true // in all other cases show bottom bar
+        //Pantallas en las que no deberia haber una barra inferior
+        APScreen.InicioSesion.name -> false
+        APScreen.Registro.name -> false
+        APScreen.ModificarInfoPersonal.name -> false
+        else -> true // en cualquier otro caso, mostrarla
     }
 
 
-    Scaffold(topBar = {
-        APAppBar(
-            canNavigateBack = navController.previousBackStackEntry != null,
-            navigateUp = { navController.navigateUp() })
-    },
-        bottomBar = { if (showBottomBar) BottomAppBarMenu() }) { innerPadding ->
+    Scaffold(
+        topBar = {
+        if (showTopBar) {
+            APAppBar(
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
+            )
+        }
+                 },
+        bottomBar = {
+            if (showBottomBar) BottomAppBarMenu(
+            { navController.popBackStack()
+              navController.navigate(APScreen.MenuPrincipal.name) },
+            { navController.popBackStack()
+              navController.navigate(APScreen.Trabajo.name) },
+            { navController.navigate(APScreen.ModificarInfoPersonal.name) })
+        },
+
+        floatingActionButton = { if (showBottomBar)
+            FloatingActionButton(
+                onClick = { /* do something */ },
+                containerColor = BottomAppBarDefaults.containerColor,
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+            ) {
+                Icon(Icons.Filled.Add, "Agregar")
+            }
+        })
+    { innerPadding ->
 
         val inicioUiState by inicioSesionViewModel.uiState.collectAsState()
         val registroUiState by registroViewModel.uiState.collectAsState()
+        val modInfoPersonalUiState by modInfoPersonalViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
-            startDestination = APScreen.InicioSesion.name,
+            startDestination = APScreen.InicioSesion.name, //ENTRADA
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
@@ -112,7 +144,7 @@ fun AP_App() {
                     onIniciarSesionClicked = {
                         LoginToStart(
                             inicioSesionViewModel,
-                            inicioUiState,
+                            modInfoPersonalViewModel,
                             navController
                         )
                     },
@@ -143,6 +175,22 @@ fun AP_App() {
             composable(route = APScreen.MenuPrincipal.name) {
                 MenuPrincipalLayout()
             }
+
+            //Modificacion de informacion personal
+            composable(route = APScreen.ModificarInfoPersonal.name){
+                ModificarInfoPersonalLayout(
+                    telefono = modInfoPersonalUiState.telefono,
+                    email = modInfoPersonalUiState.correo,
+                    camposLlenos = modInfoPersonalUiState.camposLlenos,
+                    onTextInput = modInfoPersonalViewModel::actualizarDatos,
+                    onActualizarClicked = { /*TODO*/ }) {
+                }
+            }
+
+            //Trabajo
+            composable(route = APScreen.Trabajo.name){
+                TrabajoLayout()
+            }
         }
     }
 }
@@ -171,26 +219,20 @@ fun APAppBar(
 }
 
 @Composable
-fun BottomAppBarMenu() {
+fun BottomAppBarMenu(onInicioClick: () -> Unit,
+                     onTrabajoClick: () -> Unit,
+                     onMasClick: () -> Unit) {
     BottomAppBar(
         actions = {
-            BottomAppBarIcon(onClick = {}, texto = "Incio", image = Icons.Filled.Home)
-
-            BottomAppBarIcon(onClick = {}, texto = "Trabajo", image = Icons.Filled.List)
-
-            BottomAppBarIcon(onClick = {}, texto = "Notificaciones", image = Icons.Filled.Notifications)
-
-            BottomAppBarIcon(onClick = {}, texto = "Más", image = Icons.Filled.Menu)
-
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* do something */ },
-                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Absolute.SpaceEvenly
             ) {
-                Icon(Icons.Filled.Add, "Localized description")
+                BottomAppBarIcon(onClick = onInicioClick,texto = "Inicio",image = Icons.Filled.Home)
+                BottomAppBarIcon(onClick = onTrabajoClick, texto = "Trabajo", image = Icons.Filled.List)
+                BottomAppBarIcon(onClick = {}, texto = "Avisos", image = Icons.Filled.Notifications)
+                BottomAppBarIcon(onClick = onMasClick, texto = "Usuario", image = Icons.Filled.Person)
             }
+
         }
     )
 }
@@ -214,15 +256,29 @@ fun BottomAppBarIcon(onClick: () -> Unit,texto: String, image: ImageVector){
 
 private fun LoginToStart(
     inicioSesionViewModel: InicioSesionViewModel,
-    inicioUiState: InicioSesionUiState,
+    modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
     navController: NavController
 ) {
     inicioSesionViewModel.validarCampos()
 
     if (inicioSesionViewModel.uiState.value.camposLlenos) {
+
+        //Llenar currentUser con valores del la BD o algo aquí
+        prepModInfoPersonalData(modInfoPersonalViewModel, inicioSesionViewModel.uiState.value.usuario)
+
         inicioSesionViewModel.resetState()
         navController.popBackStack()
         navController.navigate(APScreen.MenuPrincipal.name)
     }
+}
 
+//Alterar el estado del viewModel para preservar la información
+private fun prepModInfoPersonalData(modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
+                                    email: String){
+
+    //Datos mockup
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO,"83035422")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO,"Proyecto 1")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO,"Departamento 1")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO,email)
 }

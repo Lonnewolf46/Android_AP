@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,7 +72,9 @@ fun MenuPrincipalLayout() {
                 modifier = Modifier.padding(12.dp)
             )
         }
-        InfoProyecto(modifier = Modifier.weight(1f))
+        InfoProyecto(
+            proyecto = "Diseño de la página principal",
+            modifier = Modifier.weight(1f))
     }
 }
 
@@ -163,7 +167,7 @@ fun SearchBar(modifier: Modifier) {
 }
 
 @Composable
-fun InfoProyecto(modifier: Modifier) {
+fun InfoProyecto(proyecto: String,modifier: Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -188,6 +192,16 @@ fun InfoProyecto(modifier: Modifier) {
                     )
                 )
             )
+            Spacer(Modifier.padding(vertical = 16.dp))
+
+            Card(modifier = modifier
+                .height(36.dp)){
+                Text(text = proyecto,
+                    fontWeight = FontWeight.Bold,
+                    modifier = modifier
+                        .height(32.dp)
+                )
+            }
 
         }
     }

@@ -222,7 +222,7 @@ fun DatosRegistro(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
-            onValueChange = { onTextInput(RegistroCampos.EMAIL, it) },
+            onValueChange = { onTextInput(RegistroCampos.CORREO, it) },
             label = { Text(text = "EMAIL") },
             placeholder = { Text("xxxxxx@institucional.cr") },
             keyboardOptions = KeyboardOptions.Default.copy(

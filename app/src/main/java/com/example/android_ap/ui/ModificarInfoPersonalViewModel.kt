@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.android_ap.data.InicioSesionUiState
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.RegistroUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class RegistroViewModel: ViewModel() {
+class ModificarInfoPersonalViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(RegistroUiState())
     val uiState: StateFlow<RegistroUiState> = _uiState.asStateFlow()
 
@@ -22,20 +21,12 @@ class RegistroViewModel: ViewModel() {
 
     fun actualizarDatos(campo: RegistroCampos, input: String){
         when(campo){
-            RegistroCampos.NOMBRE -> {_uiState.update { currentState -> currentState.copy(nombre=input)}}
-            RegistroCampos.CEDULA -> {_uiState.update { currentState -> currentState.copy(cedula=input)}}
             RegistroCampos.TELEFONO -> {_uiState.update { currentState -> currentState.copy(telefono=input)}}
+            RegistroCampos.CORREO -> {_uiState.update { currentState -> currentState.copy(correo=input)}}
             RegistroCampos.PROYECTO -> {_uiState.update { currentState -> currentState.copy(proyecto=input)}}
             RegistroCampos.DEPARTAMENTO -> {_uiState.update { currentState -> currentState.copy(departamento=input)}}
-            RegistroCampos.CORREO -> {_uiState.update { currentState -> currentState.copy(correo=input)}}
-            RegistroCampos.CLAVE -> {_uiState.update { currentState -> currentState.copy(clave=input)}}
+            else -> {}
         }
-    }
-
-    fun verClave(estado: Boolean){
-        _uiState.update { currentState -> currentState.copy(
-            claveVisible = estado
-        )}
     }
 
     fun validarCampos(){
@@ -51,7 +42,6 @@ class RegistroViewModel: ViewModel() {
 
             //Hacer solicitud a la BD
 
-
         }
         else{
             _uiState.update { currentState -> currentState.copy(camposLlenos = false)}
@@ -60,9 +50,5 @@ class RegistroViewModel: ViewModel() {
 
     fun cerrarEmergente(){
         _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
-    }
-
-    fun resetState() {
-        _uiState.value = RegistroUiState()
     }
 }

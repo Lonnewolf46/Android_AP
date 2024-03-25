@@ -11,6 +11,6 @@ enum class RegistroCampos{
         TELEFONO,
         PROYECTO,
         DEPARTAMENTO,
-        EMAIL,
+        CORREO,
         CLAVE
 }

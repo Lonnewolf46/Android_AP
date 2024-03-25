@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.0"
+agp = "8.3.1"
 coreSplashscreen = "1.0.1"
 exposed = "0.17.7"
 coilCompose = "2.4.0"
