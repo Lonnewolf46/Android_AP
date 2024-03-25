@@ -94,6 +94,7 @@ fun APAppBar(
 @Composable
 fun BottomAppBarMenu(onInicioClick: () -> Unit,
                      onTrabajoClick: () -> Unit,
+                     onAvisosClick: () -> Unit,
                      onMasClick: () -> Unit) {
     BottomAppBar(
         actions = {
@@ -102,7 +103,7 @@ fun BottomAppBarMenu(onInicioClick: () -> Unit,
             ) {
                 BottomAppBarIcon(onClick = onInicioClick,texto = "Inicio",image = Icons.Filled.Home)
                 BottomAppBarIcon(onClick = onTrabajoClick, texto = "Trabajo", image = Icons.Filled.List)
-                BottomAppBarIcon(onClick = {}, texto = "Avisos", image = Icons.Filled.Notifications)
+                BottomAppBarIcon(onClick = onAvisosClick, texto = "Avisos", image = Icons.Filled.Notifications)
                 BottomAppBarIcon(onClick = onMasClick, texto = "Usuario", image = Icons.Filled.Person)
             }
 
