@@ -1,31 +1,10 @@
 package com.example.android_ap.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,16 +12,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
+import com.example.android_ap.ui.UIAuxiliar.APAppBar
+import com.example.android_ap.ui.UIAuxiliar.BottomAppBarMenu
+import com.example.android_ap.ui.UIAuxiliar.FABMenuPrincipal
+import com.example.android_ap.ui.UIAuxiliar.FABState
+import com.example.android_ap.ui.UIAuxiliar.MinFab
+import com.example.android_ap.ui.UIAuxiliar.MinFabItem
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
 import com.example.android_ap.ui.screens.ModificarInfoPersonalLayout
@@ -69,6 +53,8 @@ fun AP_App() {
     val navController: NavHostController = rememberNavController()
     var showTopBar by rememberSaveable { mutableStateOf(true) }
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
+    var FABState by rememberSaveable { mutableStateOf(FABState.COLLAPSED)}
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = APScreen.valueOf(
         backStackEntry?.destination?.route ?: APScreen.InicioSesion.name
@@ -108,14 +94,20 @@ fun AP_App() {
             { navController.navigate(APScreen.ModificarInfoPersonal.name) })
         },
 
-        floatingActionButton = { if (showBottomBar)
-            FloatingActionButton(
-                onClick = { /* do something */ },
-                containerColor = BottomAppBarDefaults.containerColor,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-            ) {
-                Icon(Icons.Filled.Add, "Agregar")
-            }
+        floatingActionButton = { if (showBottomBar) {
+
+            val items = listOf(
+                MinFabItem(icon = R.drawable.forum_icon, label = "Foro General", path = {/*TODO*/}),
+                MinFabItem(icon = R.drawable.manage_project, label = "Administrar proyectos", path = {/*TODO*/}),
+                MinFabItem(icon = R.drawable.project_new, label = "Agregar proyecto", path = {/*TODO*/}),
+                MinFabItem(icon = R.drawable.addperson, label = "Agregar colaborador", path = {/*TODO*/})
+            )
+
+            FABMenuPrincipal(
+                buttonState = FABState,
+                onClick = { FABState = it },
+                items = items)
+        }
         })
     { innerPadding ->
 
@@ -191,65 +183,6 @@ fun AP_App() {
             composable(route = APScreen.Trabajo.name){
                 TrabajoLayout()
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun APAppBar(
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TopAppBar(
-        title = {},
-        modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Retroceso"
-                    )
-                }
-            }
-        }
-    )
-}
-
-@Composable
-fun BottomAppBarMenu(onInicioClick: () -> Unit,
-                     onTrabajoClick: () -> Unit,
-                     onMasClick: () -> Unit) {
-    BottomAppBar(
-        actions = {
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Absolute.SpaceEvenly
-            ) {
-                BottomAppBarIcon(onClick = onInicioClick,texto = "Inicio",image = Icons.Filled.Home)
-                BottomAppBarIcon(onClick = onTrabajoClick, texto = "Trabajo", image = Icons.Filled.List)
-                BottomAppBarIcon(onClick = {}, texto = "Avisos", image = Icons.Filled.Notifications)
-                BottomAppBarIcon(onClick = onMasClick, texto = "Usuario", image = Icons.Filled.Person)
-            }
-
-        }
-    )
-}
-
-@Composable
-fun BottomAppBarIcon(onClick: () -> Unit,texto: String, image: ImageVector){
-    Card() {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
-            IconButton(onClick = { onClick() }) {
-                Icon(
-                    image,
-                    contentDescription = texto,
-                )
-            }
-            Text(text = texto)
         }
     }
 }
