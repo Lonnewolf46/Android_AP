@@ -11,6 +11,6 @@ app.use(express.json());
 app.use("/api", apiRoutes);
 app.use("*", (request: Request, response: Response) => response.send("Not Found"));
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running in port ${PORT}`);
 });
