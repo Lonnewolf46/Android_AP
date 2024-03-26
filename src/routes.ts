@@ -41,15 +41,16 @@ apiRoutes.get("/departamentos", async (req, res) => {
 
 apiRoutes.get("/proyectos", async(req, res) => {
     const proyectos = await Proyecto.obtenerProyectos();
-    return res.json(proyectos);
+    return res.json(proyectos.map(p => p.serialize()));
 });
 
 apiRoutes.post("/proyectos", async(req, res) => {
     const data = {...req.body};
     data.tareas = data.tareas.map(Tarea.deserialize);
     data.colaboradores = data.colaboradores.map(Colaborador.byId);
-    console.log(data);
-    return res.json({});
+    const proyecto = Proyecto.deserialize(data);
+    await proyecto.crear();
+    return res.json({success: true});
 });
 
 export default apiRoutes;

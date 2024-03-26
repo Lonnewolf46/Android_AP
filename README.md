@@ -32,7 +32,7 @@
 
 #### Ejemplo de respuesta
 ```json
-{success: true}
+{"success": true}
 ```
 
 
@@ -96,7 +96,7 @@
 
 #### Ejemplo de respuesta
 ```json
-{success: true}
+{"success": true}
 ```
 
 
@@ -144,9 +144,7 @@
     "descripcion": "Maternal care for Anti-A sensitization, first tri, fetus 1",
     "idResponsable": 3,
     "fechaInicio": "2024-03-25T15:57:13.770Z",
-    "fechaFin": "2024-03-25T15:57:13.770Z",
-    "tareas": [],
-    "colaboradores": []
+    "fechaFin": "2024-03-25T15:57:13.770Z"
   }
 ]
 ```

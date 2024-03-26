@@ -50,8 +50,22 @@ class Proyecto {
         `)).map(Proyecto.deserialize);
     }
 
-    async crear() {
+    serialize() {
+        return {
+            id: this.id,
+            nombre: this.nombre,
+            recursos: this.recursos,
+            presupuesto: this.presupuesto,
+            idEstado: this.idEstado,
+            descripcion: this.descripcion,
+            idResponsable: this.idResponsable,
+            fechaInicio: this.fechaInicio,
+            fechaFin: this.fechaFin
+        }
+    }
 
+    async crear() {
+        
     }
 }
 
