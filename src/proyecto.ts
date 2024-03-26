@@ -77,6 +77,14 @@ class Proyecto {
             colaborador.reasignarProyecto(idProyecto);
         });
     }
+
+    // async obtenerColaboradores():Promise<Colaborador[]> {
+    //     const result = await databaseQuery(`
+    //         SELECT id, nombre, cedula, telefono, email, idProyecto, idDepartamento
+    //         FROM Colaboradores
+    //         WHERE idProyecto=${this.id}
+    //     `);
+    // }
 }
 
 export default Proyecto;

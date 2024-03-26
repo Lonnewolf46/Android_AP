@@ -43,6 +43,15 @@ class Colaborador {
         });
     }
 
+    static async obtenerColaboradoresSinProyecto():Promise<Colaborador[]> {
+        const colaboradores = await databaseQuery(`
+            SELECT id, nombre, cedula, telefono, email, idDepartamento
+            FROM Colaboradores
+            WHERE idProyecto IS NULL
+        `);
+        return colaboradores.map(Colaborador.deserialize);
+    }
+
     serialize() {
         return {
             id: this.id, nombre: this.nombre, cedula: this.cedula, telefono: this.telefono,
@@ -65,14 +74,21 @@ class Colaborador {
 
     async actualizar(telefono:number, idProyecto:number, idDepartamento:number, email:string) {
         await databaseQuery(`
-            UPDATE Colaboradores SET
-            telefono=${telefono}, idProyecto=${idProyecto}, idDepartamento=${idDepartamento}, email='${email}'
-            WHERE id=${this.id}
+        EXEC ActualizarColaborador 
+            @Id = ${this.id},
+            @Telefono = ${telefono},
+            @IdProyecto = ${idProyecto},
+            @IdDepartamento = ${idDepartamento},
+            @Email = '${email}';
         `);
     }
 
     async reasignarProyecto(idProyecto:number) {
-        await databaseQuery(`UPDATE Colaboradores SET idProyecto=${idProyecto} WHERE id=${this.id}`);
+        await databaseQuery(`
+        EXEC ReasignarProyectoColaborador 
+            @Id = ${this.id}, 
+            @IdProyecto = ${idProyecto}; 
+        `);
     }
 }
 
