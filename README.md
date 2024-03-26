@@ -148,3 +148,53 @@
   }
 ]
 ```
+
+
+## Creación de proyectos
+
+**Método:** POST
+
+**Ruta:** /api/proyectos
+
+**Descripción:** Crea un nuevo proyecto, con tareas y asignación de colaboradores
+
+#### Parámetros de consulta:
+- `nombre`: string
+- `recursos`: string
+- `presupuesto`: number
+- `idEstado`: number
+- `descripcion`: string
+- `idResponsable`: number
+- `fechaInicio`: string
+- `fechaFin`: string
+- `tareas`: 
+
+#### Ejemplo de solicitud
+```json
+{
+  "nombre": "Cafetería",
+  "recursos": "Materiales de construcción",
+  "presupuesto": 10000,
+  "idEstado": 1,
+  "descripcion": "Local para vender café",
+  "idResponsable": 4,
+  "fechaInicio": "2024-03-25",
+  "fechaFin": "2024-03-26",
+  "tareas": [{
+    "nombre": "Construir local",
+    "storyPoints": 12,
+    "idEncargado": 4,
+    "fechaInicio": "2024-03-25",
+    "idEstado": 1,
+    "fechaFin": "2024-03-26"
+  }],
+  "colaboradores": [4]
+}
+```
+
+#### Ejemplo de respuesta
+```json
+{
+  "success": true
+}
+```

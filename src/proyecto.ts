@@ -45,9 +45,8 @@ class Proyecto {
 
     static async obtenerProyectos():Promise<Proyecto[]> {
         return (await databaseQuery(`
-            SELECT id, nombre, recursos, presupuesto, idEstado, descripcion, idResponsable, fechaInicio, fechaFin
-            FROM Proyectos
-        `)).map(Proyecto.deserialize);
+        EXEC getProyectos
+        `)).map(Proyecto.deserialize); ///Llama al SP de getProyectos
     }
 
     serialize() {
@@ -65,8 +64,27 @@ class Proyecto {
     }
 
     async crear() {
-        
+        const resultado = await databaseQuery(`EXEC postProyectos @nombre='${this.nombre}', @recursos='${this.recursos}', @presupuesto=${this.presupuesto}
+        ,@descripcion='${this.descripcion}', @idResponsable=${this.idResponsable},@fechaInicio='${this.fechaInicio}'
+        ,@fechaFin='${this.fechaFin}'`);
+        const idProyecto = resultado[0].NuevoProyectoID;
+
+        this.tareas.forEach(async tarea => {
+            tarea.idProyecto = idProyecto;
+            await tarea.crear();
+        });
+        this.colaboradores.forEach(colaborador => {
+            colaborador.reasignarProyecto(idProyecto);
+        });
     }
+
+    // async obtenerColaboradores():Promise<Colaborador[]> {
+    //     const result = await databaseQuery(`
+    //         SELECT id, nombre, cedula, telefono, email, idProyecto, idDepartamento
+    //         FROM Colaboradores
+    //         WHERE idProyecto=${this.id}
+    //     `);
+    // }
 }
 
 export default Proyecto;

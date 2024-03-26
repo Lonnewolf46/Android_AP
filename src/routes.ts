@@ -6,6 +6,11 @@ import Tarea from "./tarea.js";
 
 const apiRoutes = Router();
 
+apiRoutes.get("/colaboradores/sin-proyecto", async(req, res) => {
+    const colaboradores = await Colaborador.obtenerColaboradoresSinProyecto()
+    return res.json(colaboradores.map(c => c.serialize()));
+});
+
 apiRoutes.post("/colaboradores", async (req, res) => {
     const colaborador = Colaborador.deserialize(req.body);
     await colaborador.crear();
@@ -30,7 +35,7 @@ apiRoutes.put("/colaboradores/:idColaborador/reasignar-proyecto", async (req, re
 
 apiRoutes.post("/credenciales", async (req, res) => {
     const { email, contrasenna } = req.body;
-    const colaborador = await  Colaborador.validarCredenciales(email, contrasenna);
+    const colaborador = await Colaborador.validarCredenciales(email, contrasenna);
     return res.json({success: !!colaborador, colaborador: colaborador.serialize()});
 });
 
@@ -51,6 +56,10 @@ apiRoutes.post("/proyectos", async(req, res) => {
     const proyecto = Proyecto.deserialize(data);
     await proyecto.crear();
     return res.json({success: true});
+});
+
+apiRoutes.get("/proyectos/:idProyecto/colaboradores", async(req, res) => {
+    
 });
 
 export default apiRoutes;
