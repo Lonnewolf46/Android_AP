@@ -3,7 +3,7 @@ import morgan from "morgan";
 import apiRoutes from "./routes.js";
 
 const app = express();
-const PORT = process.env.port || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(morgan("dev"));
 app.use(express.json());
