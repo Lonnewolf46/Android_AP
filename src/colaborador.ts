@@ -36,9 +36,7 @@ class Colaborador {
     static async validarCredenciales(email:string, contrasenna:string): Promise<Colaborador> {
         return new Promise(resolve => {
             databaseQuery(`
-                SELECT id, nombre, cedula, telefono, email, idProyecto, idDepartamento
-                FROM Colaboradores
-                WHERE email='${email}' and contrasenna='${contrasenna}'
+            EXEC ValidarCredenciales @Email = '${email}', @Contrasenna = '${contrasenna}';
             `).then(result => {
                 resolve(result.length ? Colaborador.deserialize(result[0]) : null);
             });
@@ -54,8 +52,14 @@ class Colaborador {
 
     async crear() {
         await databaseQuery(`
-            INSERT INTO Colaboradores(nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento)
-            VALUES('${this.nombre}', ${this.cedula}, ${this.telefono}, '${this.email}', '${this.contrasenna}', ${this.idProyecto}, ${this.idDepartamento})
+        EXEC CrearColaborador 
+            @Nombre = '${this.nombre}',
+            @Cedula = ${this.cedula},
+            @Telefono = ${this.telefono},
+            @Email = '${this.email}',
+            @Contrasenna = '${this.contrasenna}',
+            @IdProyecto = ${this.idProyecto},
+            @IdDepartamento = ${this.idDepartamento};
         `);
     }
 

@@ -30,7 +30,7 @@ apiRoutes.put("/colaboradores/:idColaborador/reasignar-proyecto", async (req, re
 
 apiRoutes.post("/credenciales", async (req, res) => {
     const { email, contrasenna } = req.body;
-    const colaborador = await  Colaborador.validarCredenciales(email, contrasenna);
+    const colaborador = await Colaborador.validarCredenciales(email, contrasenna);
     return res.json({success: !!colaborador, colaborador: colaborador.serialize()});
 });
 
