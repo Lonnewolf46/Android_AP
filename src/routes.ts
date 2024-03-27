@@ -66,11 +66,22 @@ apiRoutes.post("/proyectos", async(req, res) => {
     return res.json({success: true});
 });
 
+apiRoutes.put("/proyectos/:idProyecto", async(req, res) => {
+    // modificar proyecto
+});
+
 apiRoutes.get("/proyectos/:idProyecto/colaboradores", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = Proyecto.byId(idProyecto);
     const colaboradores = await proyecto.obtenerColaboradores();
     return res.json(colaboradores.map(c => c.serialize()));
+});
+
+apiRoutes.delete("/proyectos/:idProyecto/colaboradores/:idColaborador", async(req, res) => {
+    const { idProyecto, idColaborador } = req.params;
+    const proyecto = Proyecto.byId(Number(idProyecto));
+    proyecto.eliminarColaborador(Colaborador.byId(Number(idColaborador)));
+    return res.json({success: true});
 });
 
 apiRoutes.post("/notificaciones", async(req, res) => {

@@ -9,7 +9,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/api", apiRoutes);
-app.use("*", (request: Request, response: Response) => response.send("Not Found"));
+app.use("*", (request: Request, response: Response) => response.status(404).send("Not Found"));
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running in port ${PORT}`);

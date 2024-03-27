@@ -339,3 +339,18 @@
   "success": true
 }
 ```
+
+
+
+## Eliminación de colaborador en proyecto
+
+**Método:** DELETE
+
+**Ruta:** /proyectos/<id_proyecto>/colaboradores/<id_colaborador>/
+
+**Descripción:** Elimina la asociasión de un colaborador a un proyecto
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```

@@ -88,6 +88,10 @@ class Proyecto {
         `);
         return result.map(Colaborador.deserialize);
     }
+
+    async eliminarColaborador(colaborador: Colaborador) {
+        await databaseQuery(`UPDATE Colaboradores SET idProyecto=NULL WHERE id=${colaborador.id}`);
+    }
 }
 
 export default Proyecto;
