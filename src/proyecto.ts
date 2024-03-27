@@ -92,6 +92,15 @@ class Proyecto {
     async eliminarColaborador(colaborador: Colaborador) {
         await databaseQuery(`UPDATE Colaboradores SET idProyecto=NULL WHERE id=${colaborador.id}`);
     }
+
+    async obtenerTareas():Promise<Tarea[]> {
+        const result = await databaseQuery(`
+            SELECT id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado
+            FROM Tareas
+            WHERE idProyecto=${this.id}   
+        `);
+        return result.map(Tarea.deserialize);
+    }
 }
 
 export default Proyecto;

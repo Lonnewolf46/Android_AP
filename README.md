@@ -167,7 +167,8 @@
 - `idResponsable`: number
 - `fechaInicio`: string
 - `fechaFin`: string
-- `tareas`: 
+- `tareas`: tarea[]
+- `colaboradores`: number[]
 
 #### Ejemplo de solicitud
 ```json
@@ -194,9 +195,7 @@
 
 #### Ejemplo de respuesta
 ```json
-{
-  "success": true
-}
+{"success": true}
 ```
 
 
@@ -242,9 +241,7 @@
 
 #### Ejemplo de solicitud
 ```json
-{
-  "idProyecto": 10
-}
+{"idProyecto": 10}
 ```
 
 #### Ejemplo de respuesta
@@ -335,9 +332,7 @@
 
 #### Ejemplo de respuesta
 ```json
-{
-  "success": true
-}
+{"success": true}
 ```
 
 
@@ -346,9 +341,97 @@
 
 **Método:** DELETE
 
-**Ruta:** /proyectos/<id_proyecto>/colaboradores/<id_colaborador>/
+**Ruta:** /proyectos/<id_proyecto>/colaboradores/<id_colaborador>
 
 **Descripción:** Elimina la asociasión de un colaborador a un proyecto
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+
+
+## Obtención de tareas de proyecto
+
+**Método:** GET
+
+**Ruta:** /api/proyectos/<id_proyecto>/tareas
+
+**Descripción:** Devuelve las tareas de un proyecto
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "nombre": 7,
+    "storyPoints": 12,
+    "idProyecto": 10,
+    "idEncargado": 4,
+    "fechaInicio": "1905-06-20T00:00:00.000Z",
+    "fechaFin": "1905-06-19T00:00:00.000Z",
+    "idEstado": 1
+  }
+]
+```
+
+
+## Creación de tareas de proyecto
+
+**Método:** POST
+
+**Ruta:** /api/proyectos/<id_proyecto>/tareas
+
+**Descripción:** Crea tareas y las asocia a un proyecto existente
+
+#### Parámetros de consulta:
+- `nombre`: string
+- `storyPoints`: number
+- `idEncargado`: number
+- `idEstado`: number
+- `fechaInicio`: string
+- `fechaFin`: string
+
+#### Ejemplo de solicitud
+```json
+{
+  "nombre": "Construir local",
+  "storyPoints": 12,
+  "idEncargado": 4,
+  "fechaInicio": "2024-03-25",
+  "idEstado": 1,
+  "fechaFin": "2024-03-26"
+}
+```
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+
+
+## Modificación de tarea
+
+**Método:** PUT
+
+**Ruta:** /api/proyectos/<id_proyecto>/tareas/<id_tarea>
+
+**Descripción:** Modifica los datos de una tarea
+
+#### Parámetros de consulta:
+  - `nombre`: string
+  - `storyPoints`: number
+  - `idEncargado`: number
+
+#### Ejemplo de solicitud
+```json
+{
+  "nombre": "Construir local",
+  "storyPoints": 22,
+  "idEncargado": 4
+}
+```
 
 #### Ejemplo de respuesta
 ```json

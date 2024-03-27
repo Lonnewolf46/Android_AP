@@ -70,6 +70,27 @@ apiRoutes.put("/proyectos/:idProyecto", async(req, res) => {
     // modificar proyecto
 });
 
+apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
+    const { idProyecto } = req.params;
+    const proyecto = Proyecto.byId(idProyecto);
+    const tareas = await proyecto.obtenerTareas();
+    return res.json(tareas);
+});
+
+apiRoutes.put("/proyectos/:idProyecto/tareas/:idTarea", async(req, res) => {
+    const { idProyecto, idTarea } = req.params;
+    const tarea = Tarea.deserialize({...req.body, id: idTarea, idProyecto});
+    tarea.actualizar();
+    return res.json({success: true});
+});
+
+apiRoutes.post("/proyectos/:idProyecto/tareas", async(req, res) => {
+    const { idProyecto } = req.params;
+    const tarea = Tarea.deserialize({...req.body, idProyecto});
+    await tarea.crear();
+    return res.json({success: true});
+});
+
 apiRoutes.get("/proyectos/:idProyecto/colaboradores", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = Proyecto.byId(idProyecto);
