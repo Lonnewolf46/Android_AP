@@ -24,58 +24,47 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_ap.data.TareaCampos
+import com.example.android_ap.ui.popups.NuevaTarea
 import com.example.android_ap.ui.theme.Android_APTheme
 
+/**
+ * Componente principal de la interfaz de Trabajo
+*/
 @Composable
-fun TrabajoLayout(){
+fun TrabajoLayout(
+                  nombre: String,
+                  storyPoints: String,
+                  encargado: String,
+                  crearTareaVisible: Boolean,
+                  onCrearTareaValueChange: (TareaCampos, String) -> Unit,
+                  onCrearTareaConfirmar: () -> Unit,
+                  onCrearTareaCerrarClick: () -> Unit
+                  ){
     Column(horizontalAlignment = Alignment.CenterHorizontally
         ,modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+            .fillMaxSize()
+            .padding(16.dp)) {
         ProyectoActualTopBar(proyecto = "Proyecto 1")
         Tareas(Modifier.padding(16.dp))
 
-    }
-}
-
-@Composable
-fun Tareas(modifier: Modifier = Modifier){
-    Column(modifier = modifier) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween){
-            Button(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(78.dp)
-            ){
-                Text(text = "MIS TAREAS",
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center)
-                )
-            }
-            Spacer(Modifier.padding(4.dp))
-            Button(onClick = { /*TODO*/ },
-                modifier = Modifier.weight(1f)
-                    .height(78.dp)) {
-                Text(text = "TAREAS DEL PROYECTO",
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center)
-                )
-            }
-        }
-        Divider(thickness = 2.dp,
-            modifier = Modifier.padding(vertical = 16.dp))
-
-        Text("Tareas y LazyColumn aqui")
+        //Si se ha dado click a crear tarea
+        if (crearTareaVisible)
+            NuevaTarea(
+                nombre = nombre,
+                storyPoints = storyPoints.toString(),
+                onValueChange = onCrearTareaValueChange,
+                onConfirmar = onCrearTareaConfirmar,
+                onCerrarClick = onCrearTareaCerrarClick
+            )
 
     }
 }
 
 
+/**
+ * Componente de texto en la parte superior
+ */
 @Composable
 fun ProyectoActualTopBar(proyecto: String) {
     Card() {
@@ -101,12 +90,51 @@ fun ProyectoActualTopBar(proyecto: String) {
     }
 }
 
+/**
+ * Componente que contiene: botones y tareas en un LazyColumn
+*/
+@Composable
+fun Tareas(modifier: Modifier = Modifier){
+    Column(modifier = modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween){
+            Button(onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(78.dp)
+            ){
+                Text(text = "MIS TAREAS",
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center)
+                )
+            }
+            Spacer(Modifier.padding(4.dp))
+            Button(onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(78.dp)) {
+                Text(text = "TAREAS DEL PROYECTO",
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center)
+                )
+            }
+        }
+        Divider(thickness = 2.dp,
+            modifier = Modifier.padding(vertical = 16.dp))
 
+        Text("Tareas y LazyColumn aqui")
+        /*TODO*/
+    }
+}
 
 @Preview(showBackground=true)
 @Composable
 fun PreviewTrabajo(){
     Android_APTheme {
-        TrabajoLayout()
+        //TrabajoLayout()
     }
 }

@@ -2,10 +2,8 @@ package com.example.android_ap.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.android_ap.data.InicioSesionUiState
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.RegistroUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +18,9 @@ class RegistroViewModel: ViewModel() {
     private var projectExpanded by mutableStateOf(false)
     private var deptExpanded by mutableStateOf(false)
 
+    /**
+    Actualiza la informacion en uiState segun cada evento
+     */
     fun actualizarDatos(campo: RegistroCampos, input: String){
         when(campo){
             RegistroCampos.NOMBRE -> {_uiState.update { currentState -> currentState.copy(nombre=input)}}
@@ -32,12 +33,18 @@ class RegistroViewModel: ViewModel() {
         }
     }
 
+    /**
+    Alterna la visibilidad de la contraseña
+     */
     fun verClave(estado: Boolean){
         _uiState.update { currentState -> currentState.copy(
             claveVisible = estado
         )}
     }
 
+    /**
+    Valida que el uiState tenga información en todos sus campos. Si no es asi, avisa.
+     */
     fun validarCampos(){
         if (_uiState.value.nombre!="" &&
             _uiState.value.cedula!="" &&
@@ -50,7 +57,7 @@ class RegistroViewModel: ViewModel() {
             _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
 
             //Hacer solicitud a la BD
-
+            /*TODO*/
 
         }
         else{

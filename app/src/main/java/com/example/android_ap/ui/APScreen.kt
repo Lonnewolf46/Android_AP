@@ -25,6 +25,7 @@ import com.example.android_ap.ui.UIAuxiliar.APAppBar
 import com.example.android_ap.ui.UIAuxiliar.BottomAppBarMenu
 import com.example.android_ap.ui.UIAuxiliar.FABMenuPrincipal
 import com.example.android_ap.ui.UIAuxiliar.FABState
+import com.example.android_ap.ui.UIAuxiliar.FloatingActionButtonBasico
 import com.example.android_ap.ui.UIAuxiliar.MinFabItem
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
@@ -49,6 +50,7 @@ fun AP_App() {
     val inicioSesionViewModel: InicioSesionViewModel = viewModel()
     val registroViewModel: RegistroViewModel = viewModel()
     val modInfoPersonalViewModel: ModificarInfoPersonalViewModel = viewModel()
+    val tareaViewModel: TareaViewModel = viewModel()
 
     //Inicializando elementos de navegacion
     val navController: NavHostController = rememberNavController()
@@ -57,7 +59,7 @@ fun AP_App() {
     var showTopBar by rememberSaveable { mutableStateOf(true) }
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
     var showFloatingButton by rememberSaveable { mutableStateOf(true) }
-    var fabState by rememberSaveable { mutableStateOf(FABState.COLLAPSED)}
+    var fabState by rememberSaveable { mutableStateOf(FABState.COLLAPSED) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = APScreen.valueOf(
@@ -92,48 +94,80 @@ fun AP_App() {
 
     Scaffold(
         topBar = {
-        if (showTopBar) {
-            APAppBar(
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
-            )
-        }
-                 },
+            if (showTopBar) {
+                APAppBar(
+                    canNavigateBack = navController.previousBackStackEntry != null,
+                    navigateUp = { navController.navigateUp() }
+                )
+            }
+        },
         bottomBar = {
-            if (showBottomBar) BottomAppBarMenu(
-            onInicioClick = { navController.popBackStack()
-                navController.navigate(APScreen.MenuPrincipal.name) },
-            onTrabajoClick = { navController.popBackStack()
-                navController.navigate(APScreen.Trabajo.name) },
-            onAvisosClick = { navController.popBackStack()
-                navController.navigate(APScreen.Notificaciones.name) },
-            onMasClick = { navController.navigate(APScreen.ModificarInfoPersonal.name) })
+            if (showBottomBar) {
+                BottomAppBarMenu(
+                    onInicioClick = {
+                        navController.popBackStack()
+                        navController.navigate(APScreen.MenuPrincipal.name)
+                    },
+                    onTrabajoClick = {
+                        navController.popBackStack()
+                        navController.navigate(APScreen.Trabajo.name)
+                    },
+                    onAvisosClick = {
+                        navController.popBackStack()
+                        navController.navigate(APScreen.Notificaciones.name)
+                    },
+                    onMasClick = { navController.navigate(APScreen.ModificarInfoPersonal.name) })
+            }
         },
 
-        floatingActionButton = { if (showBottomBar) {
+        floatingActionButton = {
+            if (showBottomBar) {
+                //Si la pantalla activa es Menu Principal
+                if (backStackEntry?.destination?.route == APScreen.MenuPrincipal.name) {
+                    //Crear opciones desplegadas del boton flotante
+                    val items = listOf(
+                        MinFabItem(
+                            icon = R.drawable.forum_icon,
+                            label = "Foro General",
+                            path = {/*TODO*/ }),
+                        MinFabItem(
+                            icon = R.drawable.manage_project,
+                            label = "Administrar proyectos",
+                            path = {/*TODO*/ }),
+                        MinFabItem(
+                            icon = R.drawable.project_new,
+                            label = "Agregar proyecto",
+                            path = {/*TODO*/ }),
+                        MinFabItem(
+                            icon = R.drawable.addperson,
+                            label = "Agregar colaborador",
+                            path = {/*TODO*/ })
+                    )
+                    //Crear boton flotante
+                    FABMenuPrincipal(
+                        buttonState = fabState,
+                        onClick = { fabState = it },
+                        items = items
+                    )
+                }
 
-            val items = listOf(
-                MinFabItem(icon = R.drawable.forum_icon, label = "Foro General", path = {/*TODO*/}),
-                MinFabItem(icon = R.drawable.manage_project, label = "Administrar proyectos", path = {/*TODO*/}),
-                MinFabItem(icon = R.drawable.project_new, label = "Agregar proyecto", path = {/*TODO*/}),
-                MinFabItem(icon = R.drawable.addperson, label = "Agregar colaborador", path = {/*TODO*/})
-            )
-
-            FABMenuPrincipal(
-                buttonState = fabState,
-                onClick = { fabState = it },
-                items = items)
-        }
+                //Si la pantalla activa es Trabajo
+                if (backStackEntry?.destination?.route == APScreen.Trabajo.name){
+                    //Crear botón flotante
+                    FloatingActionButtonBasico(onClick = tareaViewModel::HacerVisible)
+                }
+            }
         })
     { innerPadding ->
 
         val inicioUiState by inicioSesionViewModel.uiState.collectAsState()
         val registroUiState by registroViewModel.uiState.collectAsState()
         val modInfoPersonalUiState by modInfoPersonalViewModel.uiState.collectAsState()
+        val tareaUiState by tareaViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
-            startDestination = APScreen.InicioSesion.name, //ENTRADA
+            startDestination = APScreen.InicioSesion.name, //PUNTO DE ENTRADA
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
@@ -185,7 +219,7 @@ fun AP_App() {
             }
 
             //Modificacion de informacion personal
-            composable(route = APScreen.ModificarInfoPersonal.name){
+            composable(route = APScreen.ModificarInfoPersonal.name) {
                 ModificarInfoPersonalLayout(
                     telefono = modInfoPersonalUiState.telefono,
                     email = modInfoPersonalUiState.correo,
@@ -196,18 +230,28 @@ fun AP_App() {
             }
 
             //Trabajo
-            composable(route = APScreen.Trabajo.name){
-                TrabajoLayout()
+            composable(route = APScreen.Trabajo.name) {
+                TrabajoLayout(
+                    nombre = tareaUiState.nombreTarea,
+                    storyPoints = tareaUiState.storyPoints,
+                    encargado = tareaUiState.encargado,
+                    crearTareaVisible = tareaUiState.mostrar,
+                    onCrearTareaValueChange = tareaViewModel::ActualizarCampos,
+                    onCrearTareaConfirmar = { tareaViewModel.CrearTarea() },
+                    onCrearTareaCerrarClick = { tareaViewModel.resetState() })
             }
 
             //Notificaciones
-            composable(route = APScreen.Notificaciones.name){
+            composable(route = APScreen.Notificaciones.name) {
                 NotificacionesLayout()
             }
         }
     }
 }
 
+/**
+Proceso de inicio de sesion
+ */
 private fun LoginToStart(
     inicioSesionViewModel: InicioSesionViewModel,
     modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
@@ -218,21 +262,29 @@ private fun LoginToStart(
     if (inicioSesionViewModel.uiState.value.camposLlenos) {
 
         //Llenar currentUser con valores del la BD o algo aquí
-        prepModInfoPersonalData(modInfoPersonalViewModel, inicioSesionViewModel.uiState.value.usuario)
+        /*TODO*/
 
+        prepModInfoPersonalData(
+            modInfoPersonalViewModel,
+            inicioSesionViewModel.uiState.value.usuario
+        )
         inicioSesionViewModel.resetState()
         navController.popBackStack()
         navController.navigate(APScreen.MenuPrincipal.name)
     }
 }
 
-//Alterar el estado del viewModel para preservar la información
-private fun prepModInfoPersonalData(modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
-                                    email: String){
+/**
+ * Alterar el estado del viewModel para preservar la información
+ */
+private fun prepModInfoPersonalData(
+    modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
+    email: String
+) {
 
     //Datos mockup
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO,"83035422")
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO,"Proyecto 1")
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO,"Departamento 1")
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO,email)
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO, "83035422")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO, "Proyecto 1")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, "Departamento 1")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO, email)
 }
