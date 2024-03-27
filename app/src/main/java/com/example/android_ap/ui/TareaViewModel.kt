@@ -3,7 +3,6 @@ package com.example.android_ap.ui
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.TareaCampos
 import com.example.android_ap.data.TareaEstados
-import com.example.android_ap.data.TareaUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,6 +53,6 @@ private fun StringToEstado(texto: String): TareaEstados{
     return when(texto){
         "En progreso" -> TareaEstados.PROGRESO
         "Completada" -> TareaEstados.COMPLETADA
-        else -> throw IllegalArgumentException("Invalid input: $texto")
+        else -> TareaEstados.PENDIENTE
     }
 }

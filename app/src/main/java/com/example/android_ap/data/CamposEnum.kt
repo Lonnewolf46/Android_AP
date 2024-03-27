@@ -15,6 +15,7 @@ enum class RegistroCampos{
 }
 
 enum class TareaEstados{
+        PENDIENTE,
         PROGRESO,
         COMPLETADA
 }
