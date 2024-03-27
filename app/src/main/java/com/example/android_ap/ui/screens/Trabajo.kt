@@ -9,12 +9,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,6 +43,7 @@ fun TrabajoLayout(
                   storyPoints: String,
                   encargado: String,
                   crearTareaVisible: Boolean,
+                  onOpcionesProyectoClick: () -> Unit,
                   onCrearTareaValueChange: (TareaCampos, String) -> Unit,
                   onCrearTareaConfirmar: () -> Unit,
                   onCrearTareaCerrarClick: () -> Unit
@@ -45,7 +52,8 @@ fun TrabajoLayout(
         ,modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)) {
-        ProyectoActualTopBar(proyecto = "Proyecto 1")
+        var showOptions by rememberSaveable { mutableStateOf(true) }
+        ProyectoActualTopBar(proyecto = "Proyecto 1", onOpcionesProyectoClick)
         Tareas(Modifier.padding(16.dp))
 
         //Si se ha dado click a crear tarea
@@ -61,12 +69,12 @@ fun TrabajoLayout(
     }
 }
 
-
 /**
  * Componente de texto en la parte superior
  */
 @Composable
-fun ProyectoActualTopBar(proyecto: String) {
+private fun ProyectoActualTopBar(proyecto: String,
+                         onMasClick: () -> Unit) {
     Card() {
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -78,9 +86,9 @@ fun ProyectoActualTopBar(proyecto: String) {
                 modifier = Modifier.padding(8.dp)
             )
             Spacer(Modifier.weight(3f))
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { onMasClick() }) {
                 Image(
-                    imageVector = Icons.Filled.MoreVert,
+                    imageVector = Icons.Filled.Menu,
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -94,7 +102,7 @@ fun ProyectoActualTopBar(proyecto: String) {
  * Componente que contiene: botones y tareas en un LazyColumn
 */
 @Composable
-fun Tareas(modifier: Modifier = Modifier){
+private fun Tareas(modifier: Modifier = Modifier){
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween){
@@ -133,7 +141,7 @@ fun Tareas(modifier: Modifier = Modifier){
 
 @Preview(showBackground=true)
 @Composable
-fun PreviewTrabajo(){
+private fun PreviewTrabajo(){
     Android_APTheme {
         //TrabajoLayout()
     }

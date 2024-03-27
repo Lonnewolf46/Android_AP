@@ -3,6 +3,7 @@ package com.example.android_ap.ui
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.TareaCampos
 import com.example.android_ap.data.TareaEstados
+import com.example.android_ap.data.TareaUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,9 @@ import kotlinx.coroutines.flow.update
 class TareaViewModel: ViewModel(){
     private val _uiState = MutableStateFlow(TareaUiState())
     val uiState: StateFlow<TareaUiState> = _uiState.asStateFlow()
+
+    /*TODO: Implementar un método que de única ejecución que llene los campos de Tarea,
+    *  para luego desplegarlos en pantalla en la modificación de tareas*/
 
     /**
     Actualiza la informacion en uiState segun cada evento

@@ -35,7 +35,7 @@ fun NotificacionesLayout(){
 
 
 @Composable
-fun NotificacionesPanel(modifier: Modifier){
+private fun NotificacionesPanel(modifier: Modifier){
     Column(horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier){
         Row(){
@@ -56,7 +56,7 @@ fun NotificacionesPanel(modifier: Modifier){
 
 //Carta base para las notificaciones
 @Composable
-fun NotificacionCard(nombre: String,
+private fun NotificacionCard(nombre: String,
                      contenido: String,
                      modifier: Modifier){
     Card(){
@@ -78,7 +78,7 @@ fun NotificacionCard(nombre: String,
 }
 
 @Composable
-fun NotificacionesTopBar(modifier: Modifier) {
+private fun NotificacionesTopBar(modifier: Modifier) {
     Card(modifier) {
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -96,7 +96,7 @@ fun NotificacionesTopBar(modifier: Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun NotiPreview(){
+private fun NotiPreview(){
     Android_APTheme {
 //        NotificacionCard(
 //            nombre = "Lucía Vega",

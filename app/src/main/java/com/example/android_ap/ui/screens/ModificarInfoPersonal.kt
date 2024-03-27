@@ -78,7 +78,7 @@ fun ModificarInfoPersonalLayout(
 }
 
 @Composable
-fun DatosPersonales(
+private fun DatosPersonales(
     telefono: String,
     email: String,
     onTextInput: (RegistroCampos, String) -> Unit,
@@ -140,7 +140,7 @@ fun DatosPersonales(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewModInfo() {
+private fun PreviewModInfo() {
     Android_APTheme {
         //ModificarInfoPersonalLayout()
     }

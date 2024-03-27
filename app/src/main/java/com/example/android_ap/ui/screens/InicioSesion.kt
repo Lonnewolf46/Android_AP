@@ -119,7 +119,7 @@ fun InicioSesionLayout(nombre: String,
 }
 
 @Composable
-fun DatosInicioSesion(usuario: String,
+private fun DatosInicioSesion(usuario: String,
                       password: String,
                       passwordVisible: Boolean,
                       onTextInput: (InicioSesionCampos, String)->Unit,
@@ -199,7 +199,7 @@ fun DatosInicioSesion(usuario: String,
 
 @Preview(showBackground = true)
 @Composable
-fun Preview(){
+private fun Preview(){
     Android_APTheme {
 
     }

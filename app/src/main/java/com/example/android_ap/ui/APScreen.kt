@@ -27,10 +27,13 @@ import com.example.android_ap.ui.UIAuxiliar.FABMenuPrincipal
 import com.example.android_ap.ui.UIAuxiliar.FABState
 import com.example.android_ap.ui.UIAuxiliar.FloatingActionButtonBasico
 import com.example.android_ap.ui.UIAuxiliar.MinFabItem
+import com.example.android_ap.ui.screens.BurndownChartLayout
+import com.example.android_ap.ui.screens.InformeGeneralLayout
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
 import com.example.android_ap.ui.screens.ModificarInfoPersonalLayout
 import com.example.android_ap.ui.screens.NotificacionesLayout
+import com.example.android_ap.ui.screens.OpcionesLayout
 import com.example.android_ap.ui.screens.RegistroLayout
 import com.example.android_ap.ui.screens.TrabajoLayout
 
@@ -40,7 +43,10 @@ enum class APScreen() {
     MenuPrincipal,
     Trabajo,
     Notificaciones,
-    ModificarInfoPersonal
+    ModificarInfoPersonal,
+    OpcionesProyecto,
+    InformeGeneral,
+    BurndownScreen
 }
 
 @Composable
@@ -79,6 +85,9 @@ fun AP_App() {
         APScreen.InicioSesion.name -> false
         APScreen.Registro.name -> false
         APScreen.ModificarInfoPersonal.name -> false
+        APScreen.OpcionesProyecto.name -> false
+        APScreen.InformeGeneral.name -> false
+        APScreen.BurndownScreen.name -> false
         else -> true // en cualquier otro caso, mostrarla
     }
 
@@ -88,6 +97,9 @@ fun AP_App() {
         APScreen.Registro.name -> false
         APScreen.Notificaciones.name -> false
         APScreen.ModificarInfoPersonal.name -> false
+        APScreen.OpcionesProyecto.name -> false
+        APScreen.InformeGeneral.name -> false
+        APScreen.BurndownScreen.name -> false
         else -> true // en cualquier otro caso, mostrarla
     }
 
@@ -236,6 +248,7 @@ fun AP_App() {
                     storyPoints = tareaUiState.storyPoints,
                     encargado = tareaUiState.encargado,
                     crearTareaVisible = tareaUiState.mostrar,
+                    onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
                     onCrearTareaValueChange = tareaViewModel::ActualizarCampos,
                     onCrearTareaConfirmar = { tareaViewModel.CrearTarea() },
                     onCrearTareaCerrarClick = { tareaViewModel.resetState() })
@@ -244,6 +257,26 @@ fun AP_App() {
             //Notificaciones
             composable(route = APScreen.Notificaciones.name) {
                 NotificacionesLayout()
+            }
+
+            //OpcionesProyecto
+            composable(route = APScreen.OpcionesProyecto.name){
+                OpcionesLayout(
+                    onForoClick = {},
+                    onReunionesClick = {},
+                    onInformeClick = { navController.navigate(APScreen.InformeGeneral.name) },
+                    onBurndownClick = { navController.navigate(APScreen.BurndownScreen.name) }
+                )
+            }
+
+            //BurndownChart
+            composable(route = APScreen.BurndownScreen.name){
+                BurndownChartLayout()
+            }
+
+            //Informe general
+            composable(route = APScreen.InformeGeneral.name){
+                InformeGeneralLayout()
             }
         }
     }

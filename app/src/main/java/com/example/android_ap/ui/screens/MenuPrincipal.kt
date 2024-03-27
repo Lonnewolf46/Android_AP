@@ -80,7 +80,7 @@ fun MenuPrincipalLayout() {
 
 
 @Composable
-fun Noticias(
+private fun Noticias(
     modifier: Modifier,
     noticias: List<String>
 ) {
@@ -108,14 +108,14 @@ fun Noticias(
 }
 
 @Composable
-fun NoticiasCard(texto: String, modifier: Modifier) {
+private fun NoticiasCard(texto: String, modifier: Modifier) {
     Card(shape = RoundedCornerShape(size = 15.dp), modifier = modifier) {
         Text(text = texto, modifier)
     }
 }
 
 @Composable
-fun SearchBar(modifier: Modifier) {
+private fun SearchBar(modifier: Modifier) {
     Card(
         modifier = modifier
             .height(64.dp)
@@ -167,7 +167,7 @@ fun SearchBar(modifier: Modifier) {
 }
 
 @Composable
-fun InfoProyecto(proyecto: String,modifier: Modifier) {
+private fun InfoProyecto(proyecto: String,modifier: Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -210,7 +210,7 @@ fun InfoProyecto(proyecto: String,modifier: Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewMenu() {
+private fun PreviewMenu() {
     Android_APTheme {
     }
 }
