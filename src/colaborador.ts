@@ -1,4 +1,6 @@
 import databaseQuery from "./database.js";
+import Proyecto from "./proyecto.js";
+import Notificacion from "./notificacion.js";
 
 class Colaborador {
     id:number;
@@ -83,12 +85,21 @@ class Colaborador {
         `);
     }
 
-    async reasignarProyecto(idProyecto:number) {
+    async reasignarProyecto(proyecto:Proyecto) {
         await databaseQuery(`
         EXEC ReasignarProyectoColaborador 
             @Id = ${this.id}, 
-            @IdProyecto = ${idProyecto}; 
+            @IdProyecto = ${proyecto.id}; 
         `);
+    }
+
+    async obtenerNotificaciones():Promise<Notificacion[]> {
+        const result = await databaseQuery(`
+            SELECT id, mensaje, idColaborador, idEstado
+            FROM Notificaciones
+            WHERE idColaborador=${this.id}
+        `);
+        return result.map(Notificacion.deserialize);
     }
 }
 

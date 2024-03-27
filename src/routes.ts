@@ -3,13 +3,9 @@ import Colaborador from "./colaborador.js";
 import Departamento from "./departamento.js";
 import Proyecto from "./proyecto.js";
 import Tarea from "./tarea.js";
+import Notificacion from "./notificacion.js";
 
 const apiRoutes = Router();
-
-apiRoutes.get("/colaboradores/sin-proyecto", async(req, res) => {
-    const colaboradores = await Colaborador.obtenerColaboradoresSinProyecto()
-    return res.json(colaboradores.map(c => c.serialize()));
-});
 
 apiRoutes.post("/colaboradores", async (req, res) => {
     const colaborador = Colaborador.deserialize(req.body);
@@ -25,12 +21,24 @@ apiRoutes.put("/colaboradores/:idColaborador", async (req, res) => {
     return res.json({success: true});
 });
 
+apiRoutes.get("/colaboradores/:idColaborador/notificaciones", async (req, res) => {
+    const { idColaborador } = req.params;
+    const colaborador = Colaborador.byId(Number(idColaborador));
+    const notificaciones = await colaborador.obtenerNotificaciones();
+    return res.json(notificaciones);
+});
+
 apiRoutes.put("/colaboradores/:idColaborador/reasignar-proyecto", async (req, res) => {
     const { idColaborador } = req.params;
     const { idProyecto } = req.body;
     const colaborador = Colaborador.byId(Number(idColaborador));
-    await colaborador.reasignarProyecto(idProyecto);
+    await colaborador.reasignarProyecto(Proyecto.byId(idProyecto));
     return res.json({success: true});
+});
+
+apiRoutes.get("/colaboradores/sin-proyecto", async(req, res) => {
+    const colaboradores = await Colaborador.obtenerColaboradoresSinProyecto()
+    return res.json(colaboradores.map(c => c.serialize()));
 });
 
 apiRoutes.post("/credenciales", async (req, res) => {
@@ -59,7 +67,16 @@ apiRoutes.post("/proyectos", async(req, res) => {
 });
 
 apiRoutes.get("/proyectos/:idProyecto/colaboradores", async(req, res) => {
-    
+    const { idProyecto } = req.params;
+    const proyecto = Proyecto.byId(idProyecto);
+    const colaboradores = await proyecto.obtenerColaboradores();
+    return res.json(colaboradores.map(c => c.serialize()));
+});
+
+apiRoutes.post("/notificaciones", async(req, res) => {
+    const notificacion = Notificacion.deserialize(req.body);
+    await notificacion.crear();
+    return res.json({success: true});
 });
 
 export default apiRoutes;
