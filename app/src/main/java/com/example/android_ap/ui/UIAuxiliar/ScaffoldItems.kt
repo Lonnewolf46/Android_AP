@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.android_ap.ui.theme.Android_APTheme
 
-enum class FABState(){
+enum class FABState() {
     EXPANDED,
     COLLAPSED
 }
@@ -91,20 +91,56 @@ fun APAppBar(
     )
 }
 
+/**
+ * Barra infeior
+ */
 @Composable
-fun BottomAppBarMenu(onInicioClick: () -> Unit,
-                     onTrabajoClick: () -> Unit,
-                     onAvisosClick: () -> Unit,
-                     onMasClick: () -> Unit) {
+fun FABMenuPrincipal(onAddTarea: () -> Unit) {
+    FloatingActionButton(
+        onClick = onAddTarea,
+        containerColor = BottomAppBarDefaults.containerColor,
+        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+        modifier = Modifier.shadow(elevation = 4.dp, shape = CircleShape)
+    ) {
+        Icon(
+            Icons.Filled.Add, "Agregar",
+        )
+    }
+}
+
+@Composable
+fun BottomAppBarMenu(
+    onInicioClick: () -> Unit,
+    onTrabajoClick: () -> Unit,
+    onAvisosClick: () -> Unit,
+    onMasClick: () -> Unit
+) {
     BottomAppBar(
         actions = {
-            Row(modifier = Modifier.fillMaxWidth(),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Absolute.SpaceEvenly
             ) {
-                BottomAppBarIcon(onClick = onInicioClick,texto = "Inicio",image = Icons.Filled.Home)
-                BottomAppBarIcon(onClick = onTrabajoClick, texto = "Trabajo", image = Icons.Filled.List)
-                BottomAppBarIcon(onClick = onAvisosClick, texto = "Avisos", image = Icons.Filled.Notifications)
-                BottomAppBarIcon(onClick = onMasClick, texto = "Usuario", image = Icons.Filled.Person)
+                BottomAppBarIcon(
+                    onClick = onInicioClick,
+                    texto = "Inicio",
+                    image = Icons.Filled.Home
+                )
+                BottomAppBarIcon(
+                    onClick = onTrabajoClick,
+                    texto = "Trabajo",
+                    image = Icons.Filled.List
+                )
+                BottomAppBarIcon(
+                    onClick = onAvisosClick,
+                    texto = "Avisos",
+                    image = Icons.Filled.Notifications
+                )
+                BottomAppBarIcon(
+                    onClick = onMasClick,
+                    texto = "Usuario",
+                    image = Icons.Filled.Person
+                )
             }
 
         }
@@ -112,12 +148,13 @@ fun BottomAppBarMenu(onInicioClick: () -> Unit,
 }
 
 @Composable
-fun BottomAppBarIcon(onClick: () -> Unit,texto: String, image: ImageVector){
+fun BottomAppBarIcon(onClick: () -> Unit, texto: String, image: ImageVector) {
     Card() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(4.dp)) {
+            modifier = Modifier.padding(4.dp)
+        ) {
             IconButton(onClick = { onClick() }) {
                 Icon(
                     image,
@@ -130,33 +167,40 @@ fun BottomAppBarIcon(onClick: () -> Unit,texto: String, image: ImageVector){
 }
 
 @Composable
-fun FABMenuPrincipal(buttonState: FABState,
-                     onClick: (FABState) -> Unit,
-                     items: List<MinFabItem>){
+fun FABMenuPrincipal(
+    buttonState: FABState,
+    onClick: (FABState) -> Unit,
+    items: List<MinFabItem>
+) {
+
     val transition = updateTransition(targetState = buttonState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
         if (it == FABState.EXPANDED) 315f else 1f
     }
 
     val fabScale by transition.animateFloat(label = "FABScale") {
-        if (it==FABState.EXPANDED) 36f else 0f
+        if (it == FABState.EXPANDED) 36f else 0f
     }
 
-    val alpha by transition.animateFloat(label = "alpha", transitionSpec = {tween(durationMillis = 50)})
+    val alpha by transition.animateFloat(
+        label = "alpha",
+        transitionSpec = { tween(durationMillis = 50) })
     {
-        if(it == FABState.EXPANDED) 1f else 0f
+        if (it == FABState.EXPANDED) 1f else 0f
     }
 
-    val textShadow by transition.animateDp(label = "textShadow", transitionSpec = {tween(durationMillis = 50)})
+    val textShadow by transition.animateDp(
+        label = "textShadow",
+        transitionSpec = { tween(durationMillis = 50) })
     {
-        if(it == FABState.EXPANDED) 2.dp else 0.dp
+        if (it == FABState.EXPANDED) 2.dp else 0.dp
     }
-    
+
 
     Column(horizontalAlignment = Alignment.End) {
 
-        if(transition.currentState == FABState.EXPANDED){
-            items.forEach { 
+        if (transition.currentState == FABState.EXPANDED) {
+            items.forEach {
                 MinFab(
                     item = it,
                     alpha = alpha,
@@ -195,22 +239,23 @@ fun MinFab(
     fabScale: Float,
     showLabel: Boolean = true,
     onClick: (MinFabItem) -> Unit
-){
+) {
     val buttonColor = Color(0xFF0D60B5)
     val painter: Painter = painterResource(item.icon)
     val shadow = Color.Black.copy(0.5f)
 
     Row {
-        if(showLabel) {
+        if (showLabel) {
             Text(
                 text = item.label,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.alpha(
-                    animateFloatAsState(
-                        targetValue = alpha,
-                        animationSpec = tween(50)
-                    ).value
-                )
+                modifier = Modifier
+                    .alpha(
+                        animateFloatAsState(
+                            targetValue = alpha,
+                            animationSpec = tween(50)
+                        ).value
+                    )
                     .shadow(textShadow, shape = RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 4.dp, vertical = 8.dp)
@@ -240,12 +285,12 @@ fun MinFab(
 
             drawCircle(
                 color = buttonColor,
-                radius = fabScale*2
+                radius = fabScale * 2
             )
             translate(left = fabScale, top = fabScale) {
                 with(painter) {
                     draw(
-                        size = Size(fabScale*2, fabScale*2),
+                        size = Size(fabScale * 2, fabScale * 2),
                         alpha = alpha
                     )
                 }
@@ -257,7 +302,7 @@ fun MinFab(
 
 @Preview(showBackground = true)
 @Composable
-fun ItemsPreview(){
+fun ItemsPreview() {
     Android_APTheme {
         //MinFab(item = MinFabItem(R.drawable.forum_icon,"",""), {})
     }

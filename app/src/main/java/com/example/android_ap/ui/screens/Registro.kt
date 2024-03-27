@@ -268,7 +268,7 @@ fun DatosRegistro(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Demo_ExposedDropdownMenuBox(titulo: String) {
+fun Demo_ExposedDropdownMenuBox(titulo: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val listaProyectos =
         arrayOf("$titulo 1", "$titulo 2", "$titulo 3", "$titulo 4", "$titulo 5")
@@ -276,7 +276,7 @@ fun Demo_ExposedDropdownMenuBox(titulo: String) {
     var selectedText by remember { mutableStateOf(listaProyectos[0]) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         ExposedDropdownMenuBox(

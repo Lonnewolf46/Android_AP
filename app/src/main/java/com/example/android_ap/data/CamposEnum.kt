@@ -4,7 +4,6 @@ enum class InicioSesionCampos {
         NOMBRE,
         CLAVE
 }
-
 enum class RegistroCampos{
         NOMBRE,
         CEDULA,
@@ -13,4 +12,15 @@ enum class RegistroCampos{
         DEPARTAMENTO,
         CORREO,
         CLAVE
+}
+
+enum class TareaEstados{
+        PROGRESO,
+        COMPLETADA
+}
+enum class TareaCampos{
+        NOMBRE,
+        STORYPOINTS,
+        ENCARGADO,
+        ESTADO
 }
