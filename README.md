@@ -395,12 +395,14 @@
 #### Ejemplo de solicitud
 ```json
 {
-  "nombre": "Construir local",
-  "storyPoints": 12,
-  "idEncargado": 4,
-  "fechaInicio": "2024-03-25",
-  "idEstado": 1,
-  "fechaFin": "2024-03-26"
+    "nombre": "empanadas",
+    "newNombre": "empanadas 2",
+    "storyPoints": 12,
+    "nombreProyecto": "buzzshare",
+    "nombreEncargado": "pedro",
+    "fechaInicio": "2005-06-20",
+    "fechaFin": "2005-06-19",
+    "estado": "Pendiente"
 }
 ```
 
@@ -437,3 +439,76 @@
 ```json
 {"success": true}
 ```
+
+
+
+## Eliminación de tarea en proyecto
+
+**Método:** DELETE
+
+**Ruta:** /proyectos/<id_proyecto>/tareas/<id_tarea>
+
+**Descripción:** Elimina una tarea de un proyecto
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+
+
+## Modificación de proyecto
+
+**Método:** PUT
+
+**Ruta:** /api/proyectos/<id_proyecto>
+
+**Descripción:** Modifica los datos de un proyecto
+
+#### Parámetros de consulta:
+- `nombre`: string
+- `recursos`: string
+- `presupuesto`: number
+- `idEstado`: number
+- `descripcion`: string
+- `idResponsable`: number
+- `fechaInicio`: string
+- `fechaFin`: string
+- `tareas`: tarea[]
+- `colaboradores`: number[]
+
+#### Ejemplo de solicitud
+```json
+{
+  "nombre": "Farmacia",
+  "recursos": "Materiales de construcción",
+  "presupuesto": 70000,
+  "descripcion": "Local para vender medicinas",
+  "idEstado": 1,
+  "idResponsable": 4,
+  "fechaInicio": "2024-03-25",
+  "fechaFin": "2024-03-26",
+  "tareas": [
+    {
+      "nombre": "Comprar materiales",
+      "storyPoints": 12,
+      "idEncargado": 4,
+      "fechaInicio": "1905-06-20",
+      "fechaFin": "1905-06-19",
+      "idEstado": 1
+    }
+  ],
+  "colaboradores": [4,5,6]
+}
+```
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+#### Puntos a considerar
+* Las tareas que contengan el id, se entenderán cómo existentes y se modificarán
+* Las tareas sin id, se entenderán cómo nuevas y se crearán
+* Las tareas que ya no estén presentes y que estuvieran presentes antes se eliminarán
+* Los colaboradores son una colección de id's de dichos colaboradores, se añadirán los nuevos que estén presentes, y se desasociarán los que ya no estén presentes

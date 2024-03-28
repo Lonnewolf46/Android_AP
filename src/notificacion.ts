@@ -18,10 +18,16 @@ class Notificacion {
     }
 
     async crear() {
-        await databaseQuery(`
-            INSERT INTO Notificaciones(mensaje, idColaborador, idEstado)
-            VALUES('${this.mensaje}', ${this.idColaborador}, ${this.idEstado})
-        `);
+        try {
+            await databaseQuery(`
+                EXEC CrearNotificacion 
+                    @Mensaje = '${this.mensaje}',
+                    @IdColaborador = ${this.idColaborador}, 
+                    @IdEstado =  ${this.idEstado}; 
+            `);
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
 
