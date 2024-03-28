@@ -32,6 +32,10 @@ class Proyecto {
         this.colaboradores = colaboradores;
     }
 
+    static byId(id:number) {
+        return new Proyecto(id, "", "", 0, 0, "", 0, new Date(), new Date(), [], []);
+    }
+
     static byData(
         nombre:string, recursos:string, presupuesto:number, idEstado:number, descripcion:string,
         idResponsable:number, fechaInicio:Date, fechaFin:Date, tareas:Tarea[], colaboradores: Colaborador[]
@@ -44,9 +48,7 @@ class Proyecto {
     }
 
     static async obtenerProyectos():Promise<Proyecto[]> {
-        return (await databaseQuery(`
-        EXEC getProyectos
-        `)).map(Proyecto.deserialize); ///Llama al SP de getProyectos
+        return (await databaseQuery(`EXEC getProyectos`)).map(Proyecto.deserialize);
     }
 
     serialize() {
@@ -78,13 +80,27 @@ class Proyecto {
         });
     }
 
-    // async obtenerColaboradores():Promise<Colaborador[]> {
-    //     const result = await databaseQuery(`
-    //         SELECT id, nombre, cedula, telefono, email, idProyecto, idDepartamento
-    //         FROM Colaboradores
-    //         WHERE idProyecto=${this.id}
-    //     `);
-    // }
+    async obtenerColaboradores():Promise<Colaborador[]> {
+        const result = await databaseQuery(`
+            SELECT id, nombre, cedula, telefono, email, idProyecto, idDepartamento
+            FROM Colaboradores
+            WHERE idProyecto=${this.id}
+        `);
+        return result.map(Colaborador.deserialize);
+    }
+
+    async eliminarColaborador(colaborador: Colaborador) {
+        await databaseQuery(`UPDATE Colaboradores SET idProyecto=NULL WHERE id=${colaborador.id}`);
+    }
+
+    async obtenerTareas():Promise<Tarea[]> {
+        const result = await databaseQuery(`
+            SELECT id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado
+            FROM Tareas
+            WHERE idProyecto=${this.id}   
+        `);
+        return result.map(Tarea.deserialize);
+    }
 }
 
 export default Proyecto;
