@@ -10,17 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,7 +46,6 @@ fun TrabajoLayout(
         ,modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)) {
-        var showOptions by rememberSaveable { mutableStateOf(true) }
         ProyectoActualTopBar(proyecto = "Proyecto 1", onOpcionesProyectoClick)
         Tareas(Modifier.padding(16.dp))
 
@@ -60,7 +53,7 @@ fun TrabajoLayout(
         if (crearTareaVisible)
             NuevaTarea(
                 nombre = nombre,
-                storyPoints = storyPoints.toString(),
+                storyPoints = storyPoints,
                 onValueChange = onCrearTareaValueChange,
                 onConfirmar = onCrearTareaConfirmar,
                 onCerrarClick = onCrearTareaCerrarClick

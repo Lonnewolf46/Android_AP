@@ -171,7 +171,7 @@ private fun DatosInicioSesion(usuario: String,
 
                 val newValue = !passwordVisible
 
-                IconButton(onClick = { onViewPassword(newValue)}) {
+                IconButton(onClick = { onViewPassword(newValue)} ) {
                     Icon(imageVector  = image,
                         description,
                         Modifier

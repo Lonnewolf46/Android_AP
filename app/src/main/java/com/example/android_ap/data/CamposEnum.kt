@@ -25,3 +25,11 @@ enum class TareaCampos{
         ENCARGADO,
         ESTADO
 }
+
+enum class ReunionCampos{
+        TEMA,
+        FECHA,
+        MEDIO,
+        FORMATO,
+        DETALLES
+}

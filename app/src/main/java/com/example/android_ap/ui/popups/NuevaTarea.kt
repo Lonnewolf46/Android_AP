@@ -1,6 +1,5 @@
 package com.example.android_ap.ui.popups
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -113,8 +112,6 @@ fun NuevaTarea(nombre: String,
                     Text(text = "Cerrar",
                         textAlign = TextAlign.End
                     )
-
-
                 }
             }
         }

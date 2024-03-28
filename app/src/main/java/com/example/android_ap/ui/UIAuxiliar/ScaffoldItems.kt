@@ -148,7 +148,10 @@ fun BottomAppBarMenu(
 }
 
 @Composable
-fun BottomAppBarIcon(onClick: () -> Unit, texto: String, image: ImageVector) {
+fun BottomAppBarIcon(onClick: () -> Unit,
+                     texto: String,
+                     image: ImageVector
+){
     Card() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,16 +209,26 @@ fun FABMenuPrincipal(
                     alpha = alpha,
                     textShadow = textShadow,
                     fabScale = fabScale,
-                    onClick = {})
+                    onClick = { it.path() })
                 Spacer(modifier = Modifier.padding(8.dp))
             }
         }
 
-        FloatingActionButtonBasico(onClick = {onClick(
-            if (transition.currentState == FABState.EXPANDED) FABState.COLLAPSED
-            else FABState.EXPANDED
-        )}
-        )
+        FloatingActionButton(
+            onClick = {onClick(
+                if (transition.currentState == FABState.EXPANDED) FABState.COLLAPSED
+                else FABState.EXPANDED
+            )},
+            containerColor = Color(0xFF0D60B5),
+            elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+            modifier = Modifier.shadow(elevation = 4.dp, shape = CircleShape)
+        ) {
+            Icon(
+                Icons.Filled.Add,
+                "Agregar",
+                modifier = Modifier.rotate(rotate)
+            )
+        }
     }
 }
 
@@ -227,7 +240,7 @@ fun MinFab(
     textShadow: Dp,
     fabScale: Float,
     showLabel: Boolean = true,
-    onClick: (MinFabItem) -> Unit
+    onClick: () -> Unit
 ) {
     val buttonColor = Color(0xFF0D60B5)
     val painter: Painter = painterResource(item.icon)
@@ -258,7 +271,7 @@ fun MinFab(
                 .size(44.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
-                    onClick = { onClick.invoke(item) },
+                    onClick = { onClick() },
                     indication = rememberRipple(
                         bounded = false,
                         radius = 40.dp,
