@@ -42,6 +42,17 @@ class Proyecto {
     ) {
         return new Proyecto(0, nombre, recursos, presupuesto, idEstado, descripcion, idResponsable, fechaInicio, fechaFin, tareas, colaboradores);
     }
+
+    static async loadDataById(id:number):Promise<Proyecto> {
+        const result = databaseQuery(`
+            SELECT
+                id, nombre, recursos, presupuesto, idEstado,
+                descripcion, idResponsable, fechaInicio, fechaFin,
+            FROM Proyectos
+            WHERE id=${id}
+        `);
+        return Proyecto.deserialize(result[0]);
+    }
     
     static deserialize({id, nombre, recursos, presupuesto, idEstado, descripcion, idResponsable, fechaInicio, fechaFin, tareas, colaboradores}) {
         return new Proyecto(id, nombre, recursos, presupuesto, idEstado, descripcion, idResponsable, fechaInicio, fechaFin, tareas || [], colaboradores || []);
@@ -70,9 +81,10 @@ class Proyecto {
         ,@descripcion='${this.descripcion}', @idResponsable=${this.idResponsable},@fechaInicio='${this.fechaInicio}'
         ,@fechaFin='${this.fechaFin}'`);
         const idProyecto = resultado[0].NuevoProyectoID;
+        const nombreProyecto=await databaseQuery(`EXEC ObtenerNombreProyectoPorId @IdProyecto= idProyecto`)
 
         this.tareas.forEach(async tarea => {
-            tarea.idProyecto = idProyecto;
+            tarea.nombreProyecto = nombreProyecto;
             await tarea.crear();
         });
         this.colaboradores.forEach(colaborador => {
@@ -100,6 +112,63 @@ class Proyecto {
             WHERE idProyecto=${this.id}   
         `);
         return result.map(Tarea.deserialize);
+    }
+
+    async eliminarTarea(tarea: Tarea) {
+        await databaseQuery(`
+            DELETE Tareas WHERE id=${tarea.id}
+        `);
+    }
+
+    async actualizar() {
+        // Se actualiza proyecto
+        await databaseQuery(`
+            UPDATE Proyectos
+            SET
+                nombre='${this.nombre}', recursos='${this.recursos}', presupuesto=${this.presupuesto},
+                idEstado=${this.idEstado}, descripcion='${this.descripcion}', idResponsable=${this.idResponsable}
+            WHERE id=${this.id}
+        `);
+
+        // Se obtienen las tareas existentes actualmente del proyecto
+        let tareasActuales = await this.obtenerTareas();
+        // Se iteran las tareas nuevas
+        await Promise.all(this.tareas.map(async tarea => {
+            // Si tiene id, ya existe dentro de las actuales, se modifica
+            if(tarea.id) {
+                // Se descarta de las tareas actuales
+                tareasActuales = tareasActuales.filter(tareaActual => tareaActual.id != tarea.id);
+                await tarea.actualizar();
+            } else {
+                // Si no tiene id, es nueva, se crea
+                await tarea.crear()
+            }
+        }));
+        // Se iteran las tareas restantes, son las que ya no existen, se eliminan
+        await Promise.all(tareasActuales.map(async tareaActual => {
+            await this.eliminarTarea(tareaActual);
+        }));
+
+        // Se obtienen colaboradores actuales del proyecto
+        let colaboradoresActuales = await this.obtenerColaboradores();
+
+        if(colaboradoresActuales.length) {
+            // Se descartan los colaboradores actuales del proyecto
+            await databaseQuery(`
+               UPDATE Colaboradores
+                SET idProyecto=NULL
+                WHERE id in (${colaboradoresActuales.map(c => c.id).join(",")})
+            `);
+        }
+
+        if(this.colaboradores.length) {
+            // Se asocian a los nuevos colaboradores del proyecto
+            await databaseQuery(`
+                UPDATE Colaboradores
+                SET idProyecto=${this.id}
+               WHERE id in (${this.colaboradores.map(c => c.id).join(",")})
+            `);
+        }
     }
 }
 

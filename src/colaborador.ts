@@ -47,9 +47,7 @@ class Colaborador {
 
     static async obtenerColaboradoresSinProyecto():Promise<Colaborador[]> {
         const colaboradores = await databaseQuery(`
-            SELECT id, nombre, cedula, telefono, email, idDepartamento
-            FROM Colaboradores
-            WHERE idProyecto IS NULL
+            EXEC ObtenerColaboradoresSinProyecto;
         `);
         return colaboradores.map(Colaborador.deserialize);
     }
@@ -62,42 +60,53 @@ class Colaborador {
     }
 
     async crear() {
-        await databaseQuery(`
-        EXEC CrearColaborador 
-            @Nombre = '${this.nombre}',
-            @Cedula = ${this.cedula},
-            @Telefono = ${this.telefono},
-            @Email = '${this.email}',
-            @Contrasenna = '${this.contrasenna}',
-            @IdProyecto = ${this.idProyecto},
-            @IdDepartamento = ${this.idDepartamento};
-        `);
+        try {
+            await databaseQuery(`
+            EXEC CrearColaborador 
+                @Nombre = '${this.nombre}',
+                @Cedula = ${this.cedula},
+                @Telefono = ${this.telefono},
+                @Email = '${this.email}',
+                @Contrasenna = '${this.contrasenna}',
+                @IdProyecto = ${this.idProyecto},
+                @IdDepartamento = ${this.idDepartamento};
+            `);
+        } catch (error) {
+            
+            console.error(error);
+        }
     }
 
     async actualizar(telefono:number, idProyecto:number, idDepartamento:number, email:string) {
-        await databaseQuery(`
-        EXEC ActualizarColaborador 
-            @Id = ${this.id},
-            @Telefono = ${telefono},
-            @IdProyecto = ${idProyecto},
-            @IdDepartamento = ${idDepartamento},
-            @Email = '${email}';
-        `);
+        try {
+            await databaseQuery(`
+            EXEC ActualizarColaborador 
+                @Id = ${this.id},
+                @Telefono = ${telefono},
+                @IdProyecto = ${idProyecto},
+                @IdDepartamento = ${idDepartamento},
+                @Email = '${email}';
+            `);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async reasignarProyecto(proyecto:Proyecto) {
-        await databaseQuery(`
-        EXEC ReasignarProyectoColaborador 
-            @Id = ${this.id}, 
-            @IdProyecto = ${proyecto.id}; 
-        `);
+        try {
+            await databaseQuery(`
+            EXEC ReasignarProyectoColaborador 
+                @Id = ${this.id}, 
+                @IdProyecto = ${proyecto.id}; 
+            `);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async obtenerNotificaciones():Promise<Notificacion[]> {
         const result = await databaseQuery(`
-            SELECT id, mensaje, idColaborador, idEstado
-            FROM Notificaciones
-            WHERE idColaborador=${this.id}
+        EXEC ObtenerNotificaciones @IdColaborador = ${this.id}; 
         `);
         return result.map(Notificacion.deserialize);
     }

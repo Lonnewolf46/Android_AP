@@ -4,49 +4,80 @@ import Proyecto from "./proyecto.js";
 class Tarea {
     id: number;
 	nombre: string;
+    newNombre:string;
 	storyPoints: number;
-	idProyecto: number;
-	idEncargado: number;
+	nombreProyecto: string;
+	nombreEncargado: string;
 	fechaInicio: Date;
     fechaFin: Date;
-    idEstado: number;
+    estado: string;
 
-    constructor(id:number, nombre:string, storyPoints:number, idProyecto:number, idEncargado:number, fechaInicio:Date, fechaFin:Date, idEstado:number) {
+    constructor(id:number, nombre:string,newNombre:string, storyPoints:number, nombreProyecto:string, nombreEncargado:string, fechaInicio:Date, fechaFin:Date, Estado:string){
         this.id = id;
         this.nombre = nombre;
+        this.newNombre = newNombre;
         this.storyPoints = storyPoints;
-        this.idProyecto = idProyecto;
-        this.idEncargado = idEncargado;
+        this.nombreProyecto = nombreProyecto;
+        this.nombreEncargado = nombreEncargado;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
-        this.idEstado = idEstado;
+        this.estado = Estado;
     }
 
     static byId(id:number) {
-        return new Tarea(id, "", 0, 0, 0, new Date(), new Date(), 0);
+        return new Tarea(id, "","", 0, "", "", new Date(), new Date(), "");
     }
 
-    static deserialize({id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado}) {
-        return new Tarea(id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado);
+    static deserialize({id, nombre,newNombre, storyPoints, nombreProyecto, nombreEncargado, fechaInicio, fechaFin, estado}) {
+        return new Tarea(id, nombre,newNombre, storyPoints, nombreProyecto, nombreEncargado, fechaInicio, fechaFin, estado);
     }
 
     setProyecto(proyecto: Proyecto) {
-        this.idProyecto = proyecto.id;
+        this.nombreProyecto = proyecto.nombre;
     }
 
     async crear() {
-        await databaseQuery(`
-            INSERT INTO Tareas(nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado)
-            VALUES('${this.nombre}', ${this.storyPoints}, ${this.idProyecto}, ${this.idEncargado}, ${this.fechaInicio}, ${this.fechaFin}, ${this.idEstado})
-        `);
+        try {
+            await databaseQuery(`
+            EXEC CrearTarea 
+            @Nombre = '${this.nombre}',
+            @StoryPoints = ${this.storyPoints},
+            @NombreProyecto ='${this.nombreProyecto}',
+            @NombreEncargado ='${this.nombreEncargado}',
+            @FechaInicio ='${this.fechaInicio}',
+            @FechaFin ='${this.fechaFin}'
+            `);
+        } catch (error) {
+            console.error("Error al crear la tarea:", error);
+        }
     }
 
     async actualizar() {
-        await databaseQuery(`
-            UPDATE Tareas
-            SET nombre='${this.nombre}', storyPoints=${this.storyPoints}, idEncargado=${this.idEncargado}
-            WHERE id=${this.id}
-        `);
+        try {
+            await databaseQuery(`
+            EXEC updateTarea
+            @inStoryPoints =${this.storyPoints},
+            @inNombreTarea ='${this.nombre}',
+            @inNewNombreTarea ='${this.newNombre}',
+            @inNombreResponsable ='${this.nombreEncargado}',
+            @inNombreProyecto='${this.nombreProyecto}'
+            `);
+        } catch (error) {
+            console.error("Error al actualizar la tarea:", error);
+        }
+    }
+
+    async actualizarEstado() {
+        try {
+            await databaseQuery(`
+            EXEC updateEstadoTarea
+            @inNombreTarea ='${this.nombre}',
+            @inEstadoTarea ='${this.estado}',
+            @inNombreProyecto= '${this.nombreProyecto}'
+            `);
+        } catch (error) {
+            console.error("Error al actualizar el estado:", error);
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import Departamento from "./departamento.js";
 import Proyecto from "./proyecto.js";
 import Tarea from "./tarea.js";
 import Notificacion from "./notificacion.js";
+import Foro from "./foro.js";
 
 const apiRoutes = Router();
 
@@ -67,7 +68,12 @@ apiRoutes.post("/proyectos", async(req, res) => {
 });
 
 apiRoutes.put("/proyectos/:idProyecto", async(req, res) => {
-    // modificar proyecto
+    const { idProyecto } = req.params;
+    const tareas = req.body.tareas.map(t => Tarea.deserialize({...t, idProyecto}));
+    const colaboradores = req.body.colaboradores.map(c => Colaborador.byId(c));
+    const proyecto = Proyecto.deserialize({...req.body, tareas, colaboradores, id: idProyecto});
+    await proyecto.actualizar();
+    return res.json({success: true});
 });
 
 apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
@@ -76,17 +82,28 @@ apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
     const tareas = await proyecto.obtenerTareas();
     return res.json(tareas);
 });
-
-apiRoutes.put("/proyectos/:idProyecto/tareas/:idTarea", async(req, res) => {
-    const { idProyecto, idTarea } = req.params;
-    const tarea = Tarea.deserialize({...req.body, id: idTarea, idProyecto});
-    tarea.actualizar();
+///Actualizar tarea
+apiRoutes.put("/proyectos/tareas/actualizar", async(req, res) => {
+    const tarea = Tarea.deserialize({...req.body});
+    await tarea.actualizar();
+    return res.json({success: true});
+});
+/// Actualizar estado tarea
+apiRoutes.put("/proyectos/tareas/estado", async(req, res) => {
+    const tarea = Tarea.deserialize({...req.body});
+    await tarea.actualizarEstado();
     return res.json({success: true});
 });
 
-apiRoutes.post("/proyectos/:idProyecto/tareas", async(req, res) => {
-    const { idProyecto } = req.params;
-    const tarea = Tarea.deserialize({...req.body, idProyecto});
+apiRoutes.delete("/proyectos/:idProyecto/tareas/:idTarea", async(req, res) => {
+    const { idProyecto, idTarea } = req.params;
+    const proyecto = Proyecto.byId(Number(idProyecto));
+    await proyecto.eliminarTarea(Tarea.byId(Number(idTarea)));
+    return res.json({success: true});
+});
+
+apiRoutes.post("/proyectos/tareas", async(req, res) => {
+    const tarea = Tarea.deserialize({...req.body});
     await tarea.crear();
     return res.json({success: true});
 });
@@ -109,6 +126,13 @@ apiRoutes.post("/notificaciones", async(req, res) => {
     const notificacion = Notificacion.deserialize(req.body);
     await notificacion.crear();
     return res.json({success: true});
+});
+
+apiRoutes.get("/proyectos/:idProyecto/foro", async(req, res) => {
+    const { idProyecto } = req.params;
+    const proyecto = await Proyecto.loadDataById(Number(idProyecto));
+    const foro = Foro.obtenerForoInterno(proyecto);
+    return res.json(foro);
 });
 
 export default apiRoutes;
