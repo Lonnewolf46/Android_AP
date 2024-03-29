@@ -6,5 +6,6 @@ data class ProyectoUiState(
     val presupuesto: String = "",
     val estado: String = "",
     val descripcion: String = "",
-    val responsable: String = ""
+    val responsable: String = "",
+    val codigoRespuesta: Int = -1
 )

@@ -23,6 +23,33 @@ class ProyectoViewModel: ViewModel() {
         }
     }
 
+    /**
+    Valida que el uiState tenga información en todos sus campos. Si no es asi, avisa.
+    CODIGOS:
+    -1: Por defecto
+    0: Proceso correcto
+    1: Quedan campos vacios
+     */
+    fun CrearProyecto(){
+        if(_uiState.value.nombre.isNotEmpty() &&
+            _uiState.value.recursos.isNotEmpty() &&
+            _uiState.value.presupuesto.isNotEmpty() &&
+            //_uiState.value.estado.isNotEmpty() &&
+            _uiState.value.descripcion.isNotEmpty() //&&
+            //_uiState.value.responsable.isNotEmpty()
+            ){
+            //Hacer solicitud
+
+            //Informar del éxito
+            _uiState.update { currentState -> currentState.copy(codigoRespuesta = 0) }
+        }
+        else _uiState.update { currentState -> currentState.copy(codigoRespuesta = 1) }
+    }
+
+    fun CerrarEmergente(){
+        _uiState.update { currentState -> currentState.copy(codigoRespuesta = -1) }
+    }
+
     fun resetState(){
         _uiState.value = ProyectoUiState()
     }

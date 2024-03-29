@@ -258,10 +258,13 @@ fun AP_App() {
             //Trabajo
             composable(route = APScreen.Trabajo.name) {
                 TrabajoLayout(
-                    nombre = tareaUiState.nombreTarea,
+                    nombreProyecto = "Proyecto1", /*TODO*/
+                    nombreTarea = tareaUiState.nombreTarea,
                     storyPoints = tareaUiState.storyPoints,
                     encargado = tareaUiState.encargado,
                     crearTareaVisible = tareaUiState.mostrar,
+                    codigoResult = tareaUiState.codigoResultado,
+                    onEditarTareaClick = { /*TODO*/ },
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
                     onCrearTareaValueChange = tareaViewModel::ActualizarCampos,
                     onCrearTareaConfirmar = { tareaViewModel.CrearTarea() },
@@ -300,10 +303,18 @@ fun AP_App() {
                     estado = proyectoUiState.estado,
                     descripcion = proyectoUiState.descripcion,
                     responsable = proyectoUiState.responsable,
+                    codigoResult = proyectoUiState.codigoRespuesta,
                     onValueChange = proyectoViewModel::ActualizarCampos,
                     onAsignarColaboradores = { /*TODO*/ },
                     onCrearTareas = { /*TODO*/ },
-                    onCrearProyecto = { /*TODO*/ },
+                    onCrearProyecto = { proyectoViewModel.CrearProyecto() },
+                    onCerrarPopUp = {
+                        if(proyectoUiState.codigoRespuesta == 0){
+                            navController.navigateUp()
+                            proyectoViewModel.resetState() }
+
+                        else proyectoViewModel.CerrarEmergente()
+                    }
                 )
             }
 
@@ -354,10 +365,18 @@ fun AP_App() {
                     formato = reunionUiState.formato,
                     detalles = reunionUiState.detalles,
                     verAsignar = reunionUiState.verAsignar,
-                    onAlternarAsignar = { reunionViewModel.VentanaAlternar() },
+                    codigoResult = reunionUiState.codigoRespuesta,
+                    onAlternarAsignar = { reunionViewModel.VentanaAsignarAlternar() },
+                    onInfoWindowClose = {
+                        if(reunionUiState.codigoRespuesta == 0){
+                            navController.navigateUp()
+                            reunionViewModel.resetState()
+                        }
+                        else reunionViewModel.InformacionPopupOff()
+                    },
                     onValueChange = reunionViewModel::ActualizarCampos,
                     onAsignarColaboradores = { /*TODO*/ },
-                    onCrearReunion = { /*TODO*/ }
+                    onCrearReunion = { reunionViewModel.CrearReunion() }
                 )
             }
         }

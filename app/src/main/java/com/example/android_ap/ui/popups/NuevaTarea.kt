@@ -39,6 +39,7 @@ import com.example.android_ap.ui.theme.Android_APTheme
 fun NuevaTarea(nombre: String,
                storyPoints: String,
                onValueChange: (TareaCampos, String) -> Unit,
+               codigoResult: Int,
                onConfirmar: () -> Unit,
                onCerrarClick: () -> Unit){
     AlertDialog(
@@ -63,6 +64,8 @@ fun NuevaTarea(nombre: String,
                 OutlinedTextField(
                     value = nombre,
                     singleLine = true,
+                    isError = (codigoResult==6),
+                    supportingText = {if(codigoResult==6) Text(text = "El campo no puede estar vacío")},
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -79,6 +82,8 @@ fun NuevaTarea(nombre: String,
                 OutlinedTextField(
                     value = storyPoints,
                     singleLine = true,
+                    isError = (codigoResult==7),
+                    supportingText = {if(codigoResult==7) Text(text = "El campo no puede estar vacío")},
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,

@@ -26,7 +26,34 @@ class ReunionViewModel: ViewModel() {
         }
     }
 
-    fun VentanaAlternar(){
+    /**
+    Valida que el uiState tenga información en todos sus campos. Si no es asi, avisa.
+    CODIGOS:
+    -1: Por defecto
+    0: Proces correcto
+    1: Quedan campos vacios
+     */
+    fun CrearReunion(){
+        if(_uiState.value.tema.isNotEmpty() &&
+            _uiState.value.fecha.isNotEmpty() &&
+            _uiState.value.medio.isNotEmpty() &&
+            _uiState.value.formato.isNotEmpty() &&
+            _uiState.value.detalles.isNotEmpty()
+            ){
+            //Intentar crear reunion
+
+
+            //Codigo exito creacion
+            _uiState.update { currentState -> currentState.copy(codigoRespuesta = 0) }
+        }
+        else _uiState.update { currentState -> currentState.copy(codigoRespuesta = 1) }
+    }
+
+    fun InformacionPopupOff(){
+        _uiState.update { currentState -> currentState.copy(codigoRespuesta = -1) }
+    }
+
+    fun VentanaAsignarAlternar(){
         _uiState.update { currentState -> currentState.copy(verAsignar =! _uiState.value.verAsignar) }
     }
 

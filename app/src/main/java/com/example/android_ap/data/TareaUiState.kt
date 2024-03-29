@@ -5,5 +5,6 @@ data class TareaUiState(
     val storyPoints: String = "",
     val encargado: String = "",
     val estado: TareaEstados = TareaEstados.PENDIENTE,
-    val mostrar: Boolean = false
+    val mostrar: Boolean = false,
+    val codigoResultado: Int = -1
 )

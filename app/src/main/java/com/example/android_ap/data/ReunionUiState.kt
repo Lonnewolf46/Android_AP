@@ -6,5 +6,6 @@ data class ReunionUiState(
     val medio: String = "",
     val formato: String = "",
     val detalles: String = "",
-    val verAsignar: Boolean = false
+    val verAsignar: Boolean = false,
+    val codigoRespuesta: Int = -1
 )

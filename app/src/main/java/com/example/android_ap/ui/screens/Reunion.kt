@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.android_ap.R
 import com.example.android_ap.data.ReunionCampos
 import com.example.android_ap.ui.popups.AgregarPlantillaLayout
+import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 import java.util.Calendar
 import java.util.Date
@@ -46,7 +47,9 @@ fun ReunionLayout(
     formato: String,
     detalles: String,
     verAsignar: Boolean,
+    codigoResult: Int,
     onAlternarAsignar: () -> Unit,
+    onInfoWindowClose: () -> Unit,
     onValueChange: (ReunionCampos, String) -> Unit,
     onAsignarColaboradores: () -> Unit,
     onCrearReunion: () -> Unit,
@@ -76,6 +79,16 @@ fun ReunionLayout(
             onAsignarClick = { onAsignarColaboradores() },
             onCerrarClick = { onAlternarAsignar() }
         )
+    }
+
+    else{
+        when(codigoResult){
+            0 -> Warning(texto = "Reunión creada",
+                onClose = { onInfoWindowClose() })
+
+            1 -> Warning(texto = "Se requiere llenar todos los campos",
+                onClose = { onInfoWindowClose() })
+        }
     }
 
 }

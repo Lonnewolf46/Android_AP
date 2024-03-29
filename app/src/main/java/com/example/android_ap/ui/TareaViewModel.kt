@@ -29,15 +29,27 @@ class TareaViewModel: ViewModel(){
     }
 
     /**
-    Crea una tarea despues de validar que todos los campos esten llenos.
-    NOTA: Quizá haga falta un código de retorno para indicar a la interfaz si fue exitoso o no
-     */
+     Funcion para crear una tarea
+     CODIGOS
+     -1: Por defecto
+     0: Correcto
+     6: Nombre de tarea incorrecto
+     7: StoryPoints incorrecto
+    */
     fun CrearTarea() {
-        if (_uiState.value.nombreTarea != "" && _uiState.value.storyPoints != ""){
-
+        if (_uiState.value.nombreTarea == "") {
+            _uiState.update{currentState -> currentState.copy(codigoResultado = 6)}
+        }
+        else if(_uiState.value.storyPoints == "")
+            _uiState.update{currentState -> currentState.copy(codigoResultado = 7)}
+        else{
             //Aqui van acciones para crear tarea nueva
 
-            resetState() //Cerrar ventana
+
+
+            //Crear exitoso, se cierra ventana
+            _uiState.update{currentState -> currentState.copy(codigoResultado = 0)}
+            _uiState.update{currentState -> currentState.copy(mostrar = false)}
         }
     }
 

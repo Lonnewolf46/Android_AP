@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.android_ap.data.ProyectoCampos
+import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
 @Composable
@@ -39,10 +40,12 @@ fun ProyectoPlantillaLayout(
     estado: String,
     descripcion: String,
     responsable: String,
+    codigoResult: Int,
     onValueChange: (ProyectoCampos, String) -> Unit,
     onAsignarColaboradores: () -> Unit,
     onCrearTareas: () -> Unit,
     onCrearProyecto: () -> Unit,
+    onCerrarPopUp: () -> Unit
 
 ){
     Column(
@@ -75,6 +78,14 @@ fun ProyectoPlantillaLayout(
             onCrearTareas = onCrearTareas,
             onCrearProyecto = onCrearProyecto,
             modifier = Modifier.fillMaxWidth())
+
+        when(codigoResult){
+            0 -> Warning(texto = "Proceso exitoso",
+                onClose = { onCerrarPopUp() })
+
+            1 -> Warning(texto = "Se requiere llenar todos los campos",
+                onClose = { onCerrarPopUp() })
+        }
 
     }
 

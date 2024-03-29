@@ -1,5 +1,6 @@
 package com.example.android_ap.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,38 +28,54 @@ import androidx.compose.ui.unit.sp
 import com.example.android_ap.data.TareaCampos
 import com.example.android_ap.ui.popups.NuevaTarea
 import com.example.android_ap.ui.theme.Android_APTheme
+import android.content.Context
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.ui.platform.LocalContext
+import com.example.android_ap.ui.popups.Warning
 
 /**
  * Componente principal de la interfaz de Trabajo
 */
 @Composable
 fun TrabajoLayout(
-                  nombre: String,
-                  storyPoints: String,
-                  encargado: String,
-                  crearTareaVisible: Boolean,
-                  onOpcionesProyectoClick: () -> Unit,
-                  onCrearTareaValueChange: (TareaCampos, String) -> Unit,
-                  onCrearTareaConfirmar: () -> Unit,
-                  onCrearTareaCerrarClick: () -> Unit
-                  ){
+    nombreProyecto: String,
+    nombreTarea: String,
+    storyPoints: String,
+    encargado: String,
+    crearTareaVisible: Boolean,
+    codigoResult: Int,
+    onEditarTareaClick: () -> Unit,
+    onOpcionesProyectoClick: () -> Unit,
+    onCrearTareaValueChange: (TareaCampos, String) -> Unit,
+    onCrearTareaConfirmar: () -> Unit,
+    onCrearTareaCerrarClick: () -> Unit
+){
     Column(horizontalAlignment = Alignment.CenterHorizontally
         ,modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)) {
-        ProyectoActualTopBar(proyecto = "Proyecto 1", onOpcionesProyectoClick)
+            .padding(16.dp)
+    ){
+        ProyectoActualTopBar(proyecto = nombreProyecto, onOpcionesProyectoClick)
         Tareas(Modifier.padding(16.dp))
 
         //Si se ha dado click a crear tarea
-        if (crearTareaVisible)
-            NuevaTarea(
-                nombre = nombre,
-                storyPoints = storyPoints,
-                onValueChange = onCrearTareaValueChange,
-                onConfirmar = onCrearTareaConfirmar,
-                onCerrarClick = onCrearTareaCerrarClick
-            )
-
+        if (crearTareaVisible) {
+                NuevaTarea(
+                    nombre = nombreTarea,
+                    storyPoints = storyPoints,
+                    codigoResult = codigoResult,
+                    onValueChange = onCrearTareaValueChange,
+                    onConfirmar = onCrearTareaConfirmar,
+                    onCerrarClick = onCrearTareaCerrarClick
+                )
+        }
+        //Si la tarea fue creada satisfactoriamente
+        else if(codigoResult == 0){
+            Warning(
+                texto = "Tarea creada",
+                onClose = { onCrearTareaCerrarClick() })
+        }
     }
 }
 
@@ -66,8 +83,10 @@ fun TrabajoLayout(
  * Componente de texto en la parte superior
  */
 @Composable
-private fun ProyectoActualTopBar(proyecto: String,
-                         onMasClick: () -> Unit) {
+private fun ProyectoActualTopBar(
+    proyecto: String,
+    onMasClick: () -> Unit
+){
     Card() {
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -132,10 +151,37 @@ private fun Tareas(modifier: Modifier = Modifier){
     }
 }
 
+@Composable
+private fun TareaCard(
+    nombre: String,
+    onEditarClick: () -> Unit
+){
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .height(60.dp)
+    ){
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ){
+            Text(text = nombre,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold)
+            Button(onClick = { onEditarClick() }) {
+                Image(imageVector = Icons.Outlined.Create,
+                    contentDescription = "Editar")
+                
+            }
+        }
+    }
+}
+
 @Preview(showBackground=true)
 @Composable
 private fun PreviewTrabajo(){
     Android_APTheme {
-        //TrabajoLayout()
+
     }
 }
