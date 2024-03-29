@@ -228,11 +228,13 @@ fun AP_App() {
                     email = registroUiState.correo,
                     clave = registroUiState.clave,
                     passwordVisible = registroUiState.claveVisible,
-                    camposLlenos = registroUiState.camposLlenos,
+                    datosCorrectos = registroUiState.datosCorrectos,
+                    codigoRes = registroUiState.codigoResultado,
                     onTextInput = registroViewModel::actualizarDatos,
                     onViewPassword = { registroViewModel.verClave(it) },
                     onInicioSesionTextClicked = { navController.navigateUp() },
                     onRegistroClicked = registroViewModel::validarCampos,
+                    onRegistroExitoso = { navController.navigateUp() },
                     onDialogClose = registroViewModel::cerrarEmergente
                 )
             }
@@ -247,7 +249,7 @@ fun AP_App() {
                 ModificarInfoPersonalLayout(
                     telefono = modInfoPersonalUiState.telefono,
                     email = modInfoPersonalUiState.correo,
-                    camposLlenos = modInfoPersonalUiState.camposLlenos,
+                    camposLlenos = modInfoPersonalUiState.datosCorrectos,
                     onTextInput = modInfoPersonalViewModel::actualizarDatos,
                     onActualizarClicked = { /*TODO*/ }) {
                 }

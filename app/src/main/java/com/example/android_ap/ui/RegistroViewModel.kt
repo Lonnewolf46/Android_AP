@@ -44,6 +44,14 @@ class RegistroViewModel: ViewModel() {
 
     /**
     Valida que el uiState tenga información en todos sus campos. Si no es asi, avisa.
+     CODIGOS:
+     -1: Por defecto
+     0: Proces correcto
+     1: Quedan campos vacios
+     2: correo inválido
+     3: Cedula es menos de 9 caracteres
+     4: Telefono es menos de 8 caracteres
+     5: Contraseña es menos de 4 caracteres
      */
     fun validarCampos(){
         if (_uiState.value.nombre!="" &&
@@ -53,20 +61,46 @@ class RegistroViewModel: ViewModel() {
             _uiState.value.correo!="" &&
             _uiState.value.clave!="")
         {
-            //Actualizar valor para no mostrar aviso
-            _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+            val correo = _uiState.value.correo
+            val regex = Regex("""\b[A-Za-z0-9._%+-]+@(estudiantec\.cr|itcr\.ac\.cr)\b""")
+            _uiState.update { currentState -> currentState.copy(datosCorrectos = false)}
 
-            //Hacer solicitud a la BD
-            /*TODO*/
+            //Validacion de información
+            //Correo valido
+            if(!regex.matches(correo)){
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 2)}
+            }
+            //Cedula con largo minimo
+            else if(_uiState.value.cedula.length < 9){
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3)}
+            }
+            //Telefono con largo minimo
+            else if(_uiState.value.telefono.length < 8){
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 4)}
+            }
+            //Contraseña con largo minimo
+            else if(_uiState.value.clave.length < 4){
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 5)}
+            }
+            else{
+                //Actualizar valor para no mostrar aviso
+                _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 0)}
+
+                //Hacer solicitud a la BD
+                /*TODO*/
+            }
 
         }
         else{
-            _uiState.update { currentState -> currentState.copy(camposLlenos = false)}
+            _uiState.update { currentState -> currentState.copy(datosCorrectos = false)}
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 1)}
         }
     }
 
     fun cerrarEmergente(){
-        _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+        _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
+        _uiState.update { currentState -> currentState.copy(codigoResultado = -1)}
     }
 
     fun resetState() {

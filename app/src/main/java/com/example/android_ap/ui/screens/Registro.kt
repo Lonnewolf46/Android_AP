@@ -59,11 +59,13 @@ fun RegistroLayout(
     email: String,
     clave: String,
     passwordVisible: Boolean,
-    camposLlenos: Boolean,
+    datosCorrectos: Boolean,
+    codigoRes: Int,
     onTextInput: (RegistroCampos, String) -> Unit,
     onViewPassword: (Boolean) -> Unit,
     onInicioSesionTextClicked: () -> Unit,
     onRegistroClicked: () -> Unit,
+    onRegistroExitoso: () -> Unit,
     onDialogClose: () -> Unit
 ) {
 
@@ -122,11 +124,32 @@ fun RegistroLayout(
 
     }
 
-    if(!camposLlenos){
+    //Si algo salio mal
+    if(!datosCorrectos){
+        when(codigoRes){
+            1 -> Warning(
+                 texto = "Se requieren llenar todos los campos",
+                 onClose = { onDialogClose() })
+            2 -> Warning(
+                texto = "El correo debe ser el institucional",
+                onClose = { onDialogClose() })
+            3 -> Warning(
+                texto = "Verifique su número de cédula",
+                onClose = { onDialogClose() })
+            4 -> Warning(
+                texto = "Verifique su número de teléfono",
+                onClose = { onDialogClose() })
+            5 -> Warning(
+                texto = "La contraseña requiere de mínimo 4 carácteres",
+                onClose = { onDialogClose() })
+        }
+    }
+    //Proceso correcto
+    else if(codigoRes == 0){
         Warning(
-            texto = "Se requieren llenar todos los campos",
-            onClose = { onDialogClose() })
-
+        texto = "Registro exitoso",
+        onClose = { onDialogClose() })
+        onRegistroExitoso()
     }
 
 }

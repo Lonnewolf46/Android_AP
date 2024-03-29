@@ -13,5 +13,6 @@ data class RegistroUiState(
     val correo: String = "",
     val clave: String = "",
     val claveVisible: Boolean = false,
-    val camposLlenos: Boolean = true
+    val datosCorrectos: Boolean = true,
+    val codigoResultado: Int = -1
 )

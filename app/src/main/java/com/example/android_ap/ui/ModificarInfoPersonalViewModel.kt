@@ -2,7 +2,6 @@ package com.example.android_ap.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.RegistroCampos
@@ -38,17 +37,17 @@ class ModificarInfoPersonalViewModel: ViewModel() {
             _uiState.value.clave!="")
         {
             //Actualizar valor para no mostrar aviso
-            _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+            _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
 
             //Hacer solicitud a la BD
 
         }
         else{
-            _uiState.update { currentState -> currentState.copy(camposLlenos = false)}
+            _uiState.update { currentState -> currentState.copy(datosCorrectos = false)}
         }
     }
 
     fun cerrarEmergente(){
-        _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
+        _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
     }
 }
