@@ -4,7 +4,8 @@ import Departamento from "./departamento.js";
 import Proyecto from "./proyecto.js";
 import Tarea from "./tarea.js";
 import Notificacion from "./notificacion.js";
-import Foro from "./foro.js";
+import Foro, { ForoGeneral, ForoInterno, Mensaje } from "./foro.js";
+import Reunion from "./reunion.js";
 
 const apiRoutes = Router();
 
@@ -130,11 +131,53 @@ apiRoutes.post("/notificaciones", async(req, res) => {
     return res.json({success: true});
 });
 
-apiRoutes.get("/proyectos/:idProyecto/foro", async(req, res) => {
+apiRoutes.get("/foros/general", async(req, res) => {
+    const foro = await ForoGeneral.obtenerForo();
+    return res.json(foro);
+});
+
+apiRoutes.get("/foros/:idProyecto", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = await Proyecto.loadDataById(Number(idProyecto));
-    const foro = Foro.obtenerForoInterno(proyecto);
+    const foro = await ForoInterno.obtenerForo(proyecto);
     return res.json(foro);
+});
+
+apiRoutes.post("/foros/general/mensajes", async(req, res) => {
+    const foro = ForoGeneral.new();
+    const mensaje = Mensaje.deserialize(req.body);
+    await foro.guardarMensaje(mensaje);
+    return res.json({success: true});
+});
+
+apiRoutes.post("/foros/:idProyecto/mensajes", async(req, res) => {
+    const { idProyecto } = req.params;
+    const foro = ForoInterno.byId(Number(idProyecto));
+    const mensaje = Mensaje.deserialize(req.body);
+    await foro.guardarMensaje(mensaje);
+    return res.json({success: true});
+});
+
+apiRoutes.post("/proyectos/:idProyecto/reuniones", async(req, res) => {
+    const { idProyecto } = req.params;
+    const colaboradores = req.body.colaboradores.map(Colaborador.byId);
+    const reunion = Reunion.deserialize({...req.body, idProyecto, colaboradores});
+    await reunion.crear();
+    return res.json({success: true});
+});
+
+apiRoutes.get("/proyectos/:idProyecto/reuniones", async(req, res) => {
+    const { idProyecto } = req.params;
+    const proyecto = Proyecto.byId(idProyecto);
+    const reuniones = await proyecto.obtenerReuniones();
+    return res.json(reuniones);
+});
+
+apiRoutes.get("/reuniones/:idReunion/colaboradores", async(req, res) => {
+    const { idReunion } = req.params;
+    const reunion = Reunion.byId(idReunion);
+    const colaboradores = await reunion.obtenerColaboradores();
+    return res.json(colaboradores);
 });
 
 export default apiRoutes;

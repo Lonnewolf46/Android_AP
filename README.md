@@ -512,3 +512,236 @@
 * Las tareas sin id, se entenderán cómo nuevas y se crearán
 * Las tareas que ya no estén presentes y que estuvieran presentes antes se eliminarán
 * Los colaboradores son una colección de id's de dichos colaboradores, se añadirán los nuevos que estén presentes, y se desasociarán los que ya no estén presentes
+
+
+
+## Foro de proyecto
+
+**Método:** GET
+
+**Ruta:** /api/foros/<id_proyecto>
+
+**Descripción:** Devuelve la información de un foro de un proyecto
+
+#### Ejemplo de respuesta
+```json
+{
+  "nombre": "Cafetería",
+  "mensajes": [
+    {
+      "id": 1,
+      "mensaje": "prueba de mensaje a foro",
+      "idProyecto": 9,
+      "idEmisor": 4,
+      "fecha": null
+    }
+  ]
+}
+```
+
+
+
+## Foro de proyecto
+
+**Método:** GET
+
+**Ruta:** /api/foros/general
+
+**Descripción:** Devuelve la información de un foro de un proyecto
+
+#### Ejemplo de respuesta
+```json
+{
+  "nombre": "Cafetería",
+  "mensajes": [
+    {
+      "id": 1,
+      "mensaje": "prueba de mensaje a foro",
+      "idProyecto": 9,
+      "idEmisor": 4,
+      "fecha": null
+    }
+  ]
+}
+```
+
+
+
+## Foro general
+
+**Método:** GET
+
+**Ruta:** /api/foros/general
+
+**Descripción:** Devuelve la información del foro general
+
+#### Ejemplo de respuesta
+```json
+{
+  "nombre": "Foro General",
+  "mensajes": [
+    {
+      "id": 1,
+      "mensaje": "prueba de mensaje a foro general",
+      "idEmisor": 4,
+      "fecha": "2024-03-29T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+
+
+## Envío de mensajes a foro interno
+
+**Método:** PUT
+
+**Ruta:** /api/foros/<id_proyecto>/mensajes
+
+**Descripción:** Envía un mensaje a un foro interno
+
+#### Parámetros de consulta:
+- `mensaje`: string
+- `idEmisor`: string
+
+#### Ejemplo de solicitud
+```json
+{
+  "mensaje": "prueba de mensaje desde API",
+  "idEmisor": 4
+}
+```
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+
+
+## Envío de mensajes a foro general
+
+**Método:** PUT
+
+**Ruta:** /api/foros/general/mensajes
+
+**Descripción:** Envía un mensaje a un foro general
+
+#### Parámetros de consulta:
+- `mensaje`: string
+- `idEmisor`: string
+
+#### Ejemplo de solicitud
+```json
+{
+  "mensaje": "prueba de mensaje desde API",
+  "idEmisor": 4
+}
+```
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+
+
+## Creación de reunión
+
+**Método:** POST
+
+**Ruta:** /api/proyecto/<id_proyecto>/reuniones
+
+**Descripción:** Envía una nueva reunión asociado a proyecto
+
+#### Parámetros de consulta:
+- `fecha`: string
+- `medio`: string
+- `formato`: string
+- `enlace`: string
+- `idCreador`: number
+- `colaboradores`: number[]
+
+#### Ejemplo de solicitud
+```json
+{
+  "fecha": "2024-03-29",
+  "medio": "Google meets",
+  "formato": "Remoto",
+  "enlace": "google-meets.com",
+  "idCreador": 4,
+  "colaboradores": [3, 4]
+}
+```
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
+```
+
+
+
+## Reuniones de proyecto
+
+**Método:** GET
+
+**Ruta:** /api/proyectos/<id_proyecto>/reuniones
+
+**Descripción:** Devuelve las reuniones de un proyecto
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "id": 2,
+    "fecha": "2024-03-29T00:00:00.s000Z",
+    "medio": "Google meets",
+    "formato": "Remoto",
+    "enlace": "google-meets.com",
+    "idCreador": 4,
+    "idProyecto": 10
+  },
+  {
+    "id": 3,
+    "fecha": "2024-03-29T00:00:00.000Z",
+    "medio": "Google meets",
+    "formato": "Remoto",
+    "enlace": "google-meets.com",
+    "idCreador": 4,
+    "idProyecto": 10
+  }
+]
+```
+
+
+## Colaboradores de una reunión
+
+**Método:** GET
+
+**Ruta:** /api/reuniones/<id_reunion>/colaboradores
+
+**Descripción:** Devuelve los colaboradores de una reunión
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "id": 3,
+    "nombre": "Langsdon Mickelwright",
+    "cedula": 239626712,
+    "telefono": 72023128,
+    "email": "lmickelwright0@estudiantec.cr",
+    "idProyecto": null,
+    "idDepartamento": 1
+  },
+  {
+    "id": 4,
+    "nombre": "Griz Marthen",
+    "cedula": 19670313,
+    "telefono": 67049983,
+    "email": "gmarthen1@estudiantec.cr",
+    "idProyecto": 10,
+    "idDepartamento": 1
+  }
+]
+```

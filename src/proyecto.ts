@@ -1,5 +1,6 @@
 import Colaborador from "./colaborador.js";
 import databaseQuery from "./database.js";
+import Reunion from "./reunion.js";
 import Tarea from "./tarea.js";
 
 class Proyecto {
@@ -44,10 +45,10 @@ class Proyecto {
     }
 
     static async loadDataById(id:number):Promise<Proyecto> {
-        const result = databaseQuery(`
+        const result = await databaseQuery(`
             SELECT
                 id, nombre, recursos, presupuesto, idEstado,
-                descripcion, idResponsable, fechaInicio, fechaFin,
+                descripcion, idResponsable, fechaInicio, fechaFin
             FROM Proyectos
             WHERE id=${id}
         `);
@@ -169,6 +170,13 @@ class Proyecto {
                WHERE id in (${this.colaboradores.map(c => c.id).join(",")})
             `);
         }
+    }
+
+    async obtenerReuniones() {
+        return (await databaseQuery(`
+            SELECT id, fecha, medio, formato, enlace, idCreador, idProyecto
+            FROM Reuniones WHERE idProyecto=${this.id}
+        `)).map(Reunion.deserialize);
     }
 }
 
