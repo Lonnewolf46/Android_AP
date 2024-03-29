@@ -96,7 +96,7 @@ fun NuevaTarea(nombre: String,
                     )
                 )
 
-                Demo_ExposedDropdownMenuBox("ENCARGADO", Modifier.padding(start=12.dp))
+                Demo_ExposedDropdownMenuBox("ENCARGADO", Modifier.fillMaxWidth())
 
                 Button(onClick = onConfirmar,
                     modifier = Modifier.fillMaxWidth()) {

@@ -291,7 +291,7 @@ fun Demo_ExposedDropdownMenuBox(titulo: String, modifier: Modifier = Modifier) {
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor()
+                modifier = modifier.menuAnchor()
             )
 
             ExposedDropdownMenu(
@@ -315,7 +315,7 @@ fun Demo_ExposedDropdownMenuBox(titulo: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewRegistro() {
+private fun PreviewRegistro() {
     Android_APTheme {
         //RegistroLayout()
     }

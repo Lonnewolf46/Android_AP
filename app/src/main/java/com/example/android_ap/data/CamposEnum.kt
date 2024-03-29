@@ -33,3 +33,12 @@ enum class ReunionCampos{
         FORMATO,
         DETALLES
 }
+
+enum class ProyectoCampos{
+        NOMBRE,
+        RECURSOS,
+        PRESUPUESTO,
+        ESTADO,
+        DESCRIPCION,
+        RESPONSABLE,
+}

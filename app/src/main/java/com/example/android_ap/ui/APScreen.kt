@@ -39,6 +39,7 @@ import com.example.android_ap.ui.screens.MenuPrincipalLayout
 import com.example.android_ap.ui.screens.ModificarInfoPersonalLayout
 import com.example.android_ap.ui.screens.NotificacionesLayout
 import com.example.android_ap.ui.screens.OpcionesLayout
+import com.example.android_ap.ui.screens.ProyectoPlantillaLayout
 import com.example.android_ap.ui.screens.RegistroLayout
 import com.example.android_ap.ui.screens.ReunionLayout
 import com.example.android_ap.ui.screens.TrabajoLayout
@@ -53,6 +54,7 @@ enum class APScreen() {
     //Menu Principal > FAB//
     ForoGeneral,
     GestionProyectos,
+    CrearProyecto,
     Colaboradores,
     //Trabajo > OpcionesProyecto
     OpcionesProyecto,
@@ -71,6 +73,7 @@ fun AP_App() {
     val modInfoPersonalViewModel: ModificarInfoPersonalViewModel = viewModel()
     val tareaViewModel: TareaViewModel = viewModel()
     val reunionViewModel: ReunionViewModel = viewModel()
+    val proyectoViewModel: ProyectoViewModel = viewModel()
 
     //Inicializando elementos de navegacion
     val navController: NavHostController = rememberNavController()
@@ -155,7 +158,8 @@ fun AP_App() {
                         MinFabItem(
                             icon = R.drawable.project_new,
                             label = "Agregar proyecto",
-                            path = { /*TODO*/ }),
+                            path = { proyectoViewModel.resetState()
+                                navController.navigate(APScreen.CrearProyecto.name) }),
                         MinFabItem(
                             icon = R.drawable.addperson,
                             label = "Agregar colaborador",
@@ -183,6 +187,7 @@ fun AP_App() {
         val modInfoPersonalUiState by modInfoPersonalViewModel.uiState.collectAsState()
         val tareaUiState by tareaViewModel.uiState.collectAsState()
         val reunionUiState by reunionViewModel.uiState.collectAsState()
+        val proyectoUiState by proyectoViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -282,6 +287,24 @@ fun AP_App() {
                 )
             }
 
+            //CrearProyecto
+            composable(route = APScreen.CrearProyecto.name){
+                ProyectoPlantillaLayout(
+                    imagen = ImageVector.vectorResource(id = R.drawable.create_proj),
+                    titulo = "Creación de proyecto",
+                    nombre = proyectoUiState.nombre,
+                    recursos = proyectoUiState.recursos,
+                    presupuesto = proyectoUiState.presupuesto,
+                    estado = proyectoUiState.estado,
+                    descripcion = proyectoUiState.descripcion,
+                    responsable = proyectoUiState.responsable,
+                    onValueChange = proyectoViewModel::ActualizarCampos,
+                    onAsignarColaboradores = { /*TODO*/ },
+                    onCrearTareas = { /*TODO*/ },
+                    onCrearProyecto = { /*TODO*/ },
+                )
+            }
+
 
             //Colaboradores
             composable(route = APScreen.Colaboradores.name){
@@ -378,3 +401,12 @@ private fun prepModInfoPersonalData(
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, "Departamento 1")
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO, email)
 }
+
+/*
+* ¿Cómo hacer que recupere información antes de cargar algo? Simple, un cargar por funcion aparte, al
+* estilo Login, que carga cosas y luego navega.
+* Usar un try, para que si algo salga mal
+* entonces navege a una pantalla plantilla que diga que algo salio mal.
+
+¡¡¡¡¡Piensa en funciones!!!!!
+ */
