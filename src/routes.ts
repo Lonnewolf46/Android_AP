@@ -82,13 +82,15 @@ apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
     const tareas = await proyecto.obtenerTareas();
     return res.json(tareas);
 });
-///Actualizar tarea
+
+// Actualizar tarea
 apiRoutes.put("/proyectos/tareas/actualizar", async(req, res) => {
     const tarea = Tarea.deserialize({...req.body});
     await tarea.actualizar();
     return res.json({success: true});
 });
-/// Actualizar estado tarea
+
+// Actualizar estado tarea
 apiRoutes.put("/proyectos/tareas/estado", async(req, res) => {
     const tarea = Tarea.deserialize({...req.body});
     await tarea.actualizarEstado();
