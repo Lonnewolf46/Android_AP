@@ -203,8 +203,7 @@ fun AP_App() {
                     nombre = inicioUiState.usuario,
                     clave = inicioUiState.clave,
                     passwordVisible = inicioUiState.claveVisible,
-                    camposLlenos = inicioUiState.camposLlenos,
-                    primerInicio = inicioUiState.primerInicio,
+                    codigoResult = inicioUiState.codigoResultado,
                     onTextInput = inicioSesionViewModel::actualizarInfo,
                     onViewPassword = { inicioSesionViewModel.verClave(it) },
                     onIniciarSesionClicked = {
@@ -391,16 +390,16 @@ private fun LoginToStart(
     modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
     navController: NavController
 ) {
-    inicioSesionViewModel.validarCampos()
+    val output = inicioSesionViewModel.validarCampos()
 
     if (inicioSesionViewModel.uiState.value.camposLlenos) {
 
-        //Llenar currentUser con valores del la BD o algo aquí
-        /*TODO*/
-        if(inicioSesionViewModel.uiState.value.loginExitoso){
+        if(output != null){
             prepModInfoPersonalData(
-                modInfoPersonalViewModel,
-                inicioSesionViewModel.uiState.value.usuario
+                modInfoPersonalViewModel = modInfoPersonalViewModel,
+                telefono = output.colaborador.telefono.toString(),
+                email = output.colaborador.email
+
             )
             inicioSesionViewModel.resetState()
             navController.popBackStack()
@@ -414,11 +413,12 @@ private fun LoginToStart(
  */
 private fun prepModInfoPersonalData(
     modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
+    telefono: String,
     email: String
 ) {
 
     //Datos mockup
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO, "83035422")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO, telefono)
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO, "Proyecto 1")
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, "Departamento 1")
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO, email)

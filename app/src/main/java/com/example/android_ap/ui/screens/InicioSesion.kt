@@ -45,9 +45,8 @@ import com.example.android_ap.ui.theme.Android_APTheme
 @Composable
 fun InicioSesionLayout(nombre: String,
                        clave: String,
+                       codigoResult: Int,
                        passwordVisible: Boolean,
-                       camposLlenos: Boolean,
-                       primerInicio: Boolean,
                        onTextInput: (InicioSesionCampos, String) -> Unit,
                        onViewPassword: (Boolean) -> Unit,
                        onIniciarSesionClicked: () -> Unit,
@@ -109,11 +108,16 @@ fun InicioSesionLayout(nombre: String,
         }
     }
 
-    if(!camposLlenos && !primerInicio){
-        Warning(
+    when (codigoResult){
+        1 ->  Warning(
             texto = "Se requieren llenar todos los campos",
             onClose = { onDialogClose() })
-
+        2 ->  Warning(
+            texto = "Verfique sus credenciales",
+            onClose = { onDialogClose() })
+        3 -> Warning(
+            texto = "Se ha producido un error de red. Verifique su conexión.",
+            onClose = { onDialogClose() })
     }
 
 }
