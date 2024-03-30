@@ -42,3 +42,13 @@ enum class ProyectoCampos{
         DESCRIPCION,
         RESPONSABLE,
 }
+
+enum class UsuarioInfoCampos{
+        IDENTIFICADOR,
+        NOMBRE,
+        TELEFONO,
+        PROYECTO,
+        DEPARTAMENTO,
+        CORREO,
+        EMAIL
+}

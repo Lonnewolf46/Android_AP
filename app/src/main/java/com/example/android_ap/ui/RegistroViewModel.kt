@@ -1,5 +1,7 @@
 package com.example.android_ap.ui
 
+import APIAccess
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.runBlocking
+import retrofit2.HttpException
+import java.io.IOException
 
 class RegistroViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(RegistroUiState())
@@ -40,6 +45,48 @@ class RegistroViewModel: ViewModel() {
         actualizarDatos(RegistroCampos.DEPARTAMENTO, input)
     }
 
+    fun cargarProyectos(){
+
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPIProyectos()
+            }
+
+            if (resultado.isNotEmpty())
+                _uiState.update { currentState -> currentState.copy(listaProyectos = resultado) }
+            else
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+
+            // Ahora se puede utilizar el resultado fuera del contexto de la corutina
+        }catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        }
+    }
+
+    fun cargarDepartamentos(){
+
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPIDeptos()
+            }
+
+            if (resultado.isNotEmpty())
+                _uiState.update { currentState -> currentState.copy(listaDepartamentos = resultado) }
+            else
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+
+            // Ahora se puede utilizar el resultado fuera del contexto de la corutina
+        }catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        }
+    }
+
 
     /**
     Alterna la visibilidad de la contraseña
@@ -56,12 +103,13 @@ class RegistroViewModel: ViewModel() {
      -1: Por defecto
      0: Proces correcto
      1: Quedan campos vacios
+     3: Error de red
      4: correo inválido
      5: Cedula es menos de 9 caracteres
      6: Telefono es menos de 8 caracteres
      7: Contraseña es menos de 4 caracteres
      */
-    fun validarCampos(){
+    fun crearUsuario(){
         if (_uiState.value.nombre.isNotBlank() &&
             _uiState.value.cedula.isNotBlank() &&
             _uiState.value.telefono.isNotBlank() &&
@@ -99,8 +147,36 @@ class RegistroViewModel: ViewModel() {
 
                 //Hacer solicitud a la BD
                 /*TODO*/
-            }
+                val apiAccess = APIAccess()
+                try {
+                    val idProyecto = _uiState.value.listaProyectos.firstOrNull { it.nombre == _uiState.value.proyecto }!!.id
+                    val idDepartamento = _uiState.value.listaDepartamentos.firstOrNull { it.nombre == _uiState.value.departamento }!!.id
 
+                    val resultado = runBlocking {
+                        apiAccess.postAPICrearColaborador(
+                            nombre = _uiState.value.nombre,
+                            cedula = _uiState.value.cedula.toInt(),
+                            telefono = _uiState.value.cedula.toInt(),
+                            email = _uiState.value.correo,
+                            contrasenna = _uiState.value.clave,
+                            idProyecto = idProyecto,
+                            idDepartamento = idDepartamento
+                        )
+                    }
+                    Log.d("API Respuesta","Respuesta $resultado")
+
+                    if (resultado.success)
+                        _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
+                    else
+                        _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+
+                    // Ahora se puede utilizar el resultado fuera del contexto de la corutina
+                }catch (e: IOException) {
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                } catch (e: HttpException) {
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                }
+            }
         }
         else{
             _uiState.update { currentState -> currentState.copy(datosCorrectos = false)}

@@ -46,6 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import com.example.android_ap.Depto
+import com.example.android_ap.Project
 import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
@@ -59,6 +61,8 @@ fun RegistroLayout(
     telefono: String,
     proyecto: String,
     departamento: String,
+    listaProyectos: List<Project>,
+    listaDepartamentos: List<Depto>,
     email: String,
     clave: String,
     passwordVisible: Boolean,
@@ -71,7 +75,7 @@ fun RegistroLayout(
     onInicioSesionTextClicked: () -> Unit,
     onRegistroClicked: () -> Unit,
     onRegistroExitoso: () -> Unit,
-    onDialogClose: () -> Unit
+    onDialogClose: () -> Unit,
 ) {
 
     Column(
@@ -90,6 +94,8 @@ fun RegistroLayout(
             telefono = telefono,
             proyecto = proyecto,
             departamento = departamento,
+            listaProyectos = listaProyectos,
+            listaDepartamentos = listaDepartamentos,
             email = email,
             clave = clave,
             passwordVisible = passwordVisible,
@@ -139,6 +145,9 @@ fun RegistroLayout(
             1 -> Warning(
                  texto = "Se requieren llenar todos los campos",
                  onClose = { onDialogClose() })
+            3 -> Warning(
+                texto = "Se produjo un error de red, algunos datos podrían no estar presentes",
+                onClose = { onDialogClose() })
             4 -> Warning(
                 texto = "El correo debe ser el institucional",
                 onClose = { onDialogClose() })
@@ -170,6 +179,8 @@ fun DatosRegistro(
     telefono: String,
     proyecto: String,
     departamento: String,
+    listaProyectos: List<Project>,
+    listaDepartamentos: List<Depto>,
     email: String,
     clave: String,
     passwordVisible: Boolean,
@@ -246,20 +257,17 @@ fun DatosRegistro(
             )
         )
 
-        val listaProyectos =
-            listOf("Proyecto 1", "Proyecto 2", "Proyecto 3", "Proyecto 4", "Proyecto 5")
         CustomExposedDropdownMenuBox(
             titulo = "PROYECTO",
-            listaElementos = listaProyectos,
+            listaElementos = listaProyectos.map{it.nombre},
             seleccionado = proyecto,
             onValueChange = { onProySelectionChange(it) }
             )
 
-        val listaDepartamentos =
-            listOf("Departamento 1", "Departamento 2", "Departamento 3", "Departamento 4", "Departamento 5")
+
         CustomExposedDropdownMenuBox(
             titulo = "DEPARTAMENTO",
-            listaElementos = listaDepartamentos,
+            listaElementos = listaDepartamentos.map { it.nombre },
             seleccionado = departamento,
             onValueChange = { onDeptSelectionChange(it) })
 

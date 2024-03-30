@@ -67,8 +67,8 @@ fun NuevaTarea(nombre: String,
                 OutlinedTextField(
                     value = nombre,
                     singleLine = true,
-                    isError = (codigoResult==6),
-                    supportingText = {if(codigoResult==6) Text(text = "El campo no puede estar vacío")},
+                    isError = (codigoResult==8),
+                    supportingText = {if(codigoResult==8) Text(text = "El campo no puede estar vacío")},
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -85,8 +85,8 @@ fun NuevaTarea(nombre: String,
                 OutlinedTextField(
                     value = storyPoints,
                     singleLine = true,
-                    isError = (codigoResult==7),
-                    supportingText = {if(codigoResult==7) Text(text = "El campo no puede estar vacío")},
+                    isError = (codigoResult==9),
+                    supportingText = {if(codigoResult==9) Text(text = "El campo no puede estar vacío")},
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,

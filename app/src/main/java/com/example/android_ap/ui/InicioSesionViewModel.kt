@@ -1,8 +1,9 @@
 package com.example.android_ap.ui
 
 import APIAccess
-import APIlogin
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.android_ap.APIlogin
 import com.example.android_ap.data.InicioSesionCampos
 import com.example.android_ap.data.InicioSesionUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +55,7 @@ class InicioSesionViewModel : ViewModel() {
                 val resultado = runBlocking {
                     apiAccess.postAPIlogin(_uiState.value.usuario, _uiState.value.clave)
                 }
+                Log.d("RESULT", "Resultado: $resultado")
                 _uiState.update { currentState -> currentState.copy(loginExitoso = resultado.success) }
                 if (!resultado.success)
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 2) }

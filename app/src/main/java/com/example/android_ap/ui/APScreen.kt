@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
+import com.example.android_ap.data.UsuarioInfoCampos
 import com.example.android_ap.ui.UIAuxiliar.APAppBar
 import com.example.android_ap.ui.UIAuxiliar.BottomAppBarMenu
 import com.example.android_ap.ui.UIAuxiliar.FABMenuPrincipal
@@ -74,6 +75,7 @@ fun AP_App() {
     val tareaViewModel: TareaViewModel = viewModel()
     val reunionViewModel: ReunionViewModel = viewModel()
     val proyectoViewModel: ProyectoViewModel = viewModel()
+    val userInfoView: UserInfoView = viewModel()
 
     //Inicializando elementos de navegacion
     val navController: NavHostController = rememberNavController()
@@ -188,6 +190,7 @@ fun AP_App() {
         val tareaUiState by tareaViewModel.uiState.collectAsState()
         val reunionUiState by reunionViewModel.uiState.collectAsState()
         val proyectoUiState by proyectoViewModel.uiState.collectAsState()
+        val userInfo by userInfoView.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -209,11 +212,15 @@ fun AP_App() {
                     onIniciarSesionClicked = {
                         LoginToStart(
                             inicioSesionViewModel,
+                            userInfoView,
                             modInfoPersonalViewModel,
                             navController
                         )
                     },
-                    onRegistroTextClicked = { navController.navigate(APScreen.Registro.name) },
+                    onRegistroTextClicked = {
+                        registroViewModel.cargarDepartamentos()
+                        registroViewModel.cargarProyectos()
+                        navController.navigate(APScreen.Registro.name) },
                     onDialogClose = inicioSesionViewModel::cerrarEmergente
                 )
             }
@@ -227,6 +234,8 @@ fun AP_App() {
                     email = registroUiState.correo,
                     proyecto = registroUiState.proyecto,
                     departamento = registroUiState.departamento,
+                    listaProyectos = registroUiState.listaProyectos,
+                    listaDepartamentos = registroUiState.listaDepartamentos,
                     clave = registroUiState.clave,
                     passwordVisible = registroUiState.claveVisible,
                     datosCorrectos = registroUiState.datosCorrectos,
@@ -236,7 +245,7 @@ fun AP_App() {
                     onDeptSelectionChange = { registroViewModel.actualizarDep(it) },
                     onViewPassword = { registroViewModel.verClave(it) },
                     onInicioSesionTextClicked = { navController.navigateUp() },
-                    onRegistroClicked = registroViewModel::validarCampos,
+                    onRegistroClicked = registroViewModel::crearUsuario,
                     onRegistroExitoso = { navController.navigateUp() },
                     onDialogClose = registroViewModel::cerrarEmergente
                 )
@@ -244,7 +253,7 @@ fun AP_App() {
 
             //Menu principal
             composable(route = APScreen.MenuPrincipal.name) {
-                MenuPrincipalLayout()
+                MenuPrincipalLayout(userInfo.proyecto)
             }
 
             //Modificacion de informacion personal
@@ -261,7 +270,7 @@ fun AP_App() {
             //Trabajo
             composable(route = APScreen.Trabajo.name) {
                 TrabajoLayout(
-                    nombreProyecto = "Proyecto1", /*TODO*/
+                    nombreProyecto = userInfo.proyecto,
                     nombreTarea = tareaUiState.nombreTarea,
                     storyPoints = tareaUiState.storyPoints,
                     encargado = tareaUiState.encargado,
@@ -392,14 +401,20 @@ Proceso de inicio de sesion
  */
 private fun LoginToStart(
     inicioSesionViewModel: InicioSesionViewModel,
+    userInfoView: UserInfoView,
     modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
     navController: NavController
 ) {
     val output = inicioSesionViewModel.validarCampos()
 
-    if (inicioSesionViewModel.uiState.value.camposLlenos) {
-
         if(output != null){
+            userInfoView.actualizarInfo(UsuarioInfoCampos.IDENTIFICADOR, output.colaborador.id.toString())
+            userInfoView.actualizarInfo(UsuarioInfoCampos.NOMBRE, output.colaborador.nombre)
+            userInfoView.actualizarInfo(UsuarioInfoCampos.CORREO, output.colaborador.email)
+            userInfoView.actualizarInfo(UsuarioInfoCampos.TELEFONO, output.colaborador.telefono.toString())
+            userInfoView.actualizarInfo(UsuarioInfoCampos.DEPARTAMENTO, output.colaborador.departamento.nombre)
+            userInfoView.actualizarInfo(UsuarioInfoCampos.PROYECTO, output.colaborador.proyecto.nombre)
+
             prepModInfoPersonalData(
                 modInfoPersonalViewModel = modInfoPersonalViewModel,
                 telefono = output.colaborador.telefono.toString(),
@@ -409,7 +424,6 @@ private fun LoginToStart(
             inicioSesionViewModel.resetState()
             navController.popBackStack()
             navController.navigate(APScreen.MenuPrincipal.name)
-        }
     }
 }
 
