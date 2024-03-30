@@ -397,14 +397,15 @@ private fun LoginToStart(
 
         //Llenar currentUser con valores del la BD o algo aquí
         /*TODO*/
-
-        prepModInfoPersonalData(
-            modInfoPersonalViewModel,
-            inicioSesionViewModel.uiState.value.usuario
-        )
-        inicioSesionViewModel.resetState()
-        navController.popBackStack()
-        navController.navigate(APScreen.MenuPrincipal.name)
+        if(inicioSesionViewModel.uiState.value.loginExitoso){
+            prepModInfoPersonalData(
+                modInfoPersonalViewModel,
+                inicioSesionViewModel.uiState.value.usuario
+            )
+            inicioSesionViewModel.resetState()
+            navController.popBackStack()
+            navController.navigate(APScreen.MenuPrincipal.name)
+        }
     }
 }
 

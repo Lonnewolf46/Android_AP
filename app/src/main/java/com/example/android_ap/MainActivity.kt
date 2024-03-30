@@ -15,7 +15,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.android_ap.ui.AP_App
 
 import com.example.android_ap.ui.theme.Android_APTheme
-import android.util.Log
+
 
 
 
@@ -33,11 +33,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     AP_App()
                 }
-                val apiCall = APICall()
-                apiCall.getPost { post ->
-                    // Manejar la respuesta de la API aquí
-                    Log.d("APIResponse", "UserId: ${post.userId}, Title: ${post.title}")
-                }
+
             }
         }
     }
