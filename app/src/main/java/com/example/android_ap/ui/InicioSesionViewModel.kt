@@ -1,5 +1,6 @@
 package com.example.android_ap.ui
 
+import APIAccess
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.InicioSesionCampos
 import com.example.android_ap.data.InicioSesionUiState
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import android.util.Log
-import com.example.android_ap.APIAccess
+import kotlinx.coroutines.runBlocking
 
 class InicioSesionViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(InicioSesionUiState())
@@ -34,12 +35,17 @@ class InicioSesionViewModel: ViewModel() {
         {
             _uiState.update { currentState -> currentState.copy(camposLlenos = true,primerInicio = false)}
             //Hacer algo más
-            val apiCall = APIAccess()
-            apiCall.postAPIlogin(email=_uiState.value.usuario, contrasenna = _uiState.value.clave) { post ->
-                // Manejar la respuesta de la API aquí
-                Log.d("APIResponse", "Post: ${post.success}")
-                _uiState.update { currentState -> currentState.copy(loginExitoso = post.success)}
+            val apiAccess = APIAccess()
+
+// Llamada desde una función suspendida, como una función de corutina
+            val resultado = runBlocking {
+                apiAccess.postAPIlogin(_uiState.value.usuario, _uiState.value.clave)
             }
+            _uiState.update { currentState -> currentState.copy(loginExitoso=resultado.success)}
+
+// Ahora puedes utilizar el resultado fuera del contexto de la corutina
+            println("Resultado de la llamada: $resultado")
+
         }
         else _uiState.update { currentState -> currentState.copy(camposLlenos = false,primerInicio = false)}
     }
@@ -47,8 +53,9 @@ class InicioSesionViewModel: ViewModel() {
         _uiState.update { currentState -> currentState.copy(camposLlenos = true)}
     }
 
+
+
     fun resetState() {
         _uiState.value = InicioSesionUiState()
     }
-
 }
