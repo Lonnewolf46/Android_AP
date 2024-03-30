@@ -40,7 +40,7 @@ class Colaborador {
             databaseQuery(`
             EXEC ValidarCredenciales @Email = '${email}', @Contrasenna = '${contrasenna}';
             `).then(result => {
-                resolve(result.length ? Colaborador.deserialize(result[0]) : null);
+                resolve(Colaborador.deserialize(result[0]));
             });
         });
     }

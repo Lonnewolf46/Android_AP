@@ -46,7 +46,7 @@ apiRoutes.get("/colaboradores/sin-proyecto", async(req, res) => {
 apiRoutes.post("/credenciales", async (req, res) => {
     const { email, contrasenna } = req.body;
     const colaborador = await Colaborador.validarCredenciales(email, contrasenna);
-    return res.json({success: !!colaborador, colaborador: colaborador.serialize()});
+    return res.json({success: !!colaborador.id, colaborador: colaborador.serialize()});
 });
 
 apiRoutes.get("/departamentos", async (req, res) => {
