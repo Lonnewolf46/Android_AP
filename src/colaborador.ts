@@ -1,6 +1,7 @@
 import databaseQuery from "./database.js";
 import Proyecto from "./proyecto.js";
 import Notificacion from "./notificacion.js";
+import Departamento from "./departamento.js";
 
 class Colaborador {
     id:number;
@@ -11,8 +12,13 @@ class Colaborador {
     contrasenna:string;
     idProyecto:number;
     idDepartamento:number;
+    departamento:Departamento;
+    proyecto:Proyecto;
     
-    constructor(id:number, nombre:string, cedula:number, telefono:number, email:string, contrasenna:string, idProyecto:number, idDepartamento:number) {
+    constructor(
+        id:number, nombre:string, cedula:number, telefono:number, email:string, contrasenna:string,
+        idProyecto:number, idDepartamento:number, departamento:Departamento, proyecto:Proyecto
+    ) {
         this.id = id;
         this.nombre = nombre;
         this.cedula = cedula;
@@ -21,26 +27,45 @@ class Colaborador {
         this.contrasenna = contrasenna;
         this.idProyecto = idProyecto;
         this.idDepartamento = idDepartamento;
+        this.departamento = departamento;
+        this.proyecto = proyecto;
     }
 
     static byId(id:number) {
-        return new Colaborador(id, "", 0, 0, "", "", 0, 0);
+        return new Colaborador(id, "", 0, 0, "", "", 0, 0, null, null);
     }
 
     static byData(nombre:string, cedula:number, telefono:number, email:string, contrasenna:string, idProyecto:number, idDepartamento:number) {
-        return new Colaborador(0, nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento);
+        return new Colaborador(0, nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento, null, null);
     }
 
-    static deserialize({id, nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento}) {
-        return new Colaborador(id, nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento);
+    static deserialize({id, nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento, departamento, proyecto}) {
+        return new Colaborador(id, nombre, cedula, telefono, email, contrasenna, idProyecto, idDepartamento, departamento, proyecto);
     }
 
     static async validarCredenciales(email:string, contrasenna:string): Promise<Colaborador> {
         return new Promise(resolve => {
+            // EXEC ValidarCredenciales @Email = '${email}', @Contrasenna = '${contrasenna}';
             databaseQuery(`
-            EXEC ValidarCredenciales @Email = '${email}', @Contrasenna = '${contrasenna}';
+                SELECT
+                    c.id, c.nombre, c.cedula, c.telefono, c.email, c.idProyecto, c.idDepartamento,
+                    d.nombre as 'nombreDepartamento',
+                    p.nombre as 'nombreProyecto', p.recursos, p.presupuesto, p.idEstado,
+                    p.descripcion, p.idResponsable, p.fechaInicio, p.fechaFin
+                FROM Colaboradores c
+                JOIN Departamentos d ON d.id=c.idDepartamento
+                JOIN Proyectos p ON c.idProyecto=p.id
+                WHERE c.email='${email}' AND c.contrasenna='${contrasenna}'
             `).then(result => {
-                resolve(Colaborador.deserialize(result[0]));
+                if(result.length) {
+                    const [data] = result;
+                    const colaborador = Colaborador.deserialize(data);
+                    const proyecto = Proyecto.deserialize({...data, id: data.idProyecto, nombre: data.nombreProyecto});
+                    const departamento = new Departamento(data.idDepartamento, data.nombreDepartamento);
+                    colaborador.proyecto = proyecto;
+                    colaborador.departamento = departamento;
+                    resolve(colaborador);
+                } else resolve(null);
             });
         });
     }
@@ -55,7 +80,8 @@ class Colaborador {
     serialize() {
         return {
             id: this.id, nombre: this.nombre, cedula: this.cedula, telefono: this.telefono,
-            email: this.email, idProyecto: this.idProyecto, idDepartamento: this.idDepartamento
+            email: this.email, idProyecto: this.idProyecto, idDepartamento: this.idDepartamento,
+            proyecto: this.proyecto.serialize(), departamento: this.departamento
         }
     }
 

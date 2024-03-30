@@ -61,11 +61,29 @@
 {
   "success": true,
   "colaborador": {
-    "id": 3,
-    "nombre": "Langsdon Mickelwright",
-    "cedula": 239626712,
-    "telefono": 72023128,
-    "email": "lmickelwright0@estudiantec.cr"
+    "id": 7,
+    "nombre": "Caty",
+    "cedula": 209873452,
+    "telefono": 88435356,
+    "email": "puravida@estudiantec.cr",
+    "idProyecto": 9,
+    "idDepartamento": 2,
+    "proyecto": {
+      "id": 9,
+      "nombre": "Cafetería",
+      "recursos": "Materiales de construcción",
+      "presupuesto": 10000,
+      "idEstado": 1,
+      "descripcion": "Local para vender café",
+      "idResponsable": 4,
+      "fechaInicio": "2024-03-25T00:00:00.000Z",
+      "fechaFin": "2024-03-26T00:00:00.000Z"
+    },
+    "departamento": {
+      "id": 2,
+      "nombre": "Recursos Humanos"
+    }
+  }
 }
 ```
 
