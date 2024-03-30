@@ -7,6 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface Rutas {
     @POST("credenciales")
@@ -20,6 +22,10 @@ interface Rutas {
 
     @POST("colaboradores")
     suspend fun postAPICrearColaborador(@Body body: Map<String, String>): Response
+
+    @PUT("colaboradores/{id}")
+    suspend fun putAPIModificarColaborador(@Path("id") id: Int, @Body body: Map<String, String>): Response
+
 }
 
 class APIAccess {
@@ -54,7 +60,6 @@ class APIAccess {
         idDepartamento: Int): Response
     {
         val api = api()
-
         val body = mapOf(
             "nombre" to nombre,
             "cedula" to cedula.toString(),
@@ -64,9 +69,24 @@ class APIAccess {
             "idProyecto" to idProyecto.toString(),
             "idDepartamento" to idDepartamento.toString()
         )
-
         return api.postAPICrearColaborador(body)
+    }
 
+    suspend fun putAPIModificarColaborador(
+        id: Int,
+        telefono: Int,
+        email: String,
+        idProyecto: Int,
+        idDepartamento: Int): Response
+    {
+        val api = api()
+        val body = mapOf(
+            "telefono" to telefono.toString(),
+            "email" to email,
+            "idProyecto" to idProyecto.toString(),
+            "idDepartamento" to idDepartamento.toString()
+        )
+        return api.putAPIModificarColaborador(id,body)
     }
 
 }

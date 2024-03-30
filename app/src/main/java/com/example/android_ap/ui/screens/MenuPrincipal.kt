@@ -183,8 +183,7 @@ private fun InfoProyecto(proyecto: String,modifier: Modifier) {
                 .height(36.dp)){
                 Text(text = proyecto,
                     fontWeight = FontWeight.Bold,
-                    modifier = modifier
-                        .height(32.dp)
+                    fontSize = 16.sp
                 )
             }
 

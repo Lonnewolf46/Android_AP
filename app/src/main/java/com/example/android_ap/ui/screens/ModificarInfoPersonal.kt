@@ -24,17 +24,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import com.example.android_ap.Depto
+import com.example.android_ap.Project
 import com.example.android_ap.data.RegistroCampos
+import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
 import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
 @Composable
 fun ModificarInfoPersonalLayout(
+    idUsuario: Int,
     telefono: String,
     email: String,
-    camposLlenos: Boolean,
+    proyecto: String,
+    departamento: String,
+    listaProyectos: List<Project>,
+    listaDepartamentos: List<Depto>,
+    codigoResult: Int,
+    onProySelectionChange: (String) -> Unit,
+    onDeptoSelectionChange: (String) -> Unit,
     onTextInput: (RegistroCampos, String) -> Unit,
-    onActualizarClicked: () -> Unit,
+    onActualizarClicked: (Int) -> Unit,
     onDialogClose: () -> Unit
 ) {
 
@@ -48,12 +58,18 @@ fun ModificarInfoPersonalLayout(
         DatosPersonales(
             telefono = telefono,
             email = email,
+            proyecto = proyecto,
+            departamento = departamento,
+            listaProyectos = listaProyectos,
+            listaDepartamentos = listaDepartamentos,
+            onProySelectionChange = onProySelectionChange,
+            onDeptoSelectionChange = onDeptoSelectionChange,
             onTextInput = onTextInput,
             modifier = Modifier.padding(8.dp)
         )
 
         Button(
-            onClick = { onActualizarClicked() },
+            onClick = { onActualizarClicked(idUsuario) },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .height(48.dp)
@@ -68,9 +84,15 @@ fun ModificarInfoPersonalLayout(
 
     }
 
-    if(!camposLlenos){
-        Warning(
+    when(codigoResult){
+        0 -> Warning(
+                texto = "Información Actualizada",
+                onClose = { onDialogClose() })
+        1 -> Warning(
             texto = "Se requieren llenar todos los campos",
+            onClose = { onDialogClose() })
+        3 -> Warning(
+            texto = "Ha ocurrido un error de red",
             onClose = { onDialogClose() })
 
     }
@@ -81,6 +103,12 @@ fun ModificarInfoPersonalLayout(
 private fun DatosPersonales(
     telefono: String,
     email: String,
+    proyecto: String,
+    departamento: String,
+    listaProyectos: List<Project>,
+    listaDepartamentos: List<Depto>,
+    onProySelectionChange: (String) -> Unit,
+    onDeptoSelectionChange: (String) -> Unit,
     onTextInput: (RegistroCampos, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -116,9 +144,19 @@ private fun DatosPersonales(
             )
         )
 
-        Demo_ExposedDropdownMenuBox("PROYECTO")
+        CustomExposedDropdownMenuBox(
+            titulo = "PROYECTO",
+            seleccionado = proyecto,
+            listaElementos = listaProyectos.map{it.nombre},
+            onValueChange = { onProySelectionChange(it) }
+        )
 
-        Demo_ExposedDropdownMenuBox("DEPARTAMENTO")
+        CustomExposedDropdownMenuBox(
+            titulo = "DEPARTAMENTO",
+            seleccionado = departamento,
+            listaElementos = listaDepartamentos.map{it.nombre},
+            onValueChange = { onDeptoSelectionChange(it) }
+        )
 
         OutlinedTextField(
             value = email,

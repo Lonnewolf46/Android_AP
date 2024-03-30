@@ -139,7 +139,10 @@ fun AP_App() {
                         navController.popBackStack()
                         navController.navigate(APScreen.Notificaciones.name)
                     },
-                    onMasClick = { navController.navigate(APScreen.ModificarInfoPersonal.name) })
+                    onMasClick = {
+                        modInfoPersonalViewModel.cargarProyectos()
+                        modInfoPersonalViewModel.cargarDepartamentos()
+                        navController.navigate(APScreen.ModificarInfoPersonal.name) })
             }
         },
 
@@ -259,12 +262,20 @@ fun AP_App() {
             //Modificacion de informacion personal
             composable(route = APScreen.ModificarInfoPersonal.name) {
                 ModificarInfoPersonalLayout(
+                    idUsuario = userInfo.id,
                     telefono = modInfoPersonalUiState.telefono,
                     email = modInfoPersonalUiState.correo,
-                    camposLlenos = modInfoPersonalUiState.datosCorrectos,
+                    proyecto = modInfoPersonalUiState.proyecto,
+                    departamento = modInfoPersonalUiState.departamento,
+                    listaProyectos = modInfoPersonalUiState.listaProyectos,
+                    listaDepartamentos = modInfoPersonalUiState.listaDepartamentos,
+                    codigoResult = modInfoPersonalUiState.codigoResultado,
+                    onProySelectionChange = { modInfoPersonalViewModel.actualizarProy(it) },
+                    onDeptoSelectionChange = { modInfoPersonalViewModel.actualizarDep(it) },
                     onTextInput = modInfoPersonalViewModel::actualizarDatos,
-                    onActualizarClicked = { /*TODO*/ }) {
-                }
+                    onActualizarClicked = modInfoPersonalViewModel::subirCambios,
+                    onDialogClose = { modInfoPersonalViewModel.cerrarEmergente() }
+                )
             }
 
             //Trabajo
@@ -418,6 +429,8 @@ private fun LoginToStart(
             prepModInfoPersonalData(
                 modInfoPersonalViewModel = modInfoPersonalViewModel,
                 telefono = output.colaborador.telefono.toString(),
+                proyecto = output.colaborador.proyecto.nombre,
+                departamento = output.colaborador.departamento.nombre,
                 email = output.colaborador.email
 
             )
@@ -433,11 +446,13 @@ private fun LoginToStart(
 private fun prepModInfoPersonalData(
     modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
     telefono: String,
+    proyecto: String,
+    departamento: String,
     email: String
 ) {
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO, telefono)
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO, "Proyecto 1")
-    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, "Departamento 1")
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO, proyecto)
+    modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, departamento)
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO, email)
 }
 

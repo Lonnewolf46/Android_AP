@@ -1,7 +1,6 @@
 package com.example.android_ap.ui
 
 import APIAccess
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -163,7 +162,6 @@ class RegistroViewModel: ViewModel() {
                             idDepartamento = idDepartamento
                         )
                     }
-                    Log.d("API Respuesta","Respuesta $resultado")
 
                     if (resultado.success)
                         _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
