@@ -33,6 +33,14 @@ class RegistroViewModel: ViewModel() {
         }
     }
 
+    fun actualizarProy(input: String){
+        actualizarDatos(RegistroCampos.PROYECTO, input)
+    }
+    fun actualizarDep(input: String){
+        actualizarDatos(RegistroCampos.DEPARTAMENTO, input)
+    }
+
+
     /**
     Alterna la visibilidad de la contraseña
      */
@@ -48,18 +56,20 @@ class RegistroViewModel: ViewModel() {
      -1: Por defecto
      0: Proces correcto
      1: Quedan campos vacios
-     2: correo inválido
-     3: Cedula es menos de 9 caracteres
-     4: Telefono es menos de 8 caracteres
-     5: Contraseña es menos de 4 caracteres
+     4: correo inválido
+     5: Cedula es menos de 9 caracteres
+     6: Telefono es menos de 8 caracteres
+     7: Contraseña es menos de 4 caracteres
      */
     fun validarCampos(){
-        if (_uiState.value.nombre!="" &&
-            _uiState.value.cedula!="" &&
-            _uiState.value.telefono!="" &&
-            _uiState.value.nombre!="" &&
-            _uiState.value.correo!="" &&
-            _uiState.value.clave!="")
+        if (_uiState.value.nombre.isNotBlank() &&
+            _uiState.value.cedula.isNotBlank() &&
+            _uiState.value.telefono.isNotBlank() &&
+            _uiState.value.proyecto.isNotBlank() &&
+            _uiState.value.departamento.isNotBlank() &&
+            _uiState.value.nombre.isNotBlank() &&
+            _uiState.value.correo.isNotBlank() &&
+            _uiState.value.clave.isNotBlank())
         {
             val correo = _uiState.value.correo
             val regex = Regex("""\b[A-Za-z0-9._%+-]+@(estudiantec\.cr|itcr\.ac\.cr)\b""")
@@ -68,19 +78,19 @@ class RegistroViewModel: ViewModel() {
             //Validacion de información
             //Correo valido
             if(!regex.matches(correo)){
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 2)}
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 4)}
             }
             //Cedula con largo minimo
             else if(_uiState.value.cedula.length < 9){
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 3)}
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 5)}
             }
             //Telefono con largo minimo
             else if(_uiState.value.telefono.length < 8){
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 4)}
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 6)}
             }
             //Contraseña con largo minimo
             else if(_uiState.value.clave.length < 4){
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 5)}
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 7)}
             }
             else{
                 //Actualizar valor para no mostrar aviso

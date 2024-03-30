@@ -39,10 +39,11 @@ class InicioSesionViewModel : ViewModel() {
     0: Proceso correcto
     1: Quedan campos vacios
     2: Credenciales incorrectas
+    3: Error de red
      */
     fun validarCampos(): APIlogin? {
-        if (_uiState.value.usuario != "" &&
-            _uiState.value.clave != ""
+        if (_uiState.value.usuario.isNotBlank() &&
+            _uiState.value.clave.isNotBlank()
         ) {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }//Campos llenos
 

@@ -1,6 +1,5 @@
 package com.example.android_ap.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,10 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.example.android_ap.data.TareaCampos
 import com.example.android_ap.ui.popups.NuevaTarea
 import com.example.android_ap.ui.theme.Android_APTheme
-import android.content.Context
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.outlined.Create
-import androidx.compose.ui.platform.LocalContext
 import com.example.android_ap.ui.popups.Warning
 
 /**
@@ -47,9 +44,10 @@ fun TrabajoLayout(
     codigoResult: Int,
     onEditarTareaClick: () -> Unit,
     onOpcionesProyectoClick: () -> Unit,
-    onCrearTareaValueChange: (TareaCampos, String) -> Unit,
-    onCrearTareaConfirmar: () -> Unit,
-    onCrearTareaCerrarClick: () -> Unit
+    onTareaValueChange: (TareaCampos, String) -> Unit,
+    onTareaEncargadoSelectionChange: (String) -> Unit,
+    onTareaConfirmar: () -> Unit,
+    onTareaCerrarClick: () -> Unit
 ){
     Column(horizontalAlignment = Alignment.CenterHorizontally
         ,modifier = Modifier
@@ -64,17 +62,19 @@ fun TrabajoLayout(
                 NuevaTarea(
                     nombre = nombreTarea,
                     storyPoints = storyPoints,
+                    encargado = encargado,
                     codigoResult = codigoResult,
-                    onValueChange = onCrearTareaValueChange,
-                    onConfirmar = onCrearTareaConfirmar,
-                    onCerrarClick = onCrearTareaCerrarClick
+                    onValueChange = onTareaValueChange,
+                    onEncargadoSelectionChange = onTareaEncargadoSelectionChange,
+                    onConfirmar = onTareaConfirmar,
+                    onCerrarClick = onTareaCerrarClick
                 )
         }
         //Si la tarea fue creada satisfactoriamente
         else if(codigoResult == 0){
             Warning(
                 texto = "Tarea creada",
-                onClose = { onCrearTareaCerrarClick() })
+                onClose = { onTareaCerrarClick() })
         }
     }
 }

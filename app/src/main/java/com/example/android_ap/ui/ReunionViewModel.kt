@@ -34,11 +34,11 @@ class ReunionViewModel: ViewModel() {
     1: Quedan campos vacios
      */
     fun CrearReunion(){
-        if(_uiState.value.tema.isNotEmpty() &&
-            _uiState.value.fecha.isNotEmpty() &&
-            _uiState.value.medio.isNotEmpty() &&
-            _uiState.value.formato.isNotEmpty() &&
-            _uiState.value.detalles.isNotEmpty()
+        if(_uiState.value.tema.isNotBlank() &&
+            _uiState.value.fecha.isNotBlank() &&
+            _uiState.value.medio.isNotBlank() &&
+            _uiState.value.formato.isNotBlank() &&
+            _uiState.value.detalles.isNotBlank()
             ){
             //Intentar crear reunion
 

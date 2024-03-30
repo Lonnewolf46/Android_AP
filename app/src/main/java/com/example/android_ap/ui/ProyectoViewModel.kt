@@ -31,11 +31,11 @@ class ProyectoViewModel: ViewModel() {
     1: Quedan campos vacios
      */
     fun CrearProyecto(){
-        if(_uiState.value.nombre.isNotEmpty() &&
-            _uiState.value.recursos.isNotEmpty() &&
-            _uiState.value.presupuesto.isNotEmpty() &&
+        if(_uiState.value.nombre.isNotBlank() &&
+            _uiState.value.recursos.isNotBlank() &&
+            _uiState.value.presupuesto.isNotBlank() &&
             //_uiState.value.estado.isNotEmpty() &&
-            _uiState.value.descripcion.isNotEmpty() //&&
+            _uiState.value.descripcion.isNotBlank() //&&
             //_uiState.value.responsable.isNotEmpty()
             ){
             //Hacer solicitud

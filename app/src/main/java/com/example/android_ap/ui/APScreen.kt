@@ -225,11 +225,15 @@ fun AP_App() {
                     cedula = registroUiState.cedula,
                     telefono = registroUiState.telefono,
                     email = registroUiState.correo,
+                    proyecto = registroUiState.proyecto,
+                    departamento = registroUiState.departamento,
                     clave = registroUiState.clave,
                     passwordVisible = registroUiState.claveVisible,
                     datosCorrectos = registroUiState.datosCorrectos,
                     codigoRes = registroUiState.codigoResultado,
                     onTextInput = registroViewModel::actualizarDatos,
+                    onProySelectionChange = registroViewModel::actualizarProy,
+                    onDeptSelectionChange = { registroViewModel.actualizarDep(it) },
                     onViewPassword = { registroViewModel.verClave(it) },
                     onInicioSesionTextClicked = { navController.navigateUp() },
                     onRegistroClicked = registroViewModel::validarCampos,
@@ -265,9 +269,10 @@ fun AP_App() {
                     codigoResult = tareaUiState.codigoResultado,
                     onEditarTareaClick = { /*TODO*/ },
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
-                    onCrearTareaValueChange = tareaViewModel::ActualizarCampos,
-                    onCrearTareaConfirmar = { tareaViewModel.CrearTarea() },
-                    onCrearTareaCerrarClick = { tareaViewModel.resetState() })
+                    onTareaValueChange = tareaViewModel::ActualizarCampos,
+                    onTareaEncargadoSelectionChange = tareaViewModel::ActualizarEncargado,
+                    onTareaConfirmar = { tareaViewModel.CrearTarea() },
+                    onTareaCerrarClick = { tareaViewModel.resetState() })
             }
 
             //Notificaciones
@@ -416,13 +421,15 @@ private fun prepModInfoPersonalData(
     telefono: String,
     email: String
 ) {
-
-    //Datos mockup
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.TELEFONO, telefono)
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO, "Proyecto 1")
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, "Departamento 1")
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO, email)
 }
+
+//private fun CargarDepartamentos(navController: NavController, Departamento: List<>){
+//
+//}
 
 /*
 * ¿Cómo hacer que recupere información antes de cargar algo? Simple, un cargar por funcion aparte, al

@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -31,14 +32,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.android_ap.data.TareaCampos
-import com.example.android_ap.ui.screens.Demo_ExposedDropdownMenuBox
+import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
 import com.example.android_ap.ui.theme.Android_APTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NuevaTarea(nombre: String,
                storyPoints: String,
+               encargado: String,
                onValueChange: (TareaCampos, String) -> Unit,
+               onEncargadoSelectionChange: (String) -> Unit,
                codigoResult: Int,
                onConfirmar: () -> Unit,
                onCerrarClick: () -> Unit){
@@ -101,7 +104,19 @@ fun NuevaTarea(nombre: String,
                     )
                 )
 
-                Demo_ExposedDropdownMenuBox("ENCARGADO", Modifier.fillMaxWidth())
+                val listaEncargados =
+                    listOf("Encargado 1", "Encargado 2", "Encargado 3", "Encargado 4", "Encargado 5")
+                CustomExposedDropdownMenuBox(
+                    titulo= "ENCARGADO",
+                    seleccionado = encargado,
+                    listaElementos = listaEncargados,
+                    onValueChange = { onEncargadoSelectionChange(it) })
+
+                if(codigoResult==10){
+                    Text(text = "Se requiere de un encargado",
+                        fontSize = 8.sp,
+                        color = Color.Red)
+                }
 
                 Button(onClick = onConfirmar,
                     modifier = Modifier.fillMaxWidth()) {

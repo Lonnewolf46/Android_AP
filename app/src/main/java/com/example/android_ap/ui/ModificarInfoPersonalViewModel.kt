@@ -29,13 +29,11 @@ class ModificarInfoPersonalViewModel: ViewModel() {
     }
 
     fun validarCampos(){
-        if (_uiState.value.nombre!="" &&
-            _uiState.value.cedula!="" &&
-            _uiState.value.telefono!="" &&
-            _uiState.value.nombre!="" &&
-            _uiState.value.correo!="" &&
-            _uiState.value.clave!="")
-        {
+        if (_uiState.value.telefono.isNotBlank() &&
+            _uiState.value.correo.isNotBlank() &&
+            _uiState.value.proyecto.isNotBlank() &&
+            _uiState.value.departamento.isNotBlank()
+            ){
             //Actualizar valor para no mostrar aviso
             _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
 

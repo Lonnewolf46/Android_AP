@@ -28,20 +28,28 @@ class TareaViewModel: ViewModel(){
         }
     }
 
+    fun ActualizarEncargado(input: String){
+        ActualizarCampos(TareaCampos.ENCARGADO, input)
+    }
+
     /**
      Funcion para crear una tarea
      CODIGOS
      -1: Por defecto
      0: Correcto
-     6: Nombre de tarea incorrecto
-     7: StoryPoints incorrecto
+     8: Nombre de tarea incorrecto
+     9: StoryPoints incorrecto
+     10: Encargado no seleccionado
     */
     fun CrearTarea() {
-        if (_uiState.value.nombreTarea == "") {
-            _uiState.update{currentState -> currentState.copy(codigoResultado = 6)}
+        if (_uiState.value.nombreTarea.isBlank()) {
+            _uiState.update{currentState -> currentState.copy(codigoResultado = 8)}
         }
-        else if(_uiState.value.storyPoints == "")
-            _uiState.update{currentState -> currentState.copy(codigoResultado = 7)}
+        else if(_uiState.value.storyPoints.isBlank())
+            _uiState.update{currentState -> currentState.copy(codigoResultado = 9)}
+
+        else if(_uiState.value.encargado.isBlank())
+            _uiState.update{currentState -> currentState.copy(codigoResultado = 10)}
         else{
             //Aqui van acciones para crear tarea nueva
 

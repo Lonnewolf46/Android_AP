@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
+import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
 import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
@@ -56,12 +57,16 @@ fun RegistroLayout(
     nombre: String,
     cedula: String,
     telefono: String,
+    proyecto: String,
+    departamento: String,
     email: String,
     clave: String,
     passwordVisible: Boolean,
     datosCorrectos: Boolean,
     codigoRes: Int,
     onTextInput: (RegistroCampos, String) -> Unit,
+    onProySelectionChange: (String) -> Unit,
+    onDeptSelectionChange: (String) -> Unit,
     onViewPassword: (Boolean) -> Unit,
     onInicioSesionTextClicked: () -> Unit,
     onRegistroClicked: () -> Unit,
@@ -83,10 +88,14 @@ fun RegistroLayout(
             nombre = nombre,
             cedula = cedula,
             telefono = telefono,
+            proyecto = proyecto,
+            departamento = departamento,
             email = email,
             clave = clave,
             passwordVisible = passwordVisible,
             onTextInput = onTextInput,
+            onProySelectionChange = onProySelectionChange,
+            onDeptSelectionChange = onDeptSelectionChange,
             onViewPassword = onViewPassword,
             modifier = Modifier.padding(8.dp)
         )
@@ -130,17 +139,17 @@ fun RegistroLayout(
             1 -> Warning(
                  texto = "Se requieren llenar todos los campos",
                  onClose = { onDialogClose() })
-            2 -> Warning(
+            4 -> Warning(
                 texto = "El correo debe ser el institucional",
                 onClose = { onDialogClose() })
-            3 -> Warning(
+            5 -> Warning(
                 texto = "Verifique su número de cédula",
                 onClose = { onDialogClose() })
-            4 -> Warning(
+            6 -> Warning(
                 texto = "Verifique su número de teléfono",
                 onClose = { onDialogClose() })
-            5 -> Warning(
-                texto = "La contraseña requiere de mínimo 4 carácteres",
+            7 -> Warning(
+                texto = "La contraseña requiere un mínimo 4 carácteres",
                 onClose = { onDialogClose() })
         }
     }
@@ -159,10 +168,14 @@ fun DatosRegistro(
     nombre: String,
     cedula: String,
     telefono: String,
+    proyecto: String,
+    departamento: String,
     email: String,
     clave: String,
     passwordVisible: Boolean,
     onTextInput: (RegistroCampos, String) -> Unit,
+    onProySelectionChange: (String) -> Unit,
+    onDeptSelectionChange: (String) -> Unit,
     onViewPassword: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -209,7 +222,7 @@ fun DatosRegistro(
             label = { Text(text = "CÉDULA") },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Next
             )
         )
 
@@ -233,9 +246,22 @@ fun DatosRegistro(
             )
         )
 
-        Demo_ExposedDropdownMenuBox("PROYECTO")
+        val listaProyectos =
+            listOf("Proyecto 1", "Proyecto 2", "Proyecto 3", "Proyecto 4", "Proyecto 5")
+        CustomExposedDropdownMenuBox(
+            titulo = "PROYECTO",
+            listaElementos = listaProyectos,
+            seleccionado = proyecto,
+            onValueChange = { onProySelectionChange(it) }
+            )
 
-        Demo_ExposedDropdownMenuBox("DEPARTAMENTO")
+        val listaDepartamentos =
+            listOf("Departamento 1", "Departamento 2", "Departamento 3", "Departamento 4", "Departamento 5")
+        CustomExposedDropdownMenuBox(
+            titulo = "DEPARTAMENTO",
+            listaElementos = listaDepartamentos,
+            seleccionado = departamento,
+            onValueChange = { onDeptSelectionChange(it) })
 
         OutlinedTextField(
             value = email,
@@ -291,7 +317,8 @@ fun DatosRegistro(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Demo_ExposedDropdownMenuBox(titulo: String, modifier: Modifier = Modifier) {
+fun Demo_ExposedDropdownMenuBox(titulo: String,
+                                modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val listaProyectos =
         arrayOf("$titulo 1", "$titulo 2", "$titulo 3", "$titulo 4", "$titulo 5")
