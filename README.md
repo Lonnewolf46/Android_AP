@@ -382,13 +382,24 @@
 ```json
 [
   {
-    "nombre": 7,
+    "id": 19,
+    "nombre": "empanadas 2",
     "storyPoints": 12,
-    "idProyecto": 10,
-    "idEncargado": 4,
-    "fechaInicio": "1905-06-20T00:00:00.000Z",
-    "fechaFin": "1905-06-19T00:00:00.000Z",
+    "idProyecto": 2,
+    "idEncargado": 8,
+    "fechaInicio": "2005-06-20T00:00:00.000Z",
+    "fechaFin": "2005-06-19T00:00:00.000Z",
     "idEstado": 1
+  },
+  {
+    "id": 20,
+    "nombre": "empanadas",
+    "storyPoints": 12,
+    "idProyecto": 2,
+    "idEncargado": 8,
+    "fechaInicio": "2005-06-20T00:00:00.000Z",
+    "fechaFin": "2005-06-19T00:00:00.000Z",
+    "idEstado": 2
   }
 ]
 ```
@@ -435,7 +446,7 @@
 
 **Método:** PUT
 
-**Ruta:** /api/proyectos/<id_proyecto>/tareas/<id_tarea>
+**Ruta:** /api/tareas/<id_tarea>
 
 **Descripción:** Modifica los datos de una tarea
 
@@ -460,11 +471,11 @@
 
 
 
-## Eliminación de tarea en proyecto
+## Eliminación de tarea
 
 **Método:** DELETE
 
-**Ruta:** /proyectos/<id_proyecto>/tareas/<id_tarea>
+**Ruta:** /tareas/<id_tarea>
 
 **Descripción:** Elimina una tarea de un proyecto
 
@@ -538,32 +549,6 @@
 **Método:** GET
 
 **Ruta:** /api/foros/<id_proyecto>
-
-**Descripción:** Devuelve la información de un foro de un proyecto
-
-#### Ejemplo de respuesta
-```json
-{
-  "nombre": "Cafetería",
-  "mensajes": [
-    {
-      "id": 1,
-      "mensaje": "prueba de mensaje a foro",
-      "idProyecto": 9,
-      "idEmisor": 4,
-      "fecha": null
-    }
-  ]
-}
-```
-
-
-
-## Foro de proyecto
-
-**Método:** GET
-
-**Ruta:** /api/foros/general
 
 **Descripción:** Devuelve la información de un foro de un proyecto
 
@@ -762,4 +747,63 @@
     "idDepartamento": 1
   }
 ]
+```
+
+
+
+## Tareas de colaborador
+
+**Método:** GET
+
+**Ruta:** /api/colaboradores/<id_colaborador>/tareas
+
+**Descripción:** Devuelve las tareas de un colaborador
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "id": 19,
+    "nombre": "empanadas 2",
+    "storyPoints": 12,
+    "idProyecto": 2,
+    "idEncargado": 8,
+    "fechaInicio": "2005-06-20T00:00:00.000Z",
+    "fechaFin": "2005-06-19T00:00:00.000Z",
+    "idEstado": 1
+  },
+  {
+    "id": 20,
+    "nombre": "empanadas",
+    "storyPoints": 12,
+    "idProyecto": 2,
+    "idEncargado": 8,
+    "fechaInicio": "2005-06-20T00:00:00.000Z",
+    "fechaFin": "2005-06-19T00:00:00.000Z",
+    "idEstado": 2
+  }
+]
+```
+
+
+
+## Modificación de estado de tarea
+
+**Método:** PUT
+
+**Ruta:** /api/tareas/<id_tarea>/estado
+
+**Descripción:** Modifica el estado de una tarea
+
+#### Parámetros de consulta:
+- `idEstado`: number
+
+#### Ejemplo de solicitud
+```json
+{"idEstado": 2}
+```
+
+#### Ejemplo de respuesta
+```json
+{"success": true}
 ```

@@ -50,16 +50,13 @@ class Tarea {
     }
 
     async actualizarEstado() {
-        // try {
-        //     await databaseQuery(`
-        //     EXEC updateEstadoTarea
-        //     @inNombreTarea ='${this.nombre}',
-        //     @inEstadoTarea ='${this.estado}',
-        //     @inNombreProyecto= '${this.nombreProyecto}'
-        //     `);
-        // } catch (error) {
-        //     console.error("Error al actualizar el estado:", error);
-        // }
+        await databaseQuery(`UPDATE Tareas SET idEstado=${this.idEstado} WHERE id=${this.id}`);
+    }
+
+    async eliminar() {
+        await databaseQuery(`
+            DELETE Tareas WHERE id=${this.id}
+        `);
     }
 }
 

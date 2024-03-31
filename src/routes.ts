@@ -9,12 +9,14 @@ import Reunion from "./reunion.js";
 
 const apiRoutes = Router();
 
+// Crear colaborador
 apiRoutes.post("/colaboradores", async (req, res) => {
     const colaborador = Colaborador.deserialize(req.body);
     await colaborador.crear();
     return res.json({success: true});
 });
 
+// Modificar colaborador
 apiRoutes.put("/colaboradores/:idColaborador", async (req, res) => {
     const { idColaborador } = req.params;
     const { telefono, idProyecto, idDepartamento, email } = req.body;
@@ -23,6 +25,7 @@ apiRoutes.put("/colaboradores/:idColaborador", async (req, res) => {
     return res.json({success: true});
 });
 
+// Notificaciones de colaborador
 apiRoutes.get("/colaboradores/:idColaborador/notificaciones", async (req, res) => {
     const { idColaborador } = req.params;
     const colaborador = Colaborador.byId(Number(idColaborador));
@@ -30,6 +33,7 @@ apiRoutes.get("/colaboradores/:idColaborador/notificaciones", async (req, res) =
     return res.json(notificaciones);
 });
 
+// Reasignar a colaborador de proyecto
 apiRoutes.put("/colaboradores/:idColaborador/reasignar-proyecto", async (req, res) => {
     const { idColaborador } = req.params;
     const { idProyecto } = req.body;
@@ -38,6 +42,7 @@ apiRoutes.put("/colaboradores/:idColaborador/reasignar-proyecto", async (req, re
     return res.json({success: true});
 });
 
+// Tareas de colaborador
 apiRoutes.get("/colaboradores/:idColaborador/tareas", async (req, res) => {
     const { idColaborador } = req.params;
     const colaborador = Colaborador.byId(Number(idColaborador));
@@ -45,27 +50,33 @@ apiRoutes.get("/colaboradores/:idColaborador/tareas", async (req, res) => {
     return res.json(tareas);
 });
 
+
+// Colaboradores sin proyecto
 apiRoutes.get("/colaboradores/sin-proyecto", async(req, res) => {
     const colaboradores = await Colaborador.obtenerColaboradoresSinProyecto()
     return res.json(colaboradores.map(c => c.serialize()));
 });
 
+// Validación de credenciales (login)
 apiRoutes.post("/credenciales", async (req, res) => {
     const { email, contrasenna } = req.body;
     const colaborador = await Colaborador.validarCredenciales(email, contrasenna);
     return res.json({success: !!colaborador, colaborador: colaborador ? colaborador.serialize() : null});
 });
 
+// Departamentos
 apiRoutes.get("/departamentos", async (req, res) => {
     const departamentos = await Departamento.obtenerDepartamentos();
     return res.json(departamentos);
 });
 
+// Proyectos
 apiRoutes.get("/proyectos", async(req, res) => {
     const proyectos = await Proyecto.obtenerProyectos();
     return res.json(proyectos.map(p => p.serialize()));
 });
 
+// Crear proyecto
 apiRoutes.post("/proyectos", async(req, res) => {
     const data = {...req.body};
     data.tareas = data.tareas.map(Tarea.deserialize);
@@ -75,6 +86,7 @@ apiRoutes.post("/proyectos", async(req, res) => {
     return res.json({success: true});
 });
 
+// Modificar proyecto
 apiRoutes.put("/proyectos/:idProyecto", async(req, res) => {
     const { idProyecto } = req.params;
     const tareas = req.body.tareas.map(t => Tarea.deserialize({...t, idProyecto}));
@@ -84,6 +96,7 @@ apiRoutes.put("/proyectos/:idProyecto", async(req, res) => {
     return res.json({success: true});
 });
 
+// Tareas de proyecto
 apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = Proyecto.byId(idProyecto);
@@ -91,33 +104,39 @@ apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
     return res.json(tareas);
 });
 
-// Actualizar tarea
-apiRoutes.put("/proyectos/tareas/actualizar", async(req, res) => {
-    const tarea = Tarea.deserialize({...req.body});
+// Modificar tarea
+apiRoutes.put("/tareas/:idTarea/actualizar", async(req, res) => {
+    const { idTarea } = req.params;
+    const tarea = Tarea.deserialize({...req.body, id: idTarea});
     await tarea.actualizar();
     return res.json({success: true});
 });
 
-// Actualizar estado tarea
-apiRoutes.put("/proyectos/tareas/estado", async(req, res) => {
-    const tarea = Tarea.deserialize({...req.body});
+// Modificar estado de tarea
+apiRoutes.put("/tareas/:idTarea/estado", async(req, res) => {
+    const { idTarea } = req.params;
+    const tarea = Tarea.deserialize({...req.body, id: idTarea});
     await tarea.actualizarEstado();
     return res.json({success: true});
 });
 
-apiRoutes.delete("/proyectos/:idProyecto/tareas/:idTarea", async(req, res) => {
-    const { idProyecto, idTarea } = req.params;
-    const proyecto = Proyecto.byId(Number(idProyecto));
-    await proyecto.eliminarTarea(Tarea.byId(Number(idTarea)));
+// Eliminación de tarea
+apiRoutes.delete("/tareas/:idTarea", async(req, res) => {
+    const { idTarea } = req.params;
+    const tarea = Tarea.byId(Number(idTarea));
+    await tarea.eliminar();
     return res.json({success: true});
 });
 
-apiRoutes.post("/proyectos/tareas", async(req, res) => {
-    const tarea = Tarea.deserialize({...req.body});
+// Creación de tarea
+apiRoutes.post("/proyectos/<id_proyecto>/tareas", async(req, res) => {
+    const { idProyecto } = req.params;
+    const tarea = Tarea.deserialize({...req.body, idProyecto});
     await tarea.crear();
     return res.json({success: true});
 });
 
+// Colaboradores de proyecto
 apiRoutes.get("/proyectos/:idProyecto/colaboradores", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = Proyecto.byId(idProyecto);
@@ -125,6 +144,7 @@ apiRoutes.get("/proyectos/:idProyecto/colaboradores", async(req, res) => {
     return res.json(colaboradores.map(c => c.serialize()));
 });
 
+// Eliminar colaborador en un proyecto
 apiRoutes.delete("/proyectos/:idProyecto/colaboradores/:idColaborador", async(req, res) => {
     const { idProyecto, idColaborador } = req.params;
     const proyecto = Proyecto.byId(Number(idProyecto));
@@ -132,17 +152,21 @@ apiRoutes.delete("/proyectos/:idProyecto/colaboradores/:idColaborador", async(re
     return res.json({success: true});
 });
 
+// Crear notificación
 apiRoutes.post("/notificaciones", async(req, res) => {
     const notificacion = Notificacion.deserialize(req.body);
     await notificacion.crear();
     return res.json({success: true});
 });
 
+// Foro general
 apiRoutes.get("/foros/general", async(req, res) => {
     const foro = await ForoGeneral.obtenerForo();
     return res.json(foro);
 });
 
+
+// Foro interno
 apiRoutes.get("/foros/:idProyecto", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = await Proyecto.loadDataById(Number(idProyecto));
@@ -150,6 +174,7 @@ apiRoutes.get("/foros/:idProyecto", async(req, res) => {
     return res.json(foro);
 });
 
+// Crear mensaje para foro general
 apiRoutes.post("/foros/general/mensajes", async(req, res) => {
     const foro = ForoGeneral.new();
     const mensaje = Mensaje.deserialize(req.body);
@@ -157,6 +182,7 @@ apiRoutes.post("/foros/general/mensajes", async(req, res) => {
     return res.json({success: true});
 });
 
+// Crear mensaje para foro interno
 apiRoutes.post("/foros/:idProyecto/mensajes", async(req, res) => {
     const { idProyecto } = req.params;
     const foro = ForoInterno.byId(Number(idProyecto));
@@ -165,6 +191,7 @@ apiRoutes.post("/foros/:idProyecto/mensajes", async(req, res) => {
     return res.json({success: true});
 });
 
+// Crear reunión para proyecto
 apiRoutes.post("/proyectos/:idProyecto/reuniones", async(req, res) => {
     const { idProyecto } = req.params;
     const colaboradores = req.body.colaboradores.map(Colaborador.byId);
@@ -173,6 +200,7 @@ apiRoutes.post("/proyectos/:idProyecto/reuniones", async(req, res) => {
     return res.json({success: true});
 });
 
+// Reuniones de proyecto
 apiRoutes.get("/proyectos/:idProyecto/reuniones", async(req, res) => {
     const { idProyecto } = req.params;
     const proyecto = Proyecto.byId(idProyecto);
@@ -180,6 +208,7 @@ apiRoutes.get("/proyectos/:idProyecto/reuniones", async(req, res) => {
     return res.json(reuniones);
 });
 
+// Colaboradores de reunión
 apiRoutes.get("/reuniones/:idReunion/colaboradores", async(req, res) => {
     const { idReunion } = req.params;
     const reunion = Reunion.byId(idReunion);

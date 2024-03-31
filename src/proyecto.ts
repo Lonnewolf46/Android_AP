@@ -117,12 +117,6 @@ class Proyecto {
         return result.map(Tarea.deserialize);
     }
 
-    async eliminarTarea(tarea: Tarea) {
-        await databaseQuery(`
-            DELETE Tareas WHERE id=${tarea.id}
-        `);
-    }
-
     async actualizar() {
         // Se actualiza proyecto
         await databaseQuery(`
