@@ -82,7 +82,7 @@ class Colaborador {
         return {
             id: this.id, nombre: this.nombre, cedula: this.cedula, telefono: this.telefono,
             email: this.email, idProyecto: this.idProyecto, idDepartamento: this.idDepartamento,
-            proyecto: this.proyecto.serialize(), departamento: this.departamento
+            proyecto: this.proyecto && this.proyecto.serialize(), departamento: this.departamento
         }
     }
 

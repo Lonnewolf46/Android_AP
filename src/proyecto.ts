@@ -60,7 +60,9 @@ class Proyecto {
     }
 
     static async obtenerProyectos():Promise<Proyecto[]> {
-        return (await databaseQuery(`EXEC getProyectos`)).map(Proyecto.deserialize);
+        const proyectos = (await databaseQuery(`EXEC getProyectos`)).map(Proyecto.deserialize);
+        console.log(proyectos);
+        return proyectos;
     }
 
     serialize() {
