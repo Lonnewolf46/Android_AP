@@ -1,4 +1,5 @@
 import databaseQuery from "./database.js";
+import Estado from "./estado.js";
 import Proyecto from "./proyecto.js";
 
 class Tarea {
@@ -28,6 +29,11 @@ class Tarea {
 
     static deserialize({id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado}) {
         return new Tarea(id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado);
+    }
+
+    static async obtenerEstados() {
+        const result = await databaseQuery(`SELECT id, estado FROM EstadosTarea`);
+        return result.map(Estado.deserialize);
     }
 
     setProyecto(proyecto: Proyecto) {

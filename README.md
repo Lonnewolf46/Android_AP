@@ -425,13 +425,12 @@
 ```json
 {
     "nombre": "empanadas",
-    "newNombre": "empanadas 2",
     "storyPoints": 12,
     "nombreProyecto": "buzzshare",
     "nombreEncargado": "pedro",
     "fechaInicio": "2005-06-20",
     "fechaFin": "2005-06-19",
-    "estado": "Pendiente"
+    "idEstado": 1
 }
 ```
 
@@ -806,4 +805,32 @@
 #### Ejemplo de respuesta
 ```json
 {"success": true}
+```
+
+
+
+## Estados de tareas
+
+**Método:** GET
+
+**Ruta:** /api/tareas/estados
+
+**Descripción:** Devuelve los estados de las tareas
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "id": 1,
+    "estado": "Pendiente"
+  },
+  {
+    "id": 2,
+    "estado": "En desarrollo"
+  },
+  {
+    "id": 3,
+    "estado": "Finalizado"
+  }
+]
 ```

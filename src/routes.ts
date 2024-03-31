@@ -165,7 +165,6 @@ apiRoutes.get("/foros/general", async(req, res) => {
     return res.json(foro);
 });
 
-
 // Foro interno
 apiRoutes.get("/foros/:idProyecto", async(req, res) => {
     const { idProyecto } = req.params;
@@ -214,6 +213,11 @@ apiRoutes.get("/reuniones/:idReunion/colaboradores", async(req, res) => {
     const reunion = Reunion.byId(idReunion);
     const colaboradores = await reunion.obtenerColaboradores();
     return res.json(colaboradores);
+});
+
+// Estados de tarea
+apiRoutes.get("/tareas/estados", async(req, res) => {
+    return res.json(await Tarea.obtenerEstados());
 });
 
 export default apiRoutes;
