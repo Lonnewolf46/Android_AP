@@ -1,5 +1,7 @@
 package com.example.android_ap.ui
 
+import APIAccess
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +23,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.android_ap.Notificacion
 import com.example.android_ap.R
+import com.example.android_ap.Tarea
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.UsuarioInfoCampos
 import com.example.android_ap.ui.UIAuxiliar.APAppBar
@@ -44,6 +48,9 @@ import com.example.android_ap.ui.screens.ProyectoPlantillaLayout
 import com.example.android_ap.ui.screens.RegistroLayout
 import com.example.android_ap.ui.screens.ReunionLayout
 import com.example.android_ap.ui.screens.TrabajoLayout
+import kotlinx.coroutines.runBlocking
+import retrofit2.HttpException
+import java.io.IOException
 
 enum class APScreen() {
     InicioSesion,
@@ -273,7 +280,7 @@ fun AP_App() {
                     onProySelectionChange = { modInfoPersonalViewModel.actualizarProy(it) },
                     onDeptoSelectionChange = { modInfoPersonalViewModel.actualizarDep(it) },
                     onTextInput = modInfoPersonalViewModel::actualizarDatos,
-                    onActualizarClicked = modInfoPersonalViewModel::subirCambios,
+                    onActualizarClicked = { cambioProyecto(userInfoView, modInfoPersonalViewModel, userInfoView.uiState.value.id) },
                     onDialogClose = { modInfoPersonalViewModel.cerrarEmergente() }
                 )
             }
@@ -287,6 +294,7 @@ fun AP_App() {
                     encargado = tareaUiState.encargado,
                     crearTareaVisible = tareaUiState.mostrar,
                     codigoResult = tareaUiState.codigoResultado,
+                    listaTareas = obtenerTareasProyecto(userInfoView),
                     onEditarTareaClick = { /*TODO*/ },
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
                     onTareaValueChange = tareaViewModel::ActualizarCampos,
@@ -297,7 +305,7 @@ fun AP_App() {
 
             //Notificaciones
             composable(route = APScreen.Notificaciones.name) {
-                NotificacionesLayout()
+                NotificacionesLayout( obtenerNotificaciones(userInfoView) )
             }
 
             //Foro General
@@ -418,25 +426,26 @@ private fun LoginToStart(
 ) {
     val output = inicioSesionViewModel.validarCampos()
 
-        if(output != null){
-            userInfoView.actualizarInfo(UsuarioInfoCampos.IDENTIFICADOR, output.colaborador.id.toString())
-            userInfoView.actualizarInfo(UsuarioInfoCampos.NOMBRE, output.colaborador.nombre)
-            userInfoView.actualizarInfo(UsuarioInfoCampos.CORREO, output.colaborador.email)
-            userInfoView.actualizarInfo(UsuarioInfoCampos.TELEFONO, output.colaborador.telefono.toString())
-            userInfoView.actualizarInfo(UsuarioInfoCampos.DEPARTAMENTO, output.colaborador.departamento.nombre)
-            userInfoView.actualizarInfo(UsuarioInfoCampos.PROYECTO, output.colaborador.proyecto.nombre)
+    if(inicioSesionViewModel.uiState.value.loginExitoso && output!=null){
+        userInfoView.actualizarInfo(UsuarioInfoCampos.IDENTIFICADOR, output.colaborador.id.toString())
+        userInfoView.actualizarInfo(UsuarioInfoCampos.NOMBRE, output.colaborador.nombre)
+        userInfoView.actualizarInfo(UsuarioInfoCampos.CORREO, output.colaborador.email)
+        userInfoView.actualizarInfo(UsuarioInfoCampos.TELEFONO, output.colaborador.telefono.toString())
+        userInfoView.actualizarInfo(UsuarioInfoCampos.DEPARTAMENTO, output.colaborador.departamento.nombre)
+        userInfoView.actualizarInfo(UsuarioInfoCampos.IDPROYECTO, output.colaborador.proyecto.id.toString())
+        userInfoView.actualizarInfo(UsuarioInfoCampos.PROYECTO, output.colaborador.proyecto.nombre)
 
-            prepModInfoPersonalData(
-                modInfoPersonalViewModel = modInfoPersonalViewModel,
-                telefono = output.colaborador.telefono.toString(),
-                proyecto = output.colaborador.proyecto.nombre,
-                departamento = output.colaborador.departamento.nombre,
-                email = output.colaborador.email
+        prepModInfoPersonalData(
+            modInfoPersonalViewModel = modInfoPersonalViewModel,
+            telefono = output.colaborador.telefono.toString(),
+            proyecto = output.colaborador.proyecto.nombre,
+            departamento = output.colaborador.departamento.nombre,
+            email = output.colaborador.email
 
-            )
-            inicioSesionViewModel.resetState()
-            navController.popBackStack()
-            navController.navigate(APScreen.MenuPrincipal.name)
+        )
+        inicioSesionViewModel.resetState()
+        navController.popBackStack()
+        navController.navigate(APScreen.MenuPrincipal.name)
     }
 }
 
@@ -454,6 +463,46 @@ private fun prepModInfoPersonalData(
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.PROYECTO, proyecto)
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.DEPARTAMENTO, departamento)
     modInfoPersonalViewModel.actualizarDatos(RegistroCampos.CORREO, email)
+}
+
+fun obtenerNotificaciones(currentUser: UserInfoView): List<Notificacion>{
+    val apiAccess = APIAccess()
+    return try {
+        val resultado = runBlocking {
+            apiAccess.putAPINotificaciones(currentUser.uiState.value.id)
+        }
+        resultado
+    } catch (e: IOException) {
+        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, 1))
+    } catch (e: HttpException) {
+        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, 1))
+    }
+}
+
+fun cambioProyecto(userInfoView: UserInfoView,
+                   modInfoPersonalViewModel: ModificarInfoPersonalViewModel,
+                   idUsuario: Int,
+){
+    val valor = modInfoPersonalViewModel.subirCambios(idUsuario)
+    if(valor != -1) {
+        userInfoView.actualizarInfo(UsuarioInfoCampos.IDPROYECTO, valor.toString())
+        userInfoView.actualizarInfo(UsuarioInfoCampos.PROYECTO, modInfoPersonalViewModel.uiState.value.proyecto)
+    }
+}
+
+fun obtenerTareasProyecto(currentUser: UserInfoView): List<Tarea>{
+    val apiAccess = APIAccess()
+    return try {
+        val resultado = runBlocking {
+            apiAccess.getAPITareasProyecto(currentUser.uiState.value.idProyecto)
+        }
+        Log.d("RES", "$resultado")
+        resultado
+    } catch (e: IOException) {
+        listOf(Tarea(1, "Error obteniendo las tareas", 1, 1,1,"","",-1))
+    } catch (e: HttpException) {
+        listOf(Tarea(1, "Error obteniendo las tareas", 1, 1,1,"","",-1))
+    }
 }
 
 //private fun CargarDepartamentos(navController: NavController, Departamento: List<>){

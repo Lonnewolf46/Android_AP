@@ -35,4 +35,20 @@ data class Response(
     val success: Boolean
 )
 
+data class Notificacion(
+    val id: Int,
+    val mensaje: String,
+    val idColaborador: Int,
+    val idEstado: Int
+)
 
+data class Tarea(
+    val id: Int,
+    val nombre: String,
+    val storyPoints: Int,
+    val idProyecto: Int,
+    val idEncargado: Int,
+    val fechaInicio: String,
+    val fechaFin: String,
+    val idEstado: Int
+)

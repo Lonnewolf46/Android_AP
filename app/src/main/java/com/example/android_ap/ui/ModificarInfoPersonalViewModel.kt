@@ -94,7 +94,7 @@ class ModificarInfoPersonalViewModel : ViewModel() {
         }
     }
 
-    fun subirCambios(idColaborador: Int) {
+    fun subirCambios(idColaborador: Int): Int {
         if (_uiState.value.telefono.isNotBlank() &&
             _uiState.value.correo.isNotBlank() &&
             _uiState.value.proyecto.isNotBlank() &&
@@ -115,20 +115,26 @@ class ModificarInfoPersonalViewModel : ViewModel() {
                         idDepartamento = idDepartamento
                     )
                 }
-                if (resultado.success)
+                return if (resultado.success) {
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
-                else
+                    idProyecto
+                } else{
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                    -1
+                }
 
             } catch (e: IOException) {
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                return -1
             } catch (e: HttpException) {
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                return -1
             }
 
         } else {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }
         }
+        return -1
     }
 
     fun cerrarEmergente() {

@@ -47,6 +47,7 @@ enum class UsuarioInfoCampos{
         IDENTIFICADOR,
         NOMBRE,
         TELEFONO,
+        IDPROYECTO,
         PROYECTO,
         DEPARTAMENTO,
         CORREO,

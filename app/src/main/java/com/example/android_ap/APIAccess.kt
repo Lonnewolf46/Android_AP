@@ -1,7 +1,9 @@
 import com.example.android_ap.APIlogin
 import com.example.android_ap.Depto
+import com.example.android_ap.Notificacion
 import com.example.android_ap.Project
 import com.example.android_ap.Response
+import com.example.android_ap.Tarea
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -26,6 +28,11 @@ interface Rutas {
     @PUT("colaboradores/{id}")
     suspend fun putAPIModificarColaborador(@Path("id") id: Int, @Body body: Map<String, String>): Response
 
+    @GET("colaboradores/{id}/notificaciones")
+    suspend fun putAPINotificaciones(@Path("id") id: Int): List<Notificacion>
+
+    @GET("proyectos/{id}/tareas")
+    suspend fun getAPITareasProyecto(@Path("id") id: Int):List<Tarea>
 }
 
 class APIAccess {
@@ -89,6 +96,15 @@ class APIAccess {
         return api.putAPIModificarColaborador(id,body)
     }
 
+    suspend fun putAPINotificaciones(id: Int): List<Notificacion>{
+        val api = api()
+        return api.putAPINotificaciones(id)
+    }
+
+    suspend fun getAPITareasProyecto(id: Int):List<Tarea>{
+        val api = api()
+        return api.getAPITareasProyecto(id)
+    }
 }
 
 fun api():Rutas{

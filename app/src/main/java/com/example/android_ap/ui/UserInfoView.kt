@@ -17,6 +17,7 @@ class UserInfoView:ViewModel() {
             UsuarioInfoCampos.IDENTIFICADOR -> _uiState.update { currentState -> currentState.copy(id = input.toInt()) }
             UsuarioInfoCampos.NOMBRE -> _uiState.update { currentState -> currentState.copy(nombre = input) }
             UsuarioInfoCampos.TELEFONO -> _uiState.update { currentState -> currentState.copy(telefono = input) }
+            UsuarioInfoCampos.IDPROYECTO -> _uiState.update { currentState -> currentState.copy(idProyecto = input.toInt()) }
             UsuarioInfoCampos.PROYECTO -> _uiState.update { currentState -> currentState.copy(proyecto = input) }
             UsuarioInfoCampos.DEPARTAMENTO -> _uiState.update { currentState -> currentState.copy(departamento = input) }
             UsuarioInfoCampos.CORREO -> _uiState.update { currentState -> currentState.copy(correo = input) }
