@@ -54,9 +54,7 @@ class Tarea {
     }
 
     async eliminar() {
-        await databaseQuery(`
-            DELETE Tareas WHERE id=${this.id}
-        `);
+        await databaseQuery(`DELETE Tareas WHERE id=${this.id}`);
     }
 }
 

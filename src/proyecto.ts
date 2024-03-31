@@ -143,7 +143,7 @@ class Proyecto {
         }));
         // Se iteran las tareas restantes, son las que ya no existen, se eliminan
         await Promise.all(tareasActuales.map(async tareaActual => {
-            await this.eliminarTarea(tareaActual);
+            await tareaActual.eliminar();
         }));
 
         // Se obtienen colaboradores actuales del proyecto
