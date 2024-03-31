@@ -129,7 +129,7 @@ apiRoutes.delete("/tareas/:idTarea", async(req, res) => {
 });
 
 // Creación de tarea
-apiRoutes.post("/proyectos/<id_proyecto>/tareas", async(req, res) => {
+apiRoutes.post("/proyectos/:idProyecto/tareas", async(req, res) => {
     const { idProyecto } = req.params;
     const tarea = Tarea.deserialize({...req.body, idProyecto});
     await tarea.crear();

@@ -417,17 +417,16 @@
 - `nombre`: string
 - `storyPoints`: number
 - `idEncargado`: number
-- `idEstado`: number
 - `fechaInicio`: string
 - `fechaFin`: string
+- `idEstado`: number
 
 #### Ejemplo de solicitud
 ```json
 {
     "nombre": "empanadas",
     "storyPoints": 12,
-    "nombreProyecto": "buzzshare",
-    "nombreEncargado": "pedro",
+    "idEncargado": 8,
     "fechaInicio": "2005-06-20",
     "fechaFin": "2005-06-19",
     "idEstado": 1
