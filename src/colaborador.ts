@@ -140,7 +140,7 @@ class Colaborador {
 
     async obtenerTareas():Promise<Tarea[]> {
         const result = await databaseQuery(`
-            SELECT nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado
+            SELECT id, nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado
             FROM Tareas
             WHERE idEncargado=${this.id}
         `);

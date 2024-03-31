@@ -78,14 +78,16 @@ class Proyecto {
     }
 
     async crear() {
-        const resultado = await databaseQuery(`EXEC postProyectos @nombre='${this.nombre}', @recursos='${this.recursos}', @presupuesto=${this.presupuesto}
-        ,@descripcion='${this.descripcion}', @idResponsable=${this.idResponsable},@fechaInicio='${this.fechaInicio}'
-        ,@fechaFin='${this.fechaFin}'`);
+        const resultado = await databaseQuery(`
+            EXEC postProyectos @nombre='${this.nombre}', @recursos='${this.recursos}',
+            @presupuesto=${this.presupuesto},@descripcion='${this.descripcion}',
+            @idResponsable=${this.idResponsable},@fechaInicio='${this.fechaInicio}'
+            ,@fechaFin='${this.fechaFin}'`);
         const idProyecto = resultado[0].NuevoProyectoID;
-        const nombreProyecto=await databaseQuery(`EXEC ObtenerNombreProyectoPorId @IdProyecto= idProyecto`)
+        //const nombreProyecto=await databaseQuery(`EXEC ObtenerNombreProyectoPorId @IdProyecto= idProyecto`)
 
         this.tareas.forEach(async tarea => {
-            tarea.nombreProyecto = nombreProyecto;
+            tarea.idProyecto = idProyecto;
             await tarea.crear();
         });
         this.colaboradores.forEach(colaborador => {
