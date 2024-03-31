@@ -38,6 +38,13 @@ apiRoutes.put("/colaboradores/:idColaborador/reasignar-proyecto", async (req, re
     return res.json({success: true});
 });
 
+apiRoutes.get("/colaboradores/:idColaborador/tareas", async (req, res) => {
+    const { idColaborador } = req.params;
+    const colaborador = Colaborador.byId(Number(idColaborador));
+    const tareas = await colaborador.obtenerTareas();
+    return res.json(tareas);
+});
+
 apiRoutes.get("/colaboradores/sin-proyecto", async(req, res) => {
     const colaboradores = await Colaborador.obtenerColaboradoresSinProyecto()
     return res.json(colaboradores.map(c => c.serialize()));

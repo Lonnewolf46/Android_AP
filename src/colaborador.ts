@@ -2,6 +2,7 @@ import databaseQuery from "./database.js";
 import Proyecto from "./proyecto.js";
 import Notificacion from "./notificacion.js";
 import Departamento from "./departamento.js";
+import Tarea from "./tarea.js";
 
 class Colaborador {
     id:number;
@@ -132,9 +133,18 @@ class Colaborador {
 
     async obtenerNotificaciones():Promise<Notificacion[]> {
         const result = await databaseQuery(`
-        EXEC ObtenerNotificaciones @IdColaborador = ${this.id}; 
+            EXEC ObtenerNotificaciones @IdColaborador = ${this.id}; 
         `);
         return result.map(Notificacion.deserialize);
+    }
+
+    async obtenerTareas():Promise<Tarea[]> {
+        const result = await databaseQuery(`
+            SELECT nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado
+            FROM Tareas
+            WHERE idEncargado=${this.id}
+        `);
+        return result.map(Tarea.deserialize);
     }
 }
 
