@@ -1,9 +1,6 @@
 package com.example.android_ap.ui
 
 import APIAccess
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.RegistroUiState
@@ -18,9 +15,6 @@ import java.io.IOException
 class RegistroViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(RegistroUiState())
     val uiState: StateFlow<RegistroUiState> = _uiState.asStateFlow()
-
-    private var projectExpanded by mutableStateOf(false)
-    private var deptExpanded by mutableStateOf(false)
 
     /**
     Actualiza la informacion en uiState segun cada evento
@@ -120,7 +114,6 @@ class RegistroViewModel: ViewModel() {
         {
             val correo = _uiState.value.correo
             val regex = Regex("""\b[A-Za-z0-9._%+-]+@(estudiantec\.cr|itcr\.ac\.cr)\b""")
-            _uiState.update { currentState -> currentState.copy(datosCorrectos = false)}
 
             //Validacion de información
             //Correo valido
@@ -140,12 +133,7 @@ class RegistroViewModel: ViewModel() {
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 7)}
             }
             else{
-                //Actualizar valor para no mostrar aviso
-                _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 0)}
-
                 //Hacer solicitud a la BD
-                /*TODO*/
                 val apiAccess = APIAccess()
                 try {
                     val idProyecto = _uiState.value.listaProyectos.firstOrNull { it.nombre == _uiState.value.proyecto }!!.id
@@ -177,13 +165,11 @@ class RegistroViewModel: ViewModel() {
             }
         }
         else{
-            _uiState.update { currentState -> currentState.copy(datosCorrectos = false)}
             _uiState.update { currentState -> currentState.copy(codigoResultado = 1)}
         }
     }
 
     fun cerrarEmergente(){
-        _uiState.update { currentState -> currentState.copy(datosCorrectos = true)}
         _uiState.update { currentState -> currentState.copy(codigoResultado = -1)}
     }
 

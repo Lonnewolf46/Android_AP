@@ -46,6 +46,7 @@ fun TrabajoLayout(
     crearTareaVisible: Boolean,
     codigoResult: Int,
     listaTareas: List<Tarea>,
+    onCerrarEmergente: () -> Unit,
     onEditarTareaClick: () -> Unit,
     onOpcionesProyectoClick: () -> Unit,
     onTareaValueChange: (TareaCampos, String) -> Unit,
@@ -59,11 +60,12 @@ fun TrabajoLayout(
             .padding(16.dp)
     ) {
         ProyectoActualTopBar(proyecto = nombreProyecto, onOpcionesProyectoClick)
-        Spacer(modifier = Modifier.padding(vertical=8.dp))
+        Spacer(modifier = Modifier.padding(vertical = 8.dp))
         TareasHeader()
         Column(modifier = Modifier.weight(1f)) {
             Tareas(
                 listaTareas,
+                codigoResult,
                 Modifier.padding(16.dp),
                 onEditarTareaClick
             )
@@ -81,11 +83,14 @@ fun TrabajoLayout(
                 onCerrarClick = onTareaCerrarClick
             )
         }
-        //Si la tarea fue creada satisfactoriamente
-        else if (codigoResult == 0) {
-            Warning(
+
+        when (codigoResult) {
+            0 -> Warning(
                 texto = "Tarea creada",
                 onClose = { onTareaCerrarClick() })
+            3 -> Warning(
+                texto = "Se produjo un error de red. Verifique su conexión a internet",
+                onClose = { onCerrarEmergente() })
         }
     }
 }
@@ -124,7 +129,7 @@ private fun ProyectoActualTopBar(
 }
 
 @Composable
-private fun TareasHeader(){
+private fun TareasHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -173,6 +178,7 @@ private fun TareasHeader(){
 @Composable
 private fun Tareas(
     listaTareas: List<Tarea>,
+    codigoResult: Int,
     modifier: Modifier = Modifier,
     onEditarTareaClick: () -> Unit
 ) {
@@ -188,12 +194,28 @@ private fun Tareas(
         }
     } else {
         Column {
-            TareaCard(
-                nombre = "No hay tareas",
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onEditarClick = {}
-            )
+            if (codigoResult == 3) //Si no es vacia por un error de red
+                Card(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                ){
+                    Text(
+                        text = "Se produjo un error de red. Verifique su conexión",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold)
+                }
+            else
+                Card(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                ){
+                    Text(
+                        text = "No hay tareas",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold)
+                }
         }
     }
 }

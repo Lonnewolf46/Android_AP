@@ -86,13 +86,19 @@ fun ModificarInfoPersonalLayout(
 
     when(codigoResult){
         0 -> Warning(
-                texto = "Información Actualizada",
-                onClose = { onDialogClose() })
+            texto = "Información actualizada",
+            onClose = { onDialogClose() })
         1 -> Warning(
             texto = "Se requieren llenar todos los campos",
             onClose = { onDialogClose() })
         3 -> Warning(
             texto = "Ha ocurrido un error de red",
+            onClose = { onDialogClose() })
+        4 -> Warning(
+            texto = "El correo ingresado no corresponde a uno institucional",
+            onClose = { onDialogClose() })
+        6 -> Warning(
+            texto = "Verifique el número de teléfono",
             onClose = { onDialogClose() })
 
     }

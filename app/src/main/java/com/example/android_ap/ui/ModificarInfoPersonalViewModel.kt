@@ -19,9 +19,6 @@ class ModificarInfoPersonalViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RegistroUiState())
     val uiState: StateFlow<RegistroUiState> = _uiState.asStateFlow()
 
-    private var projectExpanded by mutableStateOf(false)
-    private var deptExpanded by mutableStateOf(false)
-
     fun actualizarDatos(campo: RegistroCampos, input: String) {
         when (campo) {
             RegistroCampos.TELEFONO -> {
@@ -94,41 +91,65 @@ class ModificarInfoPersonalViewModel : ViewModel() {
         }
     }
 
+    /**
+    Valida que el uiState tenga información en todos sus campos. Si no es asi, avisa.
+    CODIGOS:
+    -1: Por defecto
+    0: Proces correcto
+    1: Quedan campos vacios
+    3: Error de red
+    4: Correo inválido
+    6: Telefono es menos de 8 caracteres
+     */
     fun subirCambios(idColaborador: Int): Int {
         if (_uiState.value.telefono.isNotBlank() &&
             _uiState.value.correo.isNotBlank() &&
             _uiState.value.proyecto.isNotBlank() &&
             _uiState.value.departamento.isNotBlank()
         ) {
-            //Actualizar valor para no mostrar aviso
-            _uiState.update { currentState -> currentState.copy(datosCorrectos = true) }
-            val apiAccess = APIAccess()
-            try {
-                val idProyecto = _uiState.value.listaProyectos.firstOrNull { it.nombre == _uiState.value.proyecto }!!.id
-                val idDepartamento = _uiState.value.listaDepartamentos.firstOrNull { it.nombre == _uiState.value.departamento }!!.id
-                val resultado = runBlocking {
-                    apiAccess.putAPIModificarColaborador(
-                        id = idColaborador,
-                        email = _uiState.value.correo,
-                        telefono = _uiState.value.telefono.toInt(),
-                        idProyecto = idProyecto,
-                        idDepartamento = idDepartamento
-                    )
-                }
-                return if (resultado.success) {
-                    _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
-                    idProyecto
-                } else{
-                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
-                    -1
-                }
+            val correo = _uiState.value.correo
+            val regex = Regex("""\b[A-Za-z0-9._%+-]+@(estudiantec\.cr|itcr\.ac\.cr)\b""")
 
-            } catch (e: IOException) {
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
-                return -1
-            } catch (e: HttpException) {
-                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
-                return -1
+            //Validacion de información
+            //Correo valido
+            if(!regex.matches(correo)){
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 4)}
+            }
+            //Telefono con largo minimo
+            else if(_uiState.value.telefono.length < 8){
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 6)}
+            }
+            else {
+                val apiAccess = APIAccess()
+                try {
+                    val idProyecto =
+                        _uiState.value.listaProyectos.firstOrNull { it.nombre == _uiState.value.proyecto }!!.id
+                    val idDepartamento =
+                        _uiState.value.listaDepartamentos.firstOrNull { it.nombre == _uiState.value.departamento }!!.id
+                    val resultado = runBlocking {
+                        apiAccess.putAPIModificarColaborador(
+                            id = idColaborador,
+                            email = _uiState.value.correo,
+                            telefono = _uiState.value.telefono.toInt(),
+                            idProyecto = idProyecto,
+                            idDepartamento = idDepartamento
+                        )
+                    }
+                    return if (resultado.success) {
+                        _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
+                        idProyecto
+                    } else {
+                        _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                        -1
+                    }
+
+                } catch (e: IOException) {
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                    return -1
+                } catch (e: HttpException) {
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                    return -1
+                }
             }
 
         } else {

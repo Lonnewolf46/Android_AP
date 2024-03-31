@@ -25,7 +25,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_ap.Notificacion
 import com.example.android_ap.R
-import com.example.android_ap.Tarea
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.UsuarioInfoCampos
 import com.example.android_ap.ui.UIAuxiliar.APAppBar
@@ -93,6 +92,14 @@ fun AP_App() {
     var showFloatingButton by rememberSaveable { mutableStateOf(true) }
     var fabState by rememberSaveable { mutableStateOf(FABState.COLLAPSED) }
 
+    val inicioUiState by inicioSesionViewModel.uiState.collectAsState()
+    val registroUiState by registroViewModel.uiState.collectAsState()
+    val modInfoPersonalUiState by modInfoPersonalViewModel.uiState.collectAsState()
+    val tareaUiState by tareaViewModel.uiState.collectAsState()
+    val reunionUiState by reunionViewModel.uiState.collectAsState()
+    val proyectoUiState by proyectoViewModel.uiState.collectAsState()
+    val userInfo by userInfoView.uiState.collectAsState()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = APScreen.valueOf(
         backStackEntry?.destination?.route ?: APScreen.InicioSesion.name
@@ -140,6 +147,7 @@ fun AP_App() {
                     },
                     onTrabajoClick = {
                         navController.popBackStack()
+                        tareaViewModel.obtenerTareasProyecto(userInfo.idProyecto)
                         navController.navigate(APScreen.Trabajo.name)
                     },
                     onAvisosClick = {
@@ -194,14 +202,6 @@ fun AP_App() {
         })
     { innerPadding ->
 
-        val inicioUiState by inicioSesionViewModel.uiState.collectAsState()
-        val registroUiState by registroViewModel.uiState.collectAsState()
-        val modInfoPersonalUiState by modInfoPersonalViewModel.uiState.collectAsState()
-        val tareaUiState by tareaViewModel.uiState.collectAsState()
-        val reunionUiState by reunionViewModel.uiState.collectAsState()
-        val proyectoUiState by proyectoViewModel.uiState.collectAsState()
-        val userInfo by userInfoView.uiState.collectAsState()
-
         NavHost(
             navController = navController,
             startDestination = APScreen.InicioSesion.name, //PUNTO DE ENTRADA
@@ -248,7 +248,6 @@ fun AP_App() {
                     listaDepartamentos = registroUiState.listaDepartamentos,
                     clave = registroUiState.clave,
                     passwordVisible = registroUiState.claveVisible,
-                    datosCorrectos = registroUiState.datosCorrectos,
                     codigoRes = registroUiState.codigoResultado,
                     onTextInput = registroViewModel::actualizarDatos,
                     onProySelectionChange = registroViewModel::actualizarProy,
@@ -294,13 +293,14 @@ fun AP_App() {
                     encargado = tareaUiState.encargado,
                     crearTareaVisible = tareaUiState.mostrar,
                     codigoResult = tareaUiState.codigoResultado,
-                    listaTareas = obtenerTareasProyecto(userInfoView),
+                    listaTareas = tareaUiState.listaTareas,
+                    onCerrarEmergente = { tareaViewModel.cerrarEmergente() },
                     onEditarTareaClick = { /*TODO*/ },
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
                     onTareaValueChange = tareaViewModel::ActualizarCampos,
                     onTareaEncargadoSelectionChange = tareaViewModel::ActualizarEncargado,
                     onTareaConfirmar = { tareaViewModel.CrearTarea() },
-                    onTareaCerrarClick = { tareaViewModel.resetState() })
+                    onTareaCerrarClick = { tareaViewModel.cerrarEmergente() })
             }
 
             //Notificaciones
@@ -487,21 +487,6 @@ fun cambioProyecto(userInfoView: UserInfoView,
     if(valor != -1) {
         userInfoView.actualizarInfo(UsuarioInfoCampos.IDPROYECTO, valor.toString())
         userInfoView.actualizarInfo(UsuarioInfoCampos.PROYECTO, modInfoPersonalViewModel.uiState.value.proyecto)
-    }
-}
-
-fun obtenerTareasProyecto(currentUser: UserInfoView): List<Tarea>{
-    val apiAccess = APIAccess()
-    return try {
-        val resultado = runBlocking {
-            apiAccess.getAPITareasProyecto(currentUser.uiState.value.idProyecto)
-        }
-        Log.d("RES", "$resultado")
-        resultado
-    } catch (e: IOException) {
-        listOf(Tarea(1, "Error obteniendo las tareas", 1, 1,1,"","",-1))
-    } catch (e: HttpException) {
-        listOf(Tarea(1, "Error obteniendo las tareas", 1, 1,1,"","",-1))
     }
 }
 

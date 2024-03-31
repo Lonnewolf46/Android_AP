@@ -66,7 +66,6 @@ fun RegistroLayout(
     email: String,
     clave: String,
     passwordVisible: Boolean,
-    datosCorrectos: Boolean,
     codigoRes: Int,
     onTextInput: (RegistroCampos, String) -> Unit,
     onProySelectionChange: (String) -> Unit,
@@ -140,35 +139,38 @@ fun RegistroLayout(
     }
 
     //Si algo salio mal
-    if(!datosCorrectos){
-        when(codigoRes){
+        when(codigoRes) {
+            0 -> {
+                Warning(
+                    texto = "Registro exitoso",
+                    onClose = { onDialogClose() })
+                onRegistroExitoso()
+            }
+
             1 -> Warning(
-                 texto = "Se requieren llenar todos los campos",
-                 onClose = { onDialogClose() })
-            3 -> Warning(
-                texto = "Se produjo un error de red, algunos datos podrían no estar presentes",
+                texto = "Se requieren llenar todos los campos",
                 onClose = { onDialogClose() })
+
+            3 -> Warning(
+                texto = "Se produjo un error de red. Verifique su conexión a internet.",
+                onClose = { onDialogClose() })
+
             4 -> Warning(
                 texto = "El correo debe ser el institucional",
                 onClose = { onDialogClose() })
+
             5 -> Warning(
                 texto = "Verifique su número de cédula",
                 onClose = { onDialogClose() })
+
             6 -> Warning(
                 texto = "Verifique su número de teléfono",
                 onClose = { onDialogClose() })
+
             7 -> Warning(
                 texto = "La contraseña requiere un mínimo 4 carácteres",
                 onClose = { onDialogClose() })
         }
-    }
-    //Proceso correcto
-    else if(codigoRes == 0){
-        Warning(
-        texto = "Registro exitoso",
-        onClose = { onDialogClose() })
-        onRegistroExitoso()
-    }
 
 }
 
@@ -226,7 +228,7 @@ fun DatosRegistro(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
-            onValueChange = { if (it.length <= 11) {
+            onValueChange = { if (it.length <= 9) {
                 if (it.isDigitsOnly())
                     onTextInput(RegistroCampos.CEDULA, it) }
             },
