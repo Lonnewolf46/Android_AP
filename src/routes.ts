@@ -132,8 +132,8 @@ apiRoutes.delete("/tareas/:idTarea", async(req, res) => {
 apiRoutes.post("/proyectos/:idProyecto/tareas", async(req, res) => {
     const { idProyecto } = req.params;
     const tarea = Tarea.deserialize({...req.body, idProyecto});
-    await tarea.crear();
-    return res.json({success: true});
+    const success = await tarea.crear();
+    return res.json({success});
 });
 
 // Colaboradores de proyecto
