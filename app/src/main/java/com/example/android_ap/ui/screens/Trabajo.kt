@@ -52,6 +52,8 @@ fun TrabajoLayout(
     crearTareaVisible: Boolean,
     codigoResult: Int,
     listaTareas: List<Tarea>,
+    onTareasColaborador: () -> Unit,
+    onTareasProyecto:() -> Unit,
     onCerrarEmergente: () -> Unit,
     onEditarTareaClick: () -> Unit,
     onOpcionesProyectoClick: () -> Unit,
@@ -68,7 +70,9 @@ fun TrabajoLayout(
     ) {
         ProyectoActualTopBar(proyecto = nombreProyecto, onOpcionesProyectoClick)
         Spacer(modifier = Modifier.padding(vertical = 8.dp))
-        TareasHeader()
+        TareasHeader(
+            onTareasColaborador = onTareasColaborador,
+            onTareasProyecto = onTareasProyecto)
         Column(modifier = Modifier.weight(1f)) {
             Tareas(
                 listaTareas,
@@ -98,7 +102,7 @@ fun TrabajoLayout(
 
         when (codigoResult) {
             -2 -> Warning(
-                texto = "Se ha producido un error inesperado",
+                texto = "Se ha producido un error inesperado. Por favor inténtelo de nuevo.",
                 onClose = { onCerrarEmergente() })
             0 -> Warning(
                 texto = "Tarea creada exitosamente",
@@ -144,13 +148,15 @@ private fun ProyectoActualTopBar(
 }
 
 @Composable
-private fun TareasHeader() {
+private fun TareasHeader(
+    onTareasColaborador: () -> Unit
+    ,onTareasProyecto: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onTareasColaborador() },
             modifier = Modifier
                 .weight(1f)
                 .height(78.dp)
@@ -166,7 +172,7 @@ private fun TareasHeader() {
         }
         Spacer(Modifier.padding(4.dp))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onTareasProyecto() },
             modifier = Modifier
                 .weight(1f)
                 .height(78.dp)

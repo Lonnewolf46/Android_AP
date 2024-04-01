@@ -36,6 +36,9 @@ interface Rutas {
     @GET("proyectos/{id}/tareas")
     suspend fun getAPITareasProyecto(@Path("id") id: Int):List<Tarea>
 
+    @GET("colaboradores/{id}/tareas")
+    suspend fun getAPITareasColaborador(@Path("id") id: Int): List<Tarea>
+
     @GET("proyectos/{id}/colaboradores")
     suspend fun getAPIColaboradores(@Path("id") id: Int): List<Colaborador>
 
@@ -115,6 +118,11 @@ class APIAccess {
     suspend fun getAPITareasProyecto(id: Int):List<Tarea>{
         val api = api()
         return api.getAPITareasProyecto(id)
+    }
+
+    suspend fun getAPITareasColaborador(id: Int): List<Tarea>{
+        val api = api()
+        return api.getAPITareasColaborador(id)
     }
 
     suspend fun getAPIColaboradores(id: Int): List<Colaborador>{

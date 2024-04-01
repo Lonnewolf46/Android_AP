@@ -302,6 +302,8 @@ fun AP_App() {
                     codigoResult = tareaUiState.codigoResultado,
                     listaTareas = tareaUiState.listaTareas,
                     listaEstados = tareaUiState.listaEstados,
+                    onTareasColaborador = { tareaViewModel.cargarTareasColaborador(userInfo.id) },
+                    onTareasProyecto = { tareaViewModel.cargarTareasProyecto(userInfo.idProyecto) },
                     onCerrarEmergente = { tareaViewModel.cerrarEmergente() },
                     onEditarTareaClick = { /*TODO*/ },
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },

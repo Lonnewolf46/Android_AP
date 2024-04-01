@@ -1,9 +1,6 @@
 package com.example.android_ap.ui
 
 import APIAccess
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.RegistroUiState
@@ -122,6 +119,10 @@ class ModificarInfoPersonalViewModel : ViewModel() {
             else {
                 val apiAccess = APIAccess()
                 try {
+                    //Si las listas están vacias, por cualquier motivo
+                    if(_uiState.value.listaProyectos.isEmpty() || _uiState.value.listaDepartamentos.isEmpty()){
+                        throw IOException()
+                    }
                     val idProyecto =
                         _uiState.value.listaProyectos.firstOrNull { it.nombre == _uiState.value.proyecto }!!.id
                     val idDepartamento =
@@ -151,6 +152,7 @@ class ModificarInfoPersonalViewModel : ViewModel() {
                     return -1
                 }
             }
+
 
         } else {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }

@@ -34,6 +34,22 @@ class TareaViewModel : ViewModel() {
         }
     }
 
+    fun cargarTareasColaborador(currentUserId: Int){
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPITareasColaborador(currentUserId)
+            }
+            _uiState.update { currentState -> currentState.copy(listaTareas = resultado) }
+        } catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaTareas = listOf()) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaTareas = listOf()) }
+        }
+    }
+
     fun cargarColaboradoresProyecto(currentProyectId: Int){
         val apiAccess = APIAccess()
         try {
