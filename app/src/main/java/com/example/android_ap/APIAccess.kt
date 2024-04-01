@@ -2,6 +2,8 @@ import com.example.android_ap.APIlogin
 import com.example.android_ap.Colaborador
 import com.example.android_ap.Depto
 import com.example.android_ap.Estado
+import com.example.android_ap.ForoGeneral
+import com.example.android_ap.ForoProyecto
 import com.example.android_ap.Notificacion
 import com.example.android_ap.Project
 import com.example.android_ap.Response
@@ -54,6 +56,22 @@ interface Rutas {
 
     @DELETE("tareas/{id}")
     suspend fun deleteAPIEliminarTarea(@Path("id") id: Int): Response
+
+    @POST("proyecto/{id}/reuniones")
+    suspend fun postAPICrearReunion(@Path("id") id: Int, @Body body: Map<String, String>): Response
+
+    @GET("foros/general")
+    suspend fun getAPIMensajeForoGen():ForoGeneral
+
+    @PUT("foros/general/mensajes")
+    suspend fun putAPIMensajeForoGen(@Body body: Map<String, String>): Response
+
+    @GET("foros/{id}")
+    suspend fun getAPIMensajeForoPro(@Path("id") id: Int): ForoProyecto
+
+    @PUT("foros/{id}/mensajes")
+    suspend fun putAPIMensajeForoPro(@Path("id") id: Int ,@Body body: Map<String, String>): Response
+
 }
 
 class APIAccess {
@@ -185,6 +203,41 @@ class APIAccess {
     suspend fun deleteAPIEliminarTarea(id: Int): Response{
         val api = api()
         return api.deleteAPIEliminarTarea(id)
+    }
+
+    //suspend fun postAPICrearReunion(id: Int): Response{
+    /*TODO*/
+
+    suspend fun getAPIMensajeForoGen(): ForoGeneral{
+        val api = api()
+        return api.getAPIMensajeForoGen()
+    }
+
+    suspend fun putAPIMensajeForoGen(mensaje: String, idEmisor: Int): Response{
+        val api = api()
+        val body = mapOf(
+            "mensaje" to mensaje,
+            "idEmisor" to idEmisor.toString()
+        )
+        return api.putAPIMensajeForoGen(body)
+    }
+
+    suspend fun getAPIMensajeForoPro(id: Int): ForoProyecto{
+        val api = api()
+        return api.getAPIMensajeForoPro(id)
+    }
+
+    suspend fun putAPIMensajeForoPro(
+        idProyecto: Int,
+        mensaje: String,
+        idEmisor: Int): Response
+    {
+        val api = api()
+        val body = mapOf(
+            "mensaje" to mensaje,
+            "idEmisor" to idEmisor.toString()
+        )
+        return api.putAPIMensajeForoPro(idProyecto,body)
     }
 }
 

@@ -5,6 +5,7 @@ import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_ap.Colaborador
 import com.example.android_ap.R
 import com.example.android_ap.data.ReunionCampos
 import com.example.android_ap.ui.popups.AgregarPlantillaLayout
@@ -48,10 +50,12 @@ fun ReunionLayout(
     detalles: String,
     verAsignar: Boolean,
     codigoResult: Int,
+    listaColaboradores: List<Colaborador>,
+    listaColaboradoresElegidos: List<Int>,
     onAlternarAsignar: () -> Unit,
     onInfoWindowClose: () -> Unit,
     onValueChange: (ReunionCampos, String) -> Unit,
-    onAsignarColaboradores: () -> Unit,
+    onAsignarColaboradores: (Int) -> Unit,
     onCrearReunion: () -> Unit,
 ){
     Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +63,7 @@ fun ReunionLayout(
 
         Image(imageVector = ImageVector.vectorResource(R.drawable.meeting),
             contentDescription = null,
-            modifier = Modifier.weight(0.6f))
+            modifier = Modifier.height(108.dp))
 
         ReunionCampos(
             tema = tema,
@@ -69,25 +73,39 @@ fun ReunionLayout(
             detalles = detalles,
             onValueChange = onValueChange,
             onAlternarAsignar = onAlternarAsignar,
-            onAsignarColaboradores = onAsignarColaboradores,
             onCrearReunion = onCrearReunion,
-            modifier = Modifier.weight(2f))
+            modifier = Modifier.fillMaxSize())
     }
     if(verAsignar){
         AgregarPlantillaLayout(
             titulo = "Asignar colaborador",
-            onAsignarClick = { onAsignarColaboradores() },
+            listaElementos = listaColaboradores,
+            listaElegidos = listaColaboradoresElegidos,
+            onAsignarQuitarClick = onAsignarColaboradores,
             onCerrarClick = { onAlternarAsignar() }
         )
     }
 
     else{
         when(codigoResult){
-            0 -> Warning(texto = "Reunión creada",
-                onClose = { onInfoWindowClose() })
+            -2 ->  Warning(
+                texto = "Se ha producido un error inesperado. Por favor inténtelo de nuevo.",
+                onClose = onInfoWindowClose )
 
-            1 -> Warning(texto = "Se requiere llenar todos los campos",
-                onClose = { onInfoWindowClose() })
+            0 -> Warning(
+                texto = "Reunión creada",
+                onClose = onInfoWindowClose )
+
+            1 -> Warning(
+                texto = "Se requiere llenar todos los campos",
+                onClose = onInfoWindowClose )
+
+            3 ->  Warning(
+                texto = "Se produjo un error de red. Verifique su conexión a internet",
+                onClose = onInfoWindowClose )
+            15 -> Warning(
+                texto = "Asigne la reunión como mínimo a un colaborador.",
+                onClose = onInfoWindowClose )
         }
     }
 
@@ -102,12 +120,11 @@ private fun ReunionCampos(
     detalles: String,
     onAlternarAsignar: () -> Unit,
     onValueChange: (ReunionCampos, String) -> Unit,
-    onAsignarColaboradores: () -> Unit,
     onCrearReunion: () -> Unit,
-    modifier: Modifier){
+    modifier: Modifier = Modifier){
 
     Column(horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier) {
 
         Text(text="Nueva reunión",
@@ -148,7 +165,7 @@ private fun ReunionCampos(
         val mDatePickerDialog = DatePickerDialog(
             mContext,
             { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-                onValueChange(ReunionCampos.FECHA,"$mDayOfMonth/${mMonth + 1}/$mYear")
+                onValueChange(ReunionCampos.FECHA,"$mYear-${mMonth + 1}-$mDayOfMonth")
             }, mYear, mMonth, mDay
         )
 
@@ -219,7 +236,6 @@ private fun ReunionCampos(
             onClick = { onAlternarAsignar() },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .height(46.dp)
                 .fillMaxWidth()
                 .padding(vertical=4.dp)
         ) {
@@ -234,7 +250,6 @@ private fun ReunionCampos(
             onClick = { onCrearReunion() },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .height(46.dp)
                 .fillMaxWidth()
                 .padding(vertical=4.dp)
         ) {

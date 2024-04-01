@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_ap.ui.popups.AgregarPlantillaLayout
 import com.example.android_ap.ui.theme.Android_APTheme
 
 @Composable
@@ -49,18 +48,18 @@ fun ColaboradoresLayout(
         )
     }
     if(showAsignarProyecto){
-        AgregarPlantillaLayout(
-            titulo = "Reasignación de proyecto",
-            onAsignarClick = { onReasignarClick() },
-            onCerrarClick = { showAsignarProyecto =! showAsignarProyecto }
-        )
+//        AgregarPlantillaLayout(
+//            titulo = "Reasignación de proyecto",
+//            onAsignarClick = { onReasignarClick() },
+//            onCerrarClick = { showAsignarProyecto =! showAsignarProyecto }
+//        )
     }
     else if(showAsignarColaborador){
-        AgregarPlantillaLayout(
-            titulo = "Nuevo colaborador",
-            onAsignarClick = { onAsignarClick() },
-            onCerrarClick = { showAsignarColaborador =! showAsignarColaborador }
-        )
+//        AgregarPlantillaLayout(
+//            titulo = "Nuevo colaborador",
+//            onAsignarClick = { onAsignarClick() },
+//            onCerrarClick = { showAsignarColaborador =! showAsignarColaborador }
+//        )
     }
 }
 

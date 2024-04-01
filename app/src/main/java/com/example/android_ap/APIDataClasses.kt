@@ -1,5 +1,8 @@
 package com.example.android_ap
 
+open class BaseClass
+open class ForumMessageClass
+
 data class APIlogin(
     val success:Boolean,
     var colaborador: User
@@ -29,7 +32,7 @@ data class Project(
     val idResponsable: Int,
     val fechaInicio: String,
     val fechaFin: String
-)
+):BaseClass()
 
 data class Response(
     val success: Boolean
@@ -61,9 +64,34 @@ data class Colaborador(
     val email: String,
     val idProyecto: Int,
     val idDepartamento: Int
-)
+):BaseClass()
 
 data class Estado(
     val id: Int,
     val estado: String
+)
+
+data class MensajeForoGeneral(
+    val id: Int,
+    val mensaje: String,
+    val idEmisor: Int,
+    val fecha: String
+):ForumMessageClass()
+
+data class ForoGeneral(
+    val nombre: String,
+    val mensajes: List<MensajeForoGeneral>
+)
+
+data class MensajeForoProyecto(
+    val id: Int,
+    val mensaje: String,
+    val idProyecto: Int,
+    val idEmisor: Int,
+    val fecha: String
+):ForumMessageClass()
+
+data class ForoProyecto(
+    val nombre: String,
+    val mensajes: List<MensajeForoProyecto>
 )

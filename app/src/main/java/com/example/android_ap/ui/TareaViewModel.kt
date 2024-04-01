@@ -73,7 +73,6 @@ class TareaViewModel : ViewModel() {
             val resultado = runBlocking {
                 apiAccess.getAPIEstados()
             }
-            Log.d("-----RES ESTADOS-----", "$resultado")
             _uiState.update { currentState -> currentState.copy(listaEstados = resultado) }
         } catch (e: IOException) {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
@@ -93,6 +92,10 @@ class TareaViewModel : ViewModel() {
             this.cargarColaboradoresProyecto(idProyecto)
         if(_uiState.value.listaEstados.isEmpty())
             this.cargarEstadosTarea()
+
+        //Algo salio mal en cargar colaboradores o estados
+        //Cancelando operación
+        if(_uiState.value.codigoResultado!=-1) return
 
         val encargado: String = _uiState.value.listaColaboradores.firstOrNull{it.id == tarea.idEncargado}!!.nombre
         val estado: String = _uiState.value.listaEstados.firstOrNull{it.id == tarea.idEstado}!!.estado

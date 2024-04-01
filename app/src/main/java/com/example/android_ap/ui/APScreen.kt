@@ -80,6 +80,7 @@ fun AP_App() {
     val tareaViewModel: TareaViewModel = viewModel()
     val reunionViewModel: ReunionViewModel = viewModel()
     val proyectoViewModel: ProyectoViewModel = viewModel()
+    val foroViewModel: ForoViewModel = viewModel()
     val userInfoView: UserInfoView = viewModel()
 
     //Inicializando elementos de navegacion
@@ -97,6 +98,7 @@ fun AP_App() {
     val tareaUiState by tareaViewModel.uiState.collectAsState()
     val reunionUiState by reunionViewModel.uiState.collectAsState()
     val proyectoUiState by proyectoViewModel.uiState.collectAsState()
+    val foroUiState by foroViewModel.uiState.collectAsState()
     val userInfo by userInfoView.uiState.collectAsState()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -169,7 +171,10 @@ fun AP_App() {
                         MinFabItem(
                             icon = R.drawable.forum_icon,
                             label = "Foro General",
-                            path = { navController.navigate(APScreen.ForoGeneral.name) }),
+                            path = {
+                                foroViewModel.cargarForoGeneral()
+                                navController.navigate(APScreen.ForoGeneral.name)
+                            }),
                         MinFabItem(
                             icon = R.drawable.manage_project,
                             label = "Administrar proyectos",
@@ -331,7 +336,12 @@ fun AP_App() {
                 ForoLayout(
                     imagen = ImageVector.vectorResource(id = R.drawable.forums),
                     titulo = "Foro general",
-                    onSendClick = { /*TODO*/ })
+                    texto = foroUiState.mensajeActual,
+                    mensajes = foroUiState.mensajesForoGen,
+                    codigoResult = foroUiState.codigoResultado,
+                    onValueChange = foroViewModel::actualizarMensaje,
+                    cerrarEmergente = { foroViewModel.cerrarEmergente() },
+                    onSendClick = { foroViewModel.subirMensajeForoGeneral(userInfo.nombre, userInfo.id) })
             }
 
             //GestionProyectos
@@ -368,7 +378,6 @@ fun AP_App() {
                 )
             }
 
-
             //Colaboradores
             composable(route = APScreen.Colaboradores.name){
                 ColaboradoresLayout(
@@ -381,8 +390,14 @@ fun AP_App() {
             //OpcionesProyecto
             composable(route = APScreen.OpcionesProyecto.name){
                 OpcionesLayout(
-                    onForoClick = { navController.navigate(APScreen.ForoInterno.name) },
-                    onReunionesClick = { navController.navigate(APScreen.Reuniones.name) },
+                    onForoClick = {
+                        foroViewModel.cargarForoProyecto(userInfo.idProyecto)
+                        navController.navigate(APScreen.ForoInterno.name)
+                                  },
+                    onReunionesClick = {
+                        reunionViewModel.cargarColaboradoresProyecto(userInfo.idProyecto)
+                        navController.navigate(APScreen.Reuniones.name)
+                                       },
                     onInformeClick = { navController.navigate(APScreen.InformeGeneral.name) },
                     onBurndownClick = { navController.navigate(APScreen.BurndownScreen.name) }
                 )
@@ -392,7 +407,12 @@ fun AP_App() {
             composable(route = APScreen.ForoInterno.name){
                 ForoLayout(
                     imagen = ImageVector.vectorResource(id = R.drawable.forum_inside),
-                    titulo = "Foro interno",
+                    titulo = "Foro interno: ${userInfo.proyecto}",
+                    texto = foroUiState.mensajeActual,
+                    mensajes = foroUiState.mensajesForoPro,
+                    codigoResult = foroUiState.codigoResultado,
+                    onValueChange = foroViewModel::actualizarMensaje,
+                    cerrarEmergente = { foroViewModel.cerrarEmergente() },
                     onSendClick = { /*TODO*/ })
             }
 
@@ -415,17 +435,19 @@ fun AP_App() {
                     formato = reunionUiState.formato,
                     detalles = reunionUiState.detalles,
                     verAsignar = reunionUiState.verAsignar,
-                    codigoResult = reunionUiState.codigoRespuesta,
+                    codigoResult = reunionUiState.codigoResultado,
+                    listaColaboradores = reunionUiState.listaColaboradores,
+                    listaColaboradoresElegidos = reunionUiState.listaColaboradoresElegidos,
                     onAlternarAsignar = { reunionViewModel.VentanaAsignarAlternar() },
                     onInfoWindowClose = {
-                        if(reunionUiState.codigoRespuesta == 0){
+                        if(reunionUiState.codigoResultado == 0){
                             navController.navigateUp()
                             reunionViewModel.resetState()
                         }
                         else reunionViewModel.InformacionPopupOff()
                     },
                     onValueChange = reunionViewModel::ActualizarCampos,
-                    onAsignarColaboradores = { /*TODO*/ },
+                    onAsignarColaboradores = reunionViewModel::asignarQuitarcolaborador,
                     onCrearReunion = { reunionViewModel.CrearReunion() }
                 )
             }
