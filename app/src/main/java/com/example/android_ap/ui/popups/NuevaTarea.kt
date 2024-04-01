@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -12,8 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,6 +63,7 @@ fun NuevaTarea(nombre: String,
                onEstadoSelectionChange: (String) -> Unit,
                codigoResult: Int,
                onConfirmar: () -> Unit,
+               onEliminar: () -> Unit,
                onCerrarClick: () -> Unit,
                crearTarea: Boolean){
     AlertDialog(
@@ -193,12 +197,23 @@ fun NuevaTarea(nombre: String,
                         )
 
                 }
-
-                TextButton(onClick = onCerrarClick,
-                    modifier = Modifier.align(Alignment.End)) {
-                    Text(text = "Cerrar",
-                        textAlign = TextAlign.End
-                    )
+                Row(Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom) {
+                    if(!crearTarea)
+                        Button(onClick = onEliminar,
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF295C))) {
+                            Icon(imageVector = Icons.Outlined.Delete, contentDescription = null)
+                        }
+                    TextButton(
+                        onClick = onCerrarClick,
+                        modifier = Modifier.align(alignment = Alignment.Bottom)
+                    ) {
+                        Text(
+                            text = "Cerrar",
+                            textAlign = TextAlign.End
+                        )
+                    }
                 }
             }
         }

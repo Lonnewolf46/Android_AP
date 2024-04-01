@@ -9,6 +9,7 @@ import com.example.android_ap.Tarea
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -50,6 +51,9 @@ interface Rutas {
 
     @PUT("tareas/{id}")
     suspend fun putAPIModificarTarea(@Path("id") id: Int, @Body body: Map<String, String>): Response
+
+    @DELETE("tareas/{id}")
+    suspend fun deleteAPIEliminarTarea(@Path("id") id: Int): Response
 }
 
 class APIAccess {
@@ -176,6 +180,11 @@ class APIAccess {
             "idEstado" to idEstado.toString()
         )
         return api.putAPIModificarTarea(id, body)
+    }
+
+    suspend fun deleteAPIEliminarTarea(id: Int): Response{
+        val api = api()
+        return api.deleteAPIEliminarTarea(id)
     }
 }
 

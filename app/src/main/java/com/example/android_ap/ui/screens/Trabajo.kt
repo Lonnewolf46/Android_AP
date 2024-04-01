@@ -62,6 +62,7 @@ fun TrabajoLayout(
     onTareaEncargadoSelectionChange: (String) -> Unit,
     onTareaEstadoSelectionChange: (String) -> Unit,
     onTareaConfirmar: () -> Unit,
+    onEliminarClick: () -> Unit,
     onTareaCerrarClick: () -> Unit,
     crearTarea: Boolean
 ) {
@@ -100,6 +101,7 @@ fun TrabajoLayout(
                 onEncargadoSelectionChange = onTareaEncargadoSelectionChange,
                 onEstadoSelectionChange = onTareaEstadoSelectionChange,
                 onConfirmar = onTareaConfirmar,
+                onEliminar = onEliminarClick,
                 onCerrarClick = onTareaCerrarClick,
                 crearTarea = crearTarea
             )
@@ -112,14 +114,16 @@ fun TrabajoLayout(
 
             0 -> Warning(
                 texto = "Tarea creada exitosamente",
-                onClose = { onCerrarEmergente() })
-
+                onClose = onCerrarEmergente )
             3 -> Warning(
                 texto = "Se produjo un error de red. Verifique su conexión a internet",
-                onClose = { onCerrarEmergente() })
+                onClose = onCerrarEmergente)
             13 -> Warning(
-                texto = "Tarea modificada satisfactoriamente.",
-                onClose = { onCerrarEmergente() })
+                texto = "Tarea modificada exitosamente.",
+                onClose = onCerrarEmergente)
+            14 -> Warning(
+                texto = "Tarea eliminada exitosamente.",
+                onClose = onCerrarEmergente)
         }
     }
 }

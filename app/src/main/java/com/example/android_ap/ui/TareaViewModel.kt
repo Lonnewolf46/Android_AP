@@ -252,6 +252,7 @@ class TareaViewModel : ViewModel() {
                 }
                 if (resultado.success){
                     this.cerrarCrearTarea()
+                    this.cargarTareasProyecto(idProyecto)
                     _uiState.update { currentState -> currentState.copy(crearTarea = true) }
                     this.vaciarTarea()
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 13) }
@@ -267,6 +268,32 @@ class TareaViewModel : ViewModel() {
                 this.cerrarCrearTarea()
                 _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
             }
+        }
+    }
+
+    fun eliminarTarea(idProyecto: Int){
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.deleteAPIEliminarTarea(_uiState.value.idTareaEditar)
+            }
+            if (resultado.success){
+                this.cerrarCrearTarea() //Cerrar emergente
+                this.cargarTareasProyecto(idProyecto) //Cargar tareas de nuevo
+                _uiState.update { currentState -> currentState.copy(crearTarea = true) } //Dejar listo para crear tareas
+                this.vaciarTarea() //Vaciar campos de la interfaz
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 14) } //Notificar eliminado exitoso
+            }
+            else{
+                this.cerrarCrearTarea()
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            }
+        }catch (e: IOException) {
+            this.cerrarCrearTarea()
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        } catch (e: HttpException) {
+            this.cerrarCrearTarea()
+            _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
         }
     }
 

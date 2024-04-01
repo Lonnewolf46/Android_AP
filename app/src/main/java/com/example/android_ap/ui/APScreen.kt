@@ -315,6 +315,7 @@ fun AP_App() {
                         if(tareaUiState.crearTarea) tareaViewModel.CrearTarea(userInfo.idProyecto)
                         else tareaViewModel.modificarTarea(tareaUiState.idTareaEditar,userInfo.idProyecto)
                                        },
+                    onEliminarClick = { tareaViewModel.eliminarTarea(userInfo.idProyecto) },
                     onTareaCerrarClick = { tareaViewModel.cerrarCrearTarea()
                         if(!tareaUiState.crearTarea) tareaViewModel.vaciarTarea() },
                     crearTarea = tareaUiState.crearTarea)
