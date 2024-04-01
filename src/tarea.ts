@@ -40,23 +40,19 @@ class Tarea {
         this.idProyecto = proyecto.id;
     }
 
-    async crear():Promise<boolean> {
-        try {
-            await databaseQuery(`
-                INSERT INTO Tareas(nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado)
-                VALUES('${this.nombre}', ${this.storyPoints}, ${this.idProyecto}, ${this.idEncargado}, '${this.fechaInicio}', '${this.fechaFin}', ${this.idEstado})
-            `);
-            return true;
-        } catch (error) {
-            console.log("ERROR: ", error);
-            return false;            
-        }
+    async crear() {
+        await databaseQuery(`
+            INSERT INTO Tareas(nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado)
+            VALUES('${this.nombre}', ${this.storyPoints}, ${this.idProyecto}, ${this.idEncargado}, '${this.fechaInicio}', '${this.fechaFin}', ${this.idEstado})
+        `);
     }
 
     async actualizar() {
         await databaseQuery(`
             UPDATE Tareas
-            SET nombre='${this.nombre}', storyPoints=${this.storyPoints}, idEncargado=${this.idEncargado}
+            SET
+                nombre='${this.nombre}', storyPoints=${this.storyPoints}, idEncargado=${this.idEncargado},
+                idEstado=${this.idEstado}, fechaFin='${this.fechaFin}'
             WHERE id=${this.id}
         `);
     }

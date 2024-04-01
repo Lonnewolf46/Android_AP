@@ -105,7 +105,7 @@ apiRoutes.get("/proyectos/:idProyecto/tareas", async(req, res) => {
 });
 
 // Modificar tarea
-apiRoutes.put("/tareas/:idTarea/actualizar", async(req, res) => {
+apiRoutes.put("/tareas/:idTarea", async(req, res) => {
     const { idTarea } = req.params;
     const tarea = Tarea.deserialize({...req.body, id: idTarea});
     await tarea.actualizar();
@@ -132,8 +132,12 @@ apiRoutes.delete("/tareas/:idTarea", async(req, res) => {
 apiRoutes.post("/proyectos/:idProyecto/tareas", async(req, res) => {
     const { idProyecto } = req.params;
     const tarea = Tarea.deserialize({...req.body, idProyecto});
-    const success = await tarea.crear();
-    return res.json({success});
+    try {
+        await tarea.crear();
+        return res.json({success: true});
+    } catch (error) {
+        return res.json({success: false});
+    }
 });
 
 // Colaboradores de proyecto

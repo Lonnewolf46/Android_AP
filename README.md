@@ -452,13 +452,17 @@
   - `nombre`: string
   - `storyPoints`: number
   - `idEncargado`: number
+  - `fechaFin`: string
+  - `idEstado`: number
 
 #### Ejemplo de solicitud
 ```json
 {
   "nombre": "Construir local",
   "storyPoints": 22,
-  "idEncargado": 4
+  "idEncargado": 4,
+  "fechaFin": "2025-06-19",
+  "idEstado": 1
 }
 ```
 
