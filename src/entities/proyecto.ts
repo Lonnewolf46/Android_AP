@@ -2,6 +2,7 @@ import Colaborador from "./colaborador.js";
 import databaseQuery from "../services/database.js";
 import Reunion from "./reunion.js";
 import Tarea from "./tarea.js";
+import Estado from "./estado.js";
 
 class Proyecto {
     id: number;
@@ -61,8 +62,12 @@ class Proyecto {
 
     static async obtenerProyectos():Promise<Proyecto[]> {
         const proyectos = (await databaseQuery(`EXEC getProyectos`)).map(Proyecto.deserialize);
-        console.log(proyectos);
         return proyectos;
+    }
+
+    static async obtenerEstados():Promise<Estado[]> {
+        const result = await databaseQuery(`SELECT id, estado FROM EstadosProyecto`);
+        return result.map(Estado.deserialize);
     }
 
     serialize() {

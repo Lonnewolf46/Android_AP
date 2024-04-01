@@ -839,3 +839,65 @@
   }
 ]
 ```
+
+
+
+## Colaboradores
+
+**Método:** GET
+
+**Ruta:** /api/colaboradores
+
+**Descripción:** Devuelve todos los colaboradores
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "id": 4,
+    "nombre": "Griz Marthen",
+    "cedula": 19670313,
+    "telefono": 67049983,
+    "email": "gmarthen1@estudiantec.cr",
+    "idProyecto": 10,
+    "idDepartamento": 1
+  },
+  {
+    "id": 6,
+    "nombre": "john",
+    "cedula": 123456789,
+    "telefono": 88907645,
+    "email": "correoexample@estudiantec.cr",
+    "idProyecto": 10,
+    "idDepartamento": 2
+  }
+]
+```
+
+
+
+## Estados de Proyecto
+
+**Método:** GET
+
+**Ruta:** /api/proyectos/estados
+
+**Descripción:** Devuelve los estados de los proyectos
+
+#### Ejemplo de respuesta
+```json
+[
+  {
+    "id": 2,
+    "estado": "En desarrollo"
+  },
+  {
+    "id": 3,
+    "estado": "Finalizado"
+  },
+  {
+    "id": 1,
+    "estado": "Pendiente"
+  }
+]
+```

@@ -78,6 +78,14 @@ class Colaborador {
         return colaboradores.map(Colaborador.deserialize);
     }
 
+    static async obtenerColaboradores():Promise<Colaborador[]> {
+        const result = await databaseQuery(`
+            SELECT id, nombre, cedula, telefono, email, idProyecto, idDepartamento
+            FROM Colaboradores
+        `);
+        return result.map(Colaborador.deserialize);
+    }
+
     serialize() {
         return {
             id: this.id, nombre: this.nombre, cedula: this.cedula, telefono: this.telefono,

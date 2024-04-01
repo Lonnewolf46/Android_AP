@@ -225,9 +225,15 @@ apiRoutes.get("/tareas/estados", async(req, res) => {
     return res.json(await Tarea.obtenerEstados());
 });
 
-apiRoutes.get("/correos", async(req, res) => {
-    await sendMail("rmcordero.99@estudiantec.cr", "Prueba de correo", "Este es un correo de prueba");
-    return res.json(true);
+// Estados de proyecto
+apiRoutes.get("/proyectos/estados", async(req, res) => {
+    return res.json(await Proyecto.obtenerEstados());
+});
+
+// Colaboradores
+apiRoutes.get("/colaboradores", async(req, res) => {
+    const colaboradores = await Colaborador.obtenerColaboradores();
+    return res.json(colaboradores);
 });
 
 export default apiRoutes;
