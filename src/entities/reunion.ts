@@ -55,7 +55,8 @@ class Reunion {
 Se le ha invitado a una reunión con formato ${this.formato}.
 Tema: ${this.tema}.
 Con fecha: ${this.fecha}.
-A través de ${this.medio}, con el enlace: ${this.enlace}.
+Medio: ${this.medio}.
+Enlace/Unicación: ${this.enlace}.
 ` );
             }
         }
