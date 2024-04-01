@@ -61,12 +61,12 @@ class ForoViewModel: ViewModel() {
         if(_uiState.value.mensajeActual.isBlank())
             _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }
         else{
-            val mensaje = "$nombreUsuario: $_uiState.value.mensajeActual"
+            val mensaje = "$nombreUsuario: ${_uiState.value.mensajeActual}"
 
             val apiAccess = APIAccess()
             try {
                 val resultado = runBlocking {
-                    apiAccess.putAPIMensajeForoGen(
+                    apiAccess.postAPIMensajeForoGen(
                         mensaje = mensaje,
                         idEmisor = idUsuario)
                 }
@@ -89,18 +89,18 @@ class ForoViewModel: ViewModel() {
         if(_uiState.value.mensajeActual.isBlank())
             _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }
         else{
-            val mensaje = "$nombreUsuario: $_uiState.value.mensajeActual"
+            val mensaje = "$nombreUsuario: ${_uiState.value.mensajeActual}"
 
             val apiAccess = APIAccess()
             try {
                 val resultado = runBlocking {
-                    apiAccess.putAPIMensajeForoPro(
+                    apiAccess.postAPIMensajeForoPro(
                         idProyecto = idProyecto,
                         mensaje = mensaje,
                         idEmisor = idUsuario)
                 }
                 if (resultado.success) {
-                    this.cargarForoGeneral()
+                    this.cargarForoProyecto(idProyecto)
                     this.actualizarMensaje("")
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
                 }

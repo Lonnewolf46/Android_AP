@@ -413,7 +413,7 @@ fun AP_App() {
                     codigoResult = foroUiState.codigoResultado,
                     onValueChange = foroViewModel::actualizarMensaje,
                     cerrarEmergente = { foroViewModel.cerrarEmergente() },
-                    onSendClick = { /*TODO*/ })
+                    onSendClick = { foroViewModel.subirMensajeForoProyecto(userInfo.nombre,userInfo.id, userInfo.idProyecto) })
             }
 
             //BurndownChart

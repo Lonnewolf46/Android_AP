@@ -63,13 +63,13 @@ interface Rutas {
     @GET("foros/general")
     suspend fun getAPIMensajeForoGen():ForoGeneral
 
-    @PUT("foros/general/mensajes")
+    @POST("foros/general/mensajes")
     suspend fun putAPIMensajeForoGen(@Body body: Map<String, String>): Response
 
     @GET("foros/{id}")
     suspend fun getAPIMensajeForoPro(@Path("id") id: Int): ForoProyecto
 
-    @PUT("foros/{id}/mensajes")
+    @POST("foros/{id}/mensajes")
     suspend fun putAPIMensajeForoPro(@Path("id") id: Int ,@Body body: Map<String, String>): Response
 
 }
@@ -213,7 +213,7 @@ class APIAccess {
         return api.getAPIMensajeForoGen()
     }
 
-    suspend fun putAPIMensajeForoGen(mensaje: String, idEmisor: Int): Response{
+    suspend fun postAPIMensajeForoGen(mensaje: String, idEmisor: Int): Response{
         val api = api()
         val body = mapOf(
             "mensaje" to mensaje,
@@ -227,7 +227,7 @@ class APIAccess {
         return api.getAPIMensajeForoPro(id)
     }
 
-    suspend fun putAPIMensajeForoPro(
+    suspend fun postAPIMensajeForoPro(
         idProyecto: Int,
         mensaje: String,
         idEmisor: Int): Response
