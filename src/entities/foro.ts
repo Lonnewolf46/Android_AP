@@ -37,11 +37,17 @@ class ForoInterno extends Foro {
   }
 
   async guardarMensaje(mensaje: Mensaje) {
+	const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+	const today = `${year}-${month}-${day}`;
     await databaseQuery(`
         EXEC GuardarMensajeForoInterno 
             @Mensaje = '${mensaje.mensaje}',
             @IdProyecto = ${this.id}, 
             @IdEmisor = ${mensaje.idEmisor};
+			@Fecha = '${today}'
     `);
   }
 }
