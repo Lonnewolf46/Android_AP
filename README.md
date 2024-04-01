@@ -624,7 +624,7 @@
 
 ## Envío de mensajes a foro general
 
-**Método:** PUT
+**Método:** POST
 
 **Ruta:** /api/foros/general/mensajes
 
