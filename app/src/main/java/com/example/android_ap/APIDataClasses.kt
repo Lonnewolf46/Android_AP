@@ -95,3 +95,13 @@ data class ForoProyecto(
     val nombre: String,
     val mensajes: List<MensajeForoProyecto>
 )
+
+data class Reunion(
+    var tema: String,
+    val fecha: String,
+    val medio: String,
+    val formato: String,
+    val enlace: String,
+    val idCreador: Int,
+    val colaboradores: List<Int>
+)

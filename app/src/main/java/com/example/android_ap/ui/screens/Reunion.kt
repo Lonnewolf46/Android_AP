@@ -225,7 +225,7 @@ private fun ReunionCampos(
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
             onValueChange = { onValueChange(ReunionCampos.DETALLES, it) },
-            label = { Text(text = "ENLACE/DETALLES") },
+            label = { Text(text = "ENLACE/UBICACIÓN") },
             placeholder = { Text("Ubicación de la reunión") },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done

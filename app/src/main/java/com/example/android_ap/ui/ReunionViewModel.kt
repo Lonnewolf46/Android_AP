@@ -3,6 +3,7 @@ package com.example.android_ap.ui
 import APIAccess
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.android_ap.Reunion
 import com.example.android_ap.data.ReunionCampos
 import com.example.android_ap.data.ReunionUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,7 +81,7 @@ class ReunionViewModel: ViewModel() {
     0: Proces correcto
     1: Quedan campos vacios
      */
-    fun CrearReunion(){
+    fun CrearReunion(idColaborador: Int, idProyecto: Int){
         if(_uiState.value.tema.isNotBlank() &&
             _uiState.value.fecha.isNotBlank() &&
             _uiState.value.medio.isNotBlank() &&
@@ -91,8 +92,36 @@ class ReunionViewModel: ViewModel() {
             if(_uiState.value.listaColaboradoresElegidos.isEmpty())
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 15)}
             else {
-                //Intentar crear reunion
 
+                //Crear reunion
+                val nuevaReunion = Reunion(
+                    tema = _uiState.value.tema,
+                    fecha = _uiState.value.fecha,
+                    medio = _uiState.value.medio,
+                    formato = _uiState.value.formato,
+                    enlace = _uiState.value.detalles,
+                    colaboradores = _uiState.value.listaColaboradoresElegidos,
+                    idCreador = idColaborador
+                )
+
+                val apiAccess = APIAccess()
+                try {
+                    val resultado = runBlocking {
+                        apiAccess.postAPICrearReunion(
+                            idProyecto = idProyecto,
+                            reunion = nuevaReunion)
+                    }
+                    Log.d("RES", "$resultado")
+                    if (resultado.success) {
+                        _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
+                    }
+                    else
+                        _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                }catch (e: IOException) {
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                } catch (e: HttpException) {
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
+                }
 
                 //Codigo exito creacion
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }

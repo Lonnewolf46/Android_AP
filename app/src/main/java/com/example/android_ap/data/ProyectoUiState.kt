@@ -1,5 +1,9 @@
 package com.example.android_ap.data
 
+import com.example.android_ap.Colaborador
+import com.example.android_ap.Estado
+import com.example.android_ap.Tarea
+
 data class ProyectoUiState(
     val nombre: String = "",
     val recursos: String = "",
@@ -7,5 +11,9 @@ data class ProyectoUiState(
     val estado: String = "",
     val descripcion: String = "",
     val responsable: String = "",
-    val codigoRespuesta: Int = -1
+    val codigoResultado: Int = -1,
+    val listaEstados: List<Estado> = listOf(),
+    val listaColaboradores: List<Colaborador> = listOf(),
+    val listaTareas: List<Tarea> = listOf(),
+    val idResponsable: Int = -1
 )

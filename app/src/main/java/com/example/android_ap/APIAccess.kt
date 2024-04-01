@@ -7,6 +7,7 @@ import com.example.android_ap.ForoProyecto
 import com.example.android_ap.Notificacion
 import com.example.android_ap.Project
 import com.example.android_ap.Response
+import com.example.android_ap.Reunion
 import com.example.android_ap.Tarea
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -57,8 +58,8 @@ interface Rutas {
     @DELETE("tareas/{id}")
     suspend fun deleteAPIEliminarTarea(@Path("id") id: Int): Response
 
-    @POST("proyecto/{id}/reuniones")
-    suspend fun postAPICrearReunion(@Path("id") id: Int, @Body body: Map<String, String>): Response
+    @POST("proyectos/{id}/reuniones")
+    suspend fun postAPICrearReunion(@Path("id") id: Int, @Body body: Reunion): Response
 
     @GET("foros/general")
     suspend fun getAPIMensajeForoGen():ForoGeneral
@@ -205,8 +206,10 @@ class APIAccess {
         return api.deleteAPIEliminarTarea(id)
     }
 
-    //suspend fun postAPICrearReunion(id: Int): Response{
-    /*TODO*/
+    suspend fun postAPICrearReunion(idProyecto: Int, reunion: Reunion): Response{
+        val api = api()
+        return api.postAPICrearReunion(idProyecto, reunion)
+    }
 
     suspend fun getAPIMensajeForoGen(): ForoGeneral{
         val api = api()

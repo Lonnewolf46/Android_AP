@@ -1,5 +1,6 @@
 package com.example.android_ap.ui
 
+import APIAccess
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.ProyectoCampos
 import com.example.android_ap.data.ProyectoUiState
@@ -7,10 +8,35 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.runBlocking
+import retrofit2.HttpException
+import java.io.IOException
 
 class ProyectoViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(ProyectoUiState())
     val uiState: StateFlow<ProyectoUiState> = _uiState.asStateFlow()
+
+    /*
+    fun cargarEstados(){
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPIEstados()
+            }
+            _uiState.update { currentState -> currentState.copy(listaEstados = resultado) }
+        } catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaEstados = listOf()) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaEstados = listOf()) }
+        }
+    }
+    */
+
+    /*
+    Traer a TODOS los colaboradores
+     */
 
     fun ActualizarCampos(campo: ProyectoCampos, texto: String){
         when(campo){
@@ -34,20 +60,20 @@ class ProyectoViewModel: ViewModel() {
         if(_uiState.value.nombre.isNotBlank() &&
             _uiState.value.recursos.isNotBlank() &&
             _uiState.value.presupuesto.isNotBlank() &&
-            //_uiState.value.estado.isNotEmpty() &&
-            _uiState.value.descripcion.isNotBlank() //&&
-            //_uiState.value.responsable.isNotEmpty()
+            _uiState.value.estado.isNotBlank() &&
+            _uiState.value.descripcion.isNotBlank() &&
+            _uiState.value.responsable.isNotBlank()
             ){
             //Hacer solicitud
 
             //Informar del éxito
-            _uiState.update { currentState -> currentState.copy(codigoRespuesta = 0) }
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
         }
-        else _uiState.update { currentState -> currentState.copy(codigoRespuesta = 1) }
+        else _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }
     }
 
     fun CerrarEmergente(){
-        _uiState.update { currentState -> currentState.copy(codigoRespuesta = -1) }
+        _uiState.update { currentState -> currentState.copy(codigoResultado = -1) }
     }
 
     fun resetState(){

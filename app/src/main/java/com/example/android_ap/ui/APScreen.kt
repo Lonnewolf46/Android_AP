@@ -363,13 +363,13 @@ fun AP_App() {
                     estado = proyectoUiState.estado,
                     descripcion = proyectoUiState.descripcion,
                     responsable = proyectoUiState.responsable,
-                    codigoResult = proyectoUiState.codigoRespuesta,
+                    codigoResult = proyectoUiState.codigoResultado,
                     onValueChange = proyectoViewModel::ActualizarCampos,
                     onAsignarColaboradores = { /*TODO*/ },
                     onCrearTareas = { /*TODO*/ },
                     onCrearProyecto = { proyectoViewModel.CrearProyecto() },
                     onCerrarPopUp = {
-                        if(proyectoUiState.codigoRespuesta == 0){
+                        if(proyectoUiState.codigoResultado == 0){
                             navController.navigateUp()
                             proyectoViewModel.resetState() }
 
@@ -448,7 +448,7 @@ fun AP_App() {
                     },
                     onValueChange = reunionViewModel::ActualizarCampos,
                     onAsignarColaboradores = reunionViewModel::asignarQuitarcolaborador,
-                    onCrearReunion = { reunionViewModel.CrearReunion() }
+                    onCrearReunion = { reunionViewModel.CrearReunion(userInfo.id, userInfo.idProyecto) }
                 )
             }
         }
