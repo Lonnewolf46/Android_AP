@@ -180,7 +180,6 @@
 - `nombre`: string
 - `recursos`: string
 - `presupuesto`: number
-- `idEstado`: number
 - `descripcion`: string
 - `idResponsable`: number
 - `fechaInicio`: string
@@ -191,11 +190,10 @@
 #### Ejemplo de solicitud
 ```json
 {
-  "nombre": "Cafetería",
+  "nombre": "Confitería",
   "recursos": "Materiales de construcción",
   "presupuesto": 10000,
-  "idEstado": 1,
-  "descripcion": "Local para vender café",
+  "descripcion": "Local para vender",
   "idResponsable": 4,
   "fechaInicio": "2024-03-25",
   "fechaFin": "2024-03-26",
