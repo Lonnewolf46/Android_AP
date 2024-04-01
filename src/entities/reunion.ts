@@ -1,5 +1,5 @@
 import Colaborador from "./colaborador.js";
-import databaseQuery from "./database.js";
+import databaseQuery from "../services/database.js";
 
 class Reunion {
     id:number;

@@ -1,4 +1,4 @@
-import databaseQuery from "./database.js";
+import databaseQuery from "../services/database.js";
 import Estado from "./estado.js";
 import Proyecto from "./proyecto.js";
 

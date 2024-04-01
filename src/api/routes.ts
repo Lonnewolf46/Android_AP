@@ -1,11 +1,12 @@
 import { Router } from "express";
-import Colaborador from "./colaborador.js";
-import Departamento from "./departamento.js";
-import Proyecto from "./proyecto.js";
-import Tarea from "./tarea.js";
-import Notificacion from "./notificacion.js";
-import Foro, { ForoGeneral, ForoInterno, Mensaje } from "./foro.js";
-import Reunion from "./reunion.js";
+import Colaborador from "../entities/colaborador.js";
+import Departamento from "../entities/departamento.js";
+import Proyecto from "../entities/proyecto.js";
+import Tarea from "../entities/tarea.js";
+import Notificacion from "../entities/notificacion.js";
+import { ForoGeneral, ForoInterno, Mensaje } from "../entities/foro.js";
+import Reunion from "../entities/reunion.js";
+import sendMail from "../services/mail.js";
 
 const apiRoutes = Router();
 
@@ -222,6 +223,11 @@ apiRoutes.get("/reuniones/:idReunion/colaboradores", async(req, res) => {
 // Estados de tarea
 apiRoutes.get("/tareas/estados", async(req, res) => {
     return res.json(await Tarea.obtenerEstados());
+});
+
+apiRoutes.get("/correos", async(req, res) => {
+    await sendMail("rmcordero.99@estudiantec.cr", "Prueba de correo", "Este es un correo de prueba");
+    return res.json(true);
 });
 
 export default apiRoutes;

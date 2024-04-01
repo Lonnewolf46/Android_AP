@@ -1,5 +1,5 @@
 import Proyecto from "./proyecto.js";
-import databaseQuery from "./database.js";
+import databaseQuery from "../services/database.js";
 
 class Foro {
   nombre: string;

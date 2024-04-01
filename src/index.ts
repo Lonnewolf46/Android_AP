@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import morgan from "morgan";
-import apiRoutes from "./routes.js";
+import apiRoutes from "./api/routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
