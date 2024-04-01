@@ -47,6 +47,9 @@ interface Rutas {
 
     @POST("proyectos/{id}/tareas")
     suspend fun postAPINuevaTarea(@Path("id") id: Int, @Body body: Map<String, String>): Response
+
+    @PUT("tareas/{id}")
+    suspend fun putAPIModificarTarea(@Path("id") id: Int, @Body body: Map<String, String>): Response
 }
 
 class APIAccess {
@@ -154,6 +157,25 @@ class APIAccess {
             "idEstado" to idEstado.toString()
         )
         return api.postAPINuevaTarea(idProyecto,body)
+    }
+
+    suspend fun putAPIModificarTarea(
+        id: Int,
+        nombre: String,
+        storyPoints: String,
+        idEncargado: Int,
+        fechaFin: String,
+        idEstado: Int): Response
+    {
+        val api = api()
+        val body = mapOf(
+            "nombre" to nombre,
+            "storyPoints" to storyPoints,
+            "idEncargado" to idEncargado.toString(),
+            "fechaFin" to fechaFin,
+            "idEstado" to idEstado.toString()
+        )
+        return api.putAPIModificarTarea(id, body)
     }
 }
 

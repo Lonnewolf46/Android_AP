@@ -14,5 +14,7 @@ data class TareaUiState(
     val listaColaboradores: List<Colaborador> = listOf(),
     val listaEstados: List<Estado> = listOf(),
     val mostrar: Boolean = false,
-    val codigoResultado: Int = -1
+    val codigoResultado: Int = -1,
+    val idTareaEditar: Int = -1,
+    val crearTarea: Boolean = true
 )

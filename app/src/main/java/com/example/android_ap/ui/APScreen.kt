@@ -199,7 +199,7 @@ fun AP_App() {
                         onClick = {
                             tareaViewModel.cargarColaboradoresProyecto(userInfo.idProyecto)
                             tareaViewModel.cargarEstadosTarea()
-                            tareaViewModel.HacerVisible()
+                            tareaViewModel.hacerVisibleCrear()
                         })
                 }
             }
@@ -291,6 +291,7 @@ fun AP_App() {
             //Trabajo
             composable(route = APScreen.Trabajo.name) {
                 TrabajoLayout(
+                    idProyecto = userInfo.idProyecto,
                     nombreProyecto = userInfo.proyecto,
                     nombreTarea = tareaUiState.nombreTarea,
                     storyPoints = tareaUiState.storyPoints,
@@ -305,13 +306,18 @@ fun AP_App() {
                     onTareasColaborador = { tareaViewModel.cargarTareasColaborador(userInfo.id) },
                     onTareasProyecto = { tareaViewModel.cargarTareasProyecto(userInfo.idProyecto) },
                     onCerrarEmergente = { tareaViewModel.cerrarEmergente() },
-                    onEditarTareaClick = { /*TODO*/ },
+                    onEditarTareaClick = tareaViewModel::cargarDatosTarea,
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
                     onTareaValueChange = tareaViewModel::ActualizarCampos,
                     onTareaEncargadoSelectionChange = tareaViewModel::ActualizarEncargado,
                     onTareaEstadoSelectionChange = tareaViewModel::ActualizarEstado,
-                    onTareaConfirmar = { tareaViewModel.CrearTarea(userInfo.idProyecto) },
-                    onTareaCerrarClick = { tareaViewModel.cerrarCrearTarea() })
+                    onTareaConfirmar = {
+                        if(tareaUiState.crearTarea) tareaViewModel.CrearTarea(userInfo.idProyecto)
+                        else tareaViewModel.modificarTarea(tareaUiState.idTareaEditar,userInfo.idProyecto)
+                                       },
+                    onTareaCerrarClick = { tareaViewModel.cerrarCrearTarea()
+                        if(!tareaUiState.crearTarea) tareaViewModel.vaciarTarea() },
+                    crearTarea = tareaUiState.crearTarea)
             }
 
             //Notificaciones

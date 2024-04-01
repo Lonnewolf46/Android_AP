@@ -84,6 +84,31 @@ class TareaViewModel : ViewModel() {
         }
     }
 
+    //Cargar datos en elementos de interfaz para luego desplegarla como moficacion
+    fun cargarDatosTarea(idProyecto: Int,
+                         nombre: String){
+        val tarea = _uiState.value.listaTareas.firstOrNull { it.nombre == nombre }!!
+
+        if(_uiState.value.listaColaboradores.isEmpty())
+            this.cargarColaboradoresProyecto(idProyecto)
+        if(_uiState.value.listaEstados.isEmpty())
+            this.cargarEstadosTarea()
+
+        val encargado: String = _uiState.value.listaColaboradores.firstOrNull{it.id == tarea.idEncargado}!!.nombre
+        val estado: String = _uiState.value.listaEstados.firstOrNull{it.id == tarea.idEstado}!!.estado
+
+        //2005-06-19T00:00:00.000Z to 2005-06-19
+        val outputString = tarea.fechaFin.substring(0, 10)
+
+        _uiState.update { currentState -> currentState.copy(idTareaEditar = tarea.id) }
+        ActualizarCampos(TareaCampos.NOMBRE, tarea.nombre)
+        ActualizarCampos(TareaCampos.STORYPOINTS, tarea.storyPoints.toString())
+        ActualizarCampos(TareaCampos.ENCARGADO, encargado)
+        ActualizarCampos(TareaCampos.ESTADO, estado)
+        ActualizarCampos(TareaCampos.FECHAFIN, outputString)
+        this.hacerVisibleEditar()
+    }
+
     /**
     Actualiza la informacion en uiState segun cada evento
      */
@@ -196,7 +221,56 @@ class TareaViewModel : ViewModel() {
         }
     }
 
-    private fun vaciarTarea(){
+    fun modificarTarea(idTarea: Int, idProyecto: Int){
+        if (_uiState.value.nombreTarea.isBlank()) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 8) }
+        } else if (_uiState.value.storyPoints.isBlank())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 9) }
+        else if (_uiState.value.encargado.isBlank())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 10) }
+        else if(_uiState.value.estado.isBlank())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 11) }
+        else if(_uiState.value.fechaFin.isBlank())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 12) }
+        else {
+
+            //Aqui van acciones para crear tarea nueva
+            val apiAccess = APIAccess()
+            try {
+                val idColaborador = _uiState.value.listaColaboradores.firstOrNull { it.nombre == _uiState.value.encargado }!!.id
+                val idEstado = _uiState.value.listaEstados.firstOrNull { it.estado == _uiState.value.estado }!!.id
+
+                val resultado = runBlocking {
+                    apiAccess.putAPIModificarTarea(
+                        id = idTarea,
+                        nombre = _uiState.value.nombreTarea,
+                        storyPoints = _uiState.value.storyPoints,
+                        idEncargado = idColaborador,
+                        fechaFin = _uiState.value.fechaFin,
+                        idEstado = idEstado
+                    )
+                }
+                if (resultado.success){
+                    this.cerrarCrearTarea()
+                    _uiState.update { currentState -> currentState.copy(crearTarea = true) }
+                    this.vaciarTarea()
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 13) }
+                }
+                else{
+                    this.cerrarCrearTarea()
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                }
+            }catch (e: IOException) {
+                this.cerrarCrearTarea()
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            } catch (e: HttpException) {
+                this.cerrarCrearTarea()
+                _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
+            }
+        }
+    }
+
+    fun vaciarTarea(){
         _uiState.update { currentState -> currentState.copy(
             nombreTarea = "",
             storyPoints = "",
@@ -206,7 +280,13 @@ class TareaViewModel : ViewModel() {
         }
     }
 
-    fun HacerVisible() {
+    fun hacerVisibleCrear() {
+        _uiState.update { currentState -> currentState.copy(crearTarea = true) }
+        _uiState.update { currentState -> currentState.copy(mostrar = true) }
+    }
+
+    fun hacerVisibleEditar(){
+        _uiState.update { currentState -> currentState.copy(crearTarea = false) }
         _uiState.update { currentState -> currentState.copy(mostrar = true) }
     }
 

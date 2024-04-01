@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -24,23 +28,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_ap.data.TareaCampos
-import com.example.android_ap.ui.popups.NuevaTarea
-import com.example.android_ap.ui.theme.Android_APTheme
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.outlined.Create
 import com.example.android_ap.Colaborador
 import com.example.android_ap.Estado
 import com.example.android_ap.Tarea
+import com.example.android_ap.data.TareaCampos
+import com.example.android_ap.ui.popups.NuevaTarea
 import com.example.android_ap.ui.popups.Warning
+import com.example.android_ap.ui.theme.Android_APTheme
 
 /**
  * Componente principal de la interfaz de Trabajo
  */
 @Composable
 fun TrabajoLayout(
+    idProyecto: Int,
     nombreProyecto: String,
     nombreTarea: String,
     storyPoints: String,
@@ -53,15 +54,16 @@ fun TrabajoLayout(
     codigoResult: Int,
     listaTareas: List<Tarea>,
     onTareasColaborador: () -> Unit,
-    onTareasProyecto:() -> Unit,
+    onTareasProyecto: () -> Unit,
     onCerrarEmergente: () -> Unit,
-    onEditarTareaClick: () -> Unit,
+    onEditarTareaClick: (Int, String) -> Unit,
     onOpcionesProyectoClick: () -> Unit,
     onTareaValueChange: (TareaCampos, String) -> Unit,
     onTareaEncargadoSelectionChange: (String) -> Unit,
     onTareaEstadoSelectionChange: (String) -> Unit,
     onTareaConfirmar: () -> Unit,
-    onTareaCerrarClick: () -> Unit
+    onTareaCerrarClick: () -> Unit,
+    crearTarea: Boolean
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
@@ -72,9 +74,11 @@ fun TrabajoLayout(
         Spacer(modifier = Modifier.padding(vertical = 8.dp))
         TareasHeader(
             onTareasColaborador = onTareasColaborador,
-            onTareasProyecto = onTareasProyecto)
+            onTareasProyecto = onTareasProyecto
+        )
         Column(modifier = Modifier.weight(1f)) {
             Tareas(
+                idProyecto,
                 listaTareas,
                 codigoResult,
                 Modifier.padding(16.dp),
@@ -96,7 +100,8 @@ fun TrabajoLayout(
                 onEncargadoSelectionChange = onTareaEncargadoSelectionChange,
                 onEstadoSelectionChange = onTareaEstadoSelectionChange,
                 onConfirmar = onTareaConfirmar,
-                onCerrarClick = onTareaCerrarClick
+                onCerrarClick = onTareaCerrarClick,
+                crearTarea = crearTarea
             )
         }
 
@@ -104,11 +109,16 @@ fun TrabajoLayout(
             -2 -> Warning(
                 texto = "Se ha producido un error inesperado. Por favor inténtelo de nuevo.",
                 onClose = { onCerrarEmergente() })
+
             0 -> Warning(
                 texto = "Tarea creada exitosamente",
                 onClose = { onCerrarEmergente() })
+
             3 -> Warning(
                 texto = "Se produjo un error de red. Verifique su conexión a internet",
+                onClose = { onCerrarEmergente() })
+            13 -> Warning(
+                texto = "Tarea modificada satisfactoriamente.",
                 onClose = { onCerrarEmergente() })
         }
     }
@@ -149,8 +159,9 @@ private fun ProyectoActualTopBar(
 
 @Composable
 private fun TareasHeader(
-    onTareasColaborador: () -> Unit
-    ,onTareasProyecto: () -> Unit) {
+    onTareasColaborador: () -> Unit,
+    onTareasProyecto: () -> Unit
+){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -198,10 +209,11 @@ private fun TareasHeader(
  */
 @Composable
 private fun Tareas(
+    idProyecto: Int,
     listaTareas: List<Tarea>,
     codigoResult: Int,
     modifier: Modifier = Modifier,
-    onEditarTareaClick: () -> Unit
+    onEditarTareaClick: (Int, String) -> Unit
 ) {
     if (listaTareas.isNotEmpty()) {
         LazyColumn(Modifier.fillMaxWidth()) {
@@ -210,7 +222,7 @@ private fun Tareas(
                     nombre = tarea.nombre,
                     modifier = Modifier
                         .fillMaxWidth(),
-                    onEditarClick = { onEditarTareaClick() })
+                    onEditarClick = { onEditarTareaClick(idProyecto, tarea.nombre) })
             }
         }
     } else {
@@ -220,23 +232,28 @@ private fun Tareas(
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
-                ){
+                ) {
                     Text(
                         text = "Se produjo un error de red. Verifique su conexión",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold)
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
-            else
+            else {
                 Card(
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
-                ){
+                ) {
                     Text(
                         text = "No hay tareas",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold)
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
+            }
         }
     }
 }
@@ -275,7 +292,6 @@ private fun TareaCard(
 @Composable
 private fun PreviewTrabajo() {
     Android_APTheme {
-
 
     }
 }

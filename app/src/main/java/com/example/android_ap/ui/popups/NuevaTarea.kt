@@ -60,7 +60,8 @@ fun NuevaTarea(nombre: String,
                onEstadoSelectionChange: (String) -> Unit,
                codigoResult: Int,
                onConfirmar: () -> Unit,
-               onCerrarClick: () -> Unit){
+               onCerrarClick: () -> Unit,
+               crearTarea: Boolean){
     AlertDialog(
         onDismissRequest = onCerrarClick,
         modifier = Modifier.clip(RoundedCornerShape(12.dp))
@@ -186,7 +187,7 @@ fun NuevaTarea(nombre: String,
 
                 Button(onClick = onConfirmar,
                     modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Crear tarea",
+                    Text(text = if(crearTarea) "Crear tarea" else "Modificar Tarea",
                         style = TextStyle(fontSize = 16.sp),
                         fontWeight = FontWeight.Bold
                         )
