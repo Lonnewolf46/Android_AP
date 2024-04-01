@@ -1,5 +1,6 @@
 import Colaborador from "./colaborador.js";
 import databaseQuery from "../services/database.js";
+import sendMail from "../services/mail.js";
 
 class Reunion {
     id:number;
@@ -39,12 +40,21 @@ class Reunion {
 
             SELECT SCOPE_IDENTITY() as idReunion
         `);
-        const [{ idReunion }] = result;
+        this.id = result[0].idReunion;
         if(this.colaboradores.length){
             await databaseQuery(`
                 INSERT INTO AsistentesReunion (idAsistente, idReunion) VALUES
-               ${this.colaboradores.map(colaborador => `(${colaborador.id}, ${idReunion})`).join(",")}
+               ${this.colaboradores.map(colaborador => `(${colaborador.id}, ${this.id})`).join(",")}
             `);
+            const colaboradores = await this.obtenerColaboradores();
+            for(let i=0; i<colaboradores.length; i++) {
+                const colaborador = colaboradores[i];
+                await sendMail(
+                    colaborador.email,
+                    "Nueva reunión",
+                    `Se le ha invitado a una reunión con el tema: ${this.tema}. Para la fecha: ${this.fecha}`
+                );
+            }
         }
     }
 
