@@ -55,7 +55,7 @@ class Colaborador {
                     p.descripcion, p.idResponsable, p.fechaInicio, p.fechaFin
                 FROM Colaboradores c
                 JOIN Departamentos d ON d.id=c.idDepartamento
-                JOIN Proyectos p ON c.idProyecto=p.id
+                LEFT JOIN Proyectos p ON c.idProyecto=p.id
                 WHERE c.email='${email}' AND c.contrasenna='${contrasenna}'
             `).then(result => {
                 if(result.length) {

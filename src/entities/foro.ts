@@ -68,7 +68,7 @@ class ForoGeneral extends Foro {
             EXEC GuardarMensajeForoGeneral 
             @Mensaje = '${mensaje.mensaje}',
             @IdEmisor =  ${mensaje.idEmisor},
-            @Fecha = ${today};
+            @Fecha = '${today}';
         `);
   }
 }

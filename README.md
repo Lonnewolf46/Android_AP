@@ -597,7 +597,7 @@
 
 ## Envío de mensajes a foro interno
 
-**Método:** PUT
+**Método:** POST
 
 **Ruta:** /api/foros/<id_proyecto>/mensajes
 
@@ -653,7 +653,7 @@
 
 **Método:** POST
 
-**Ruta:** /api/proyecto/<id_proyecto>/reuniones
+**Ruta:** /api/proyectos/<id_proyecto>/reuniones
 
 **Descripción:** Envía una nueva reunión asociado a proyecto
 
