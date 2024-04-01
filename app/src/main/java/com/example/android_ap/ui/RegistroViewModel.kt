@@ -1,6 +1,7 @@
 package com.example.android_ap.ui
 
 import APIAccess
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.RegistroUiState
@@ -143,14 +144,14 @@ class RegistroViewModel: ViewModel() {
                         apiAccess.postAPICrearColaborador(
                             nombre = _uiState.value.nombre,
                             cedula = _uiState.value.cedula.toInt(),
-                            telefono = _uiState.value.cedula.toInt(),
+                            telefono = _uiState.value.telefono.toInt(),
                             email = _uiState.value.correo,
                             contrasenna = _uiState.value.clave,
                             idProyecto = idProyecto,
                             idDepartamento = idDepartamento
                         )
                     }
-
+                    Log.d("RES Registro", "$resultado")
                     if (resultado.success)
                         _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
                     else
@@ -160,7 +161,7 @@ class RegistroViewModel: ViewModel() {
                 }catch (e: IOException) {
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
                 } catch (e: HttpException) {
-                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
                 }
             }
         }

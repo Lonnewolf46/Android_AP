@@ -140,13 +140,16 @@ fun RegistroLayout(
 
     //Si algo salio mal
         when(codigoRes) {
+            -2 -> Warning(
+                texto = "Error al crear al usuario. La cuenta ya existe.",
+                onClose = { onDialogClose() })
+
             0 -> {
                 Warning(
                     texto = "Registro exitoso",
                     onClose = { onDialogClose() })
                 onRegistroExitoso()
             }
-
             1 -> Warning(
                 texto = "Se requieren llenar todos los campos",
                 onClose = { onDialogClose() })

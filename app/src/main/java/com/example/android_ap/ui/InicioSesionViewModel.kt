@@ -55,7 +55,7 @@ class InicioSesionViewModel : ViewModel() {
                 val resultado = runBlocking {
                     apiAccess.postAPIlogin(_uiState.value.usuario, _uiState.value.clave)
                 }
-                Log.d("RESULT", "Resultado: $resultado")
+                Log.d("RESULT_LOGIN", "Resultado: $resultado")
                 _uiState.update { currentState -> currentState.copy(loginExitoso = resultado.success) }
                 if (!resultado.success)
                     _uiState.update { currentState -> currentState.copy(codigoResultado = 2) }

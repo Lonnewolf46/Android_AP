@@ -136,19 +136,13 @@ private fun ReunionCampos(
         // Obteniendo contexto local
         val mContext = LocalContext.current
 
-        // declarando valores int para
-        // año, mes y dia
-        val mYear: Int
-        val mMonth: Int
-        val mDay: Int
-
         // inicializando calendario
         val mCalendar = Calendar.getInstance()
 
         // Recuperando fecha, mes y dia actual
-        mYear = mCalendar.get(Calendar.YEAR)
-        mMonth = mCalendar.get(Calendar.MONTH)
-        mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+        val mYear = mCalendar.get(Calendar.YEAR)
+        val mMonth = mCalendar.get(Calendar.MONTH)
+        val mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
 
         mCalendar.time = Date()
         val mDatePickerDialog = DatePickerDialog(

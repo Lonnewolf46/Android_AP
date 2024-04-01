@@ -1,5 +1,7 @@
 import com.example.android_ap.APIlogin
+import com.example.android_ap.Colaborador
 import com.example.android_ap.Depto
+import com.example.android_ap.Estado
 import com.example.android_ap.Notificacion
 import com.example.android_ap.Project
 import com.example.android_ap.Response
@@ -33,6 +35,15 @@ interface Rutas {
 
     @GET("proyectos/{id}/tareas")
     suspend fun getAPITareasProyecto(@Path("id") id: Int):List<Tarea>
+
+    @GET("proyectos/{id}/colaboradores")
+    suspend fun getAPIColaboradores(@Path("id") id: Int): List<Colaborador>
+
+    @GET("tareas/estados")
+    suspend fun getAPIEstados(): List<Estado>
+
+    @POST("proyectos/{id}/tareas")
+    suspend fun postAPINuevaTarea(@Path("id") id: Int, @Body body: Map<String, String>): Response
 }
 
 class APIAccess {
@@ -104,6 +115,37 @@ class APIAccess {
     suspend fun getAPITareasProyecto(id: Int):List<Tarea>{
         val api = api()
         return api.getAPITareasProyecto(id)
+    }
+
+    suspend fun getAPIColaboradores(id: Int): List<Colaborador>{
+        val api = api()
+        return api.getAPIColaboradores(id)
+    }
+
+    suspend fun getAPIEstados(): List<Estado>{
+        val api = api()
+        return api.getAPIEstados()
+    }
+
+    suspend fun postAPINuevaTarea(
+        idProyecto: Int,
+        nombre: String,
+        storyPoints: String,
+        idEncargado: Int,
+        fechaInicio: String,
+        fechaFin: String,
+        idEstado: Int): Response
+    {
+        val api = api()
+        val body = mapOf(
+            "nombre" to nombre,
+            "storyPoints" to storyPoints,
+            "idEncargado" to idEncargado.toString(),
+            "fechaInicio" to fechaInicio,
+            "fechaFin" to fechaFin,
+            "idEstado" to idEstado.toString()
+        )
+        return api.postAPINuevaTarea(idProyecto,body)
     }
 }
 

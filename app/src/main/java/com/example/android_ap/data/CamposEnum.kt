@@ -14,16 +14,12 @@ enum class RegistroCampos{
         CLAVE
 }
 
-enum class TareaEstados{
-        PENDIENTE,
-        PROGRESO,
-        COMPLETADA
-}
 enum class TareaCampos{
         NOMBRE,
         STORYPOINTS,
         ENCARGADO,
-        ESTADO
+        ESTADO,
+        FECHAFIN
 }
 
 enum class ReunionCampos{

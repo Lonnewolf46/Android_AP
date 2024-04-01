@@ -31,6 +31,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.outlined.Create
+import com.example.android_ap.Colaborador
+import com.example.android_ap.Estado
 import com.example.android_ap.Tarea
 import com.example.android_ap.ui.popups.Warning
 
@@ -43,6 +45,10 @@ fun TrabajoLayout(
     nombreTarea: String,
     storyPoints: String,
     encargado: String,
+    estado: String,
+    fechaFin: String,
+    listaColaboradores: List<Colaborador>,
+    listaEstados: List<Estado>,
     crearTareaVisible: Boolean,
     codigoResult: Int,
     listaTareas: List<Tarea>,
@@ -51,6 +57,7 @@ fun TrabajoLayout(
     onOpcionesProyectoClick: () -> Unit,
     onTareaValueChange: (TareaCampos, String) -> Unit,
     onTareaEncargadoSelectionChange: (String) -> Unit,
+    onTareaEstadoSelectionChange: (String) -> Unit,
     onTareaConfirmar: () -> Unit,
     onTareaCerrarClick: () -> Unit
 ) {
@@ -76,18 +83,26 @@ fun TrabajoLayout(
                 nombre = nombreTarea,
                 storyPoints = storyPoints,
                 encargado = encargado,
+                estado = estado,
+                fechaFin = fechaFin,
+                listaColaboradores = listaColaboradores,
+                listaEstados = listaEstados,
                 codigoResult = codigoResult,
                 onValueChange = onTareaValueChange,
                 onEncargadoSelectionChange = onTareaEncargadoSelectionChange,
+                onEstadoSelectionChange = onTareaEstadoSelectionChange,
                 onConfirmar = onTareaConfirmar,
                 onCerrarClick = onTareaCerrarClick
             )
         }
 
         when (codigoResult) {
+            -2 -> Warning(
+                texto = "Se ha producido un error inesperado",
+                onClose = { onCerrarEmergente() })
             0 -> Warning(
-                texto = "Tarea creada",
-                onClose = { onTareaCerrarClick() })
+                texto = "Tarea creada exitosamente",
+                onClose = { onCerrarEmergente() })
             3 -> Warning(
                 texto = "Se produjo un error de red. Verifique su conexión a internet",
                 onClose = { onCerrarEmergente() })

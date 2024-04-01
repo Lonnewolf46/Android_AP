@@ -52,3 +52,18 @@ data class Tarea(
     val fechaFin: String,
     val idEstado: Int
 )
+
+data class Colaborador(
+    val id: Int,
+    val nombre: String,
+    val cedula: Int,
+    val telefono: Int,
+    val email: String,
+    val idProyecto: Int,
+    val idDepartamento: Int
+)
+
+data class Estado(
+    val id: Int,
+    val estado: String
+)

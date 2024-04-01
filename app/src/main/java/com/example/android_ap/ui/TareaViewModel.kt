@@ -1,9 +1,9 @@
 package com.example.android_ap.ui
 
 import APIAccess
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.android_ap.data.TareaCampos
-import com.example.android_ap.data.TareaEstados
 import com.example.android_ap.data.TareaUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,12 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.Calendar
 
 class TareaViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(TareaUiState())
     val uiState: StateFlow<TareaUiState> = _uiState.asStateFlow()
 
-    fun obtenerTareasProyecto(currentProyectId: Int) {
+    fun cargarTareasProyecto(currentProyectId: Int) {
         val apiAccess = APIAccess()
         try {
             val resultado = runBlocking {
@@ -30,6 +31,40 @@ class TareaViewModel : ViewModel() {
         } catch (e: HttpException) {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
             _uiState.update { currentState -> currentState.copy(listaTareas = listOf()) }
+        }
+    }
+
+    fun cargarColaboradoresProyecto(currentProyectId: Int){
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPIColaboradores(currentProyectId)
+            }
+            Log.d("RES", "Resultado: $resultado")
+            _uiState.update { currentState -> currentState.copy(listaColaboradores = resultado) }
+        } catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaColaboradores = listOf()) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaColaboradores = listOf()) }
+        }
+    }
+
+    fun cargarEstadosTarea(){
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPIEstados()
+            }
+            Log.d("-----RES ESTADOS-----", "$resultado")
+            _uiState.update { currentState -> currentState.copy(listaEstados = resultado) }
+        } catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaEstados = listOf()) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaEstados = listOf()) }
         }
     }
 
@@ -51,7 +86,11 @@ class TareaViewModel : ViewModel() {
             }
 
             TareaCampos.ESTADO -> {
-                _uiState.update { currentState -> currentState.copy(estado = StringToEstado(input)) }
+                _uiState.update { currentState -> currentState.copy(estado = input) }
+            }
+
+            TareaCampos.FECHAFIN -> {
+                _uiState.update { currentState -> currentState.copy(fechaFin = input) }
             }
         }
     }
@@ -60,9 +99,16 @@ class TareaViewModel : ViewModel() {
         ActualizarCampos(TareaCampos.ENCARGADO, input)
     }
 
+    fun ActualizarEstado(input: String){
+        ActualizarCampos(TareaCampos.ESTADO, input)
+    }
+
     fun cerrarEmergente() {
         _uiState.update { currentState -> currentState.copy(codigoResultado = -1) }
-        _uiState.update { currentState -> currentState.copy(mostrar = false)}
+    }
+
+    fun cerrarCrearTarea(){
+        _uiState.update { currentState -> currentState.copy(mostrar = false) }
     }
 
     /**
@@ -73,21 +119,74 @@ class TareaViewModel : ViewModel() {
     8: Nombre de tarea incorrecto
     9: StoryPoints incorrecto
     10: Encargado no seleccionado
+    11: Estado no seleccionado
+    12: Fecha de fin tarea no seleccionada
      */
-    fun CrearTarea() {
+    fun CrearTarea(idProyecto: Int) {
         if (_uiState.value.nombreTarea.isBlank()) {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 8) }
         } else if (_uiState.value.storyPoints.isBlank())
             _uiState.update { currentState -> currentState.copy(codigoResultado = 9) }
         else if (_uiState.value.encargado.isBlank())
             _uiState.update { currentState -> currentState.copy(codigoResultado = 10) }
+        else if(_uiState.value.estado.isBlank())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 11) }
+        else if(_uiState.value.fechaFin.isBlank())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 12) }
         else {
+
             //Aqui van acciones para crear tarea nueva
+            val apiAccess = APIAccess()
+            try {
+                val idColaborador = _uiState.value.listaColaboradores.firstOrNull { it.nombre == _uiState.value.encargado }!!.id
+                val idEstado = _uiState.value.listaEstados.firstOrNull { it.estado == _uiState.value.estado }!!.id
+                // inicializando calendario
+                val mCalendar = Calendar.getInstance()
 
+                // Recuperando fecha, mes y dia actual
+                val mYear = mCalendar.get(Calendar.YEAR)
+                val mMonth = mCalendar.get(Calendar.MONTH) + 1
+                val mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
 
-            //Crear exitoso, se cierra ventana
-            _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
-            _uiState.update { currentState -> currentState.copy(mostrar = false) }
+                val resultado = runBlocking {
+                    apiAccess.postAPINuevaTarea(
+                        idProyecto = idProyecto,
+                        nombre = _uiState.value.nombreTarea,
+                        storyPoints = _uiState.value.storyPoints,
+                        idEncargado = idColaborador,
+                        fechaInicio = "$mYear-${mMonth}-$mDay",
+                        fechaFin = _uiState.value.fechaFin,
+                        idEstado = idEstado
+                    )
+
+                }
+                if (resultado.success){
+                    this.cerrarCrearTarea()
+                    this.vaciarTarea()
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
+                    this.cargarTareasProyecto(idProyecto)
+                }
+                else{
+                    this.cerrarCrearTarea()
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+                    }
+            }catch (e: IOException) {
+                this.cerrarCrearTarea()
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            } catch (e: HttpException) {
+                this.cerrarCrearTarea()
+                _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
+            }
+        }
+    }
+
+    private fun vaciarTarea(){
+        _uiState.update { currentState -> currentState.copy(
+            nombreTarea = "",
+            storyPoints = "",
+            encargado = "",
+            fechaFin = "",
+            estado = "")
         }
     }
 
@@ -97,16 +196,5 @@ class TareaViewModel : ViewModel() {
 
     fun resetState() {
         _uiState.value = TareaUiState()
-    }
-}
-
-/**
-Convierte al string en un enum de Estado
- */
-private fun StringToEstado(texto: String): TareaEstados {
-    return when (texto) {
-        "En progreso" -> TareaEstados.PROGRESO
-        "Completada" -> TareaEstados.COMPLETADA
-        else -> TareaEstados.PENDIENTE
     }
 }

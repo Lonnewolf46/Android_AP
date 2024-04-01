@@ -1,7 +1,6 @@
 package com.example.android_ap.ui
 
 import APIAccess
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -147,7 +146,7 @@ fun AP_App() {
                     },
                     onTrabajoClick = {
                         navController.popBackStack()
-                        tareaViewModel.obtenerTareasProyecto(userInfo.idProyecto)
+                        tareaViewModel.cargarTareasProyecto(userInfo.idProyecto)
                         navController.navigate(APScreen.Trabajo.name)
                     },
                     onAvisosClick = {
@@ -188,7 +187,7 @@ fun AP_App() {
                     //Crear boton flotante
                     FABMenuPrincipal(
                         buttonState = fabState,
-                        onClick = { fabState = it },
+                        onClick = {fabState = it },
                         items = items
                     )
                 }
@@ -196,7 +195,12 @@ fun AP_App() {
                 //Si la pantalla activa es Trabajo
                 if (backStackEntry?.destination?.route == APScreen.Trabajo.name){
                     //Crear botón flotante
-                    FloatingActionButtonBasico(onClick = tareaViewModel::HacerVisible)
+                    FloatingActionButtonBasico(
+                        onClick = {
+                            tareaViewModel.cargarColaboradoresProyecto(userInfo.idProyecto)
+                            tareaViewModel.cargarEstadosTarea()
+                            tareaViewModel.HacerVisible()
+                        })
                 }
             }
         })
@@ -291,16 +295,21 @@ fun AP_App() {
                     nombreTarea = tareaUiState.nombreTarea,
                     storyPoints = tareaUiState.storyPoints,
                     encargado = tareaUiState.encargado,
+                    estado = tareaUiState.estado,
+                    fechaFin = tareaUiState.fechaFin,
+                    listaColaboradores = tareaUiState.listaColaboradores,
                     crearTareaVisible = tareaUiState.mostrar,
                     codigoResult = tareaUiState.codigoResultado,
                     listaTareas = tareaUiState.listaTareas,
+                    listaEstados = tareaUiState.listaEstados,
                     onCerrarEmergente = { tareaViewModel.cerrarEmergente() },
                     onEditarTareaClick = { /*TODO*/ },
                     onOpcionesProyectoClick = { navController.navigate(APScreen.OpcionesProyecto.name) },
                     onTareaValueChange = tareaViewModel::ActualizarCampos,
                     onTareaEncargadoSelectionChange = tareaViewModel::ActualizarEncargado,
-                    onTareaConfirmar = { tareaViewModel.CrearTarea() },
-                    onTareaCerrarClick = { tareaViewModel.cerrarEmergente() })
+                    onTareaEstadoSelectionChange = tareaViewModel::ActualizarEstado,
+                    onTareaConfirmar = { tareaViewModel.CrearTarea(userInfo.idProyecto) },
+                    onTareaCerrarClick = { tareaViewModel.cerrarCrearTarea() })
             }
 
             //Notificaciones
