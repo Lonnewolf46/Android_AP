@@ -51,9 +51,12 @@ class Reunion {
                 const colaborador = colaboradores[i];
                 await sendMail(
                     colaborador.email,
-                    "Nueva reunión",
-                    `Se le ha invitado a una reunión con el tema: ${this.tema}. Para la fecha: ${this.fecha}`
-                );
+                    "Nueva reunión", `
+Se le ha invitado a una reunión con formato ${this.formato}.
+Tema: ${this.tema}.
+Con fecha: ${this.fecha}.
+A través de ${this.medio}, con el enlace: ${this.enlace}.
+` );
             }
         }
     }
