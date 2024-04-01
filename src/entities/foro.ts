@@ -46,8 +46,8 @@ class ForoInterno extends Foro {
         EXEC GuardarMensajeForoInterno 
             @Mensaje = '${mensaje.mensaje}',
             @IdProyecto = ${this.id}, 
-            @IdEmisor = ${mensaje.idEmisor};
-			@Fecha = '${today}'
+            @IdEmisor = ${mensaje.idEmisor},
+			      @Fecha = '${today}'
     `);
   }
 }
