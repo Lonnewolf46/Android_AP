@@ -171,7 +171,7 @@ class Proyecto {
 
     async obtenerReuniones() {
         return (await databaseQuery(`
-            SELECT id, fecha, medio, formato, enlace, idCreador, idProyecto
+            SELECT id, fecha, tema, medio, formato, enlace, idCreador, idProyecto
             FROM Reuniones WHERE idProyecto=${this.id}
         `)).map(Reunion.deserialize);
     }

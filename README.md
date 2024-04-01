@@ -659,6 +659,7 @@
 
 #### Parámetros de consulta:
 - `fecha`: string
+- `tema`: string
 - `medio`: string
 - `formato`: string
 - `enlace`: string
@@ -669,6 +670,7 @@
 ```json
 {
   "fecha": "2024-03-29",
+  "tema": "Reunión",
   "medio": "Google meets",
   "formato": "Remoto",
   "enlace": "google-meets.com",
@@ -698,6 +700,7 @@
   {
     "id": 2,
     "fecha": "2024-03-29T00:00:00.s000Z",
+    "tema": "Reunión",
     "medio": "Google meets",
     "formato": "Remoto",
     "enlace": "google-meets.com",
@@ -707,6 +710,7 @@
   {
     "id": 3,
     "fecha": "2024-03-29T00:00:00.000Z",
+    "tema": "Reunión",
     "medio": "Google meets",
     "formato": "Remoto",
     "enlace": "google-meets.com",

@@ -4,6 +4,7 @@ import databaseQuery from "../services/database.js";
 class Reunion {
     id:number;
     fecha:Date;
+    tema:string;
     medio:string;
     formato:string;
     enlace:string;
@@ -11,9 +12,10 @@ class Reunion {
     idProyecto:number;
     colaboradores:Colaborador[];
 
-    constructor(id:number, fecha:Date, medio:string, formato:string, enlace:string, idCreador:number, idProyecto:number, colaboradores:Colaborador[]) {
+    constructor(id:number, fecha:Date, tema:string, medio:string, formato:string, enlace:string, idCreador:number, idProyecto:number, colaboradores:Colaborador[]) {
         this.id = id;
         this.fecha = fecha;
+        this.tema = tema;
         this.medio = medio;
         this.formato = formato;
         this.enlace = enlace;
@@ -23,17 +25,17 @@ class Reunion {
     }
 
     static byId(id:number) {
-        return new Reunion(id, new Date(), "", "", "", 0, 0, []);
+        return new Reunion(id, new Date(), "", "", "", "", 0, 0, []);
     }
 
-    static deserialize({id, fecha, medio, formato, enlace, idCreador, idProyecto, colaboradores}) {
-        return new Reunion(id, fecha, medio, formato, enlace, idCreador, idProyecto, colaboradores);
+    static deserialize({id, fecha, tema, medio, formato, enlace, idCreador, idProyecto, colaboradores}) {
+        return new Reunion(id, fecha, tema, medio, formato, enlace, idCreador, idProyecto, colaboradores);
     }
 
     async crear() {
         const result = await databaseQuery(`
-            INSERT INTO Reuniones (fecha, medio, formato, enlace, idCreador, idProyecto)
-            VALUES ('${this.fecha}', '${this.medio}', '${this.formato}', '${this.enlace}', ${this.idCreador}, ${this.idProyecto})
+            INSERT INTO Reuniones (fecha, tema, medio, formato, enlace, idCreador, idProyecto)
+            VALUES ('${this.fecha}', '${this.tema}', '${this.medio}', '${this.formato}', '${this.enlace}', ${this.idCreador}, ${this.idProyecto})
 
             SELECT SCOPE_IDENTITY() as idReunion
         `);
