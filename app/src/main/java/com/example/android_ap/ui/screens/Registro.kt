@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.android_ap.Depto
-import com.example.android_ap.Project
+import com.example.android_ap.Proyecto
 import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
@@ -61,7 +61,7 @@ fun RegistroLayout(
     telefono: String,
     proyecto: String,
     departamento: String,
-    listaProyectos: List<Project>,
+    listaProyectos: List<Proyecto>,
     listaDepartamentos: List<Depto>,
     email: String,
     clave: String,
@@ -184,7 +184,7 @@ fun DatosRegistro(
     telefono: String,
     proyecto: String,
     departamento: String,
-    listaProyectos: List<Project>,
+    listaProyectos: List<Proyecto>,
     listaDepartamentos: List<Depto>,
     email: String,
     clave: String,

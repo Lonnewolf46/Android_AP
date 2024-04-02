@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.android_ap.Depto
-import com.example.android_ap.Project
+import com.example.android_ap.Proyecto
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
 import com.example.android_ap.ui.popups.Warning
@@ -38,7 +38,7 @@ fun ModificarInfoPersonalLayout(
     email: String,
     proyecto: String,
     departamento: String,
-    listaProyectos: List<Project>,
+    listaProyectos: List<Proyecto>,
     listaDepartamentos: List<Depto>,
     codigoResult: Int,
     onProySelectionChange: (String) -> Unit,
@@ -111,7 +111,7 @@ private fun DatosPersonales(
     email: String,
     proyecto: String,
     departamento: String,
-    listaProyectos: List<Project>,
+    listaProyectos: List<Proyecto>,
     listaDepartamentos: List<Depto>,
     onProySelectionChange: (String) -> Unit,
     onDeptoSelectionChange: (String) -> Unit,

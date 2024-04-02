@@ -1,7 +1,7 @@
 package com.example.android_ap.data
 
 import com.example.android_ap.Depto
-import com.example.android_ap.Project
+import com.example.android_ap.Proyecto
 
 data class RegistroUiState(
     val nombre: String = "",
@@ -10,7 +10,7 @@ data class RegistroUiState(
 
     //Posiblemente se cambien cuando se haga la implementación
     val proyecto: String = "",
-    val listaProyectos: List<Project> = listOf(),
+    val listaProyectos: List<Proyecto> = listOf(),
 
     val departamento: String = "",
 
