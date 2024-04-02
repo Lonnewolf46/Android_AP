@@ -40,7 +40,6 @@ class RegistroViewModel: ViewModel() {
     }
 
     fun cargarProyectos(){
-
         val apiAccess = APIAccess()
         try {
             val resultado = runBlocking {

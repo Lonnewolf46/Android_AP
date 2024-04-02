@@ -14,7 +14,7 @@ data class User (
     var cedula: Int,
     var telefono: Int,
     var departamento: Depto,
-    var proyecto: Project
+    var proyecto: Proyecto
 )
 
 data class Depto(
@@ -22,7 +22,7 @@ data class Depto(
     val nombre: String
 )
 
-data class Project(
+data class Proyecto(
     val id: Int,
     val nombre: String,
     val recursos: String,

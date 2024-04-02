@@ -22,7 +22,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.android_ap.Colaborador
+import com.example.android_ap.Estado
 import com.example.android_ap.Notificacion
+import com.example.android_ap.Proyecto
 import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.UsuarioInfoCampos
@@ -346,8 +349,10 @@ fun AP_App() {
 
             //GestionProyectos
             composable(route = APScreen.GestionProyectos.name){
-                //DATOS MOCKUP
                 GestionProyectosLayout(
+                    listaProyectos = obtenerProyectos(),
+                    listaColaboradores = obtenerColaboradores(),
+                    listaEstados = obtenerEstados(),
                     onConsultar = {}
                 )
             }
@@ -530,9 +535,47 @@ fun cambioProyecto(userInfoView: UserInfoView,
     }
 }
 
-//private fun CargarDepartamentos(navController: NavController, Departamento: List<>){
-//
-//}
+fun obtenerProyectos(): List<Proyecto> {
+    val apiAccess = APIAccess()
+    return try {
+        val resultado = runBlocking {
+            apiAccess.getAPIProyectos()
+        }
+        resultado.ifEmpty { emptyList() }
+    }catch (e: IOException) {
+        emptyList()
+    } catch (e: HttpException) {
+        emptyList()
+    }
+}
+
+fun obtenerEstados(): List<Estado>{
+    val apiAccess = APIAccess()
+    return try {
+        val resultado = runBlocking {
+            apiAccess.getAPIProyectoEstados()
+        }
+        resultado.ifEmpty { emptyList() }
+    }catch (e: IOException) {
+        emptyList()
+    } catch (e: HttpException) {
+        emptyList()
+    }
+}
+
+fun obtenerColaboradores(): List<Colaborador>{
+    val apiAccess = APIAccess()
+    return try {
+        val resultado = runBlocking {
+            apiAccess.getAPIColaboradores()
+        }
+        resultado.ifEmpty { emptyList() }
+    }catch (e: IOException) {
+        emptyList()
+    } catch (e: HttpException) {
+        emptyList()
+    }
+}
 
 /*
 * ¿Cómo hacer que recupere información antes de cargar algo? Simple, un cargar por funcion aparte, al

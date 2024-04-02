@@ -5,7 +5,7 @@ import com.example.android_ap.Estado
 import com.example.android_ap.ForoGeneral
 import com.example.android_ap.ForoProyecto
 import com.example.android_ap.Notificacion
-import com.example.android_ap.Project
+import com.example.android_ap.Proyecto
 import com.example.android_ap.Response
 import com.example.android_ap.Reunion
 import com.example.android_ap.Tarea
@@ -26,7 +26,13 @@ interface Rutas {
     suspend fun getAPIDeptos(): List<Depto>
 
     @GET("proyectos")
-    suspend fun getAPIProyectos(): List<Project>
+    suspend fun getAPIProyectos(): List<Proyecto>
+
+    @GET("colaboradores")
+    suspend fun getAPIColaboradores(): List<Colaborador>
+
+    @GET("proyectos/estados")
+    suspend fun getAPIProyectoEstados(): List<Estado>
 
     @POST("colaboradores")
     suspend fun postAPICrearColaborador(@Body body: Map<String, String>): Response
@@ -47,7 +53,7 @@ interface Rutas {
     suspend fun getAPIColaboradores(@Path("id") id: Int): List<Colaborador>
 
     @GET("tareas/estados")
-    suspend fun getAPIEstados(): List<Estado>
+    suspend fun getAPITareaEstados(): List<Estado>
 
     @POST("proyectos/{id}/tareas")
     suspend fun postAPINuevaTarea(@Path("id") id: Int, @Body body: Map<String, String>): Response
@@ -92,9 +98,19 @@ class APIAccess {
         return api.getAPIDeptos()
     }
 
-    suspend fun getAPIProyectos(): List<Project>{
+    suspend fun getAPIProyectos(): List<Proyecto>{
         val api = api()
         return api.getAPIProyectos()
+    }
+
+    suspend fun getAPIProyectoEstados(): List<Estado>{
+        val api = api()
+        return api.getAPIProyectoEstados()
+    }
+
+    suspend fun getAPIColaboradores(): List<Colaborador>{
+        val api = api()
+        return api.getAPIColaboradores()
     }
 
     suspend fun postAPICrearColaborador(
@@ -158,7 +174,7 @@ class APIAccess {
 
     suspend fun getAPIEstados(): List<Estado>{
         val api = api()
-        return api.getAPIEstados()
+        return api.getAPITareaEstados()
     }
 
     suspend fun postAPINuevaTarea(
