@@ -107,13 +107,20 @@ class Colaborador {
                 @IdDepartamento = ${this.idDepartamento};
             `);
         } catch (error) {
-            
             console.error(error);
         }
     }
 
+    async eliminarTareasNoCorrespondientes(nuevoProyecto:Proyecto) {
+        await databaseQuery(`
+            DELETE Tareas
+            WHERE idEncargado=${this.id} AND idProyecto!=${nuevoProyecto.id}
+        `);
+    }
+
     async actualizar(telefono:number, idProyecto:number, idDepartamento:number, email:string) {
         try {
+            await this.eliminarTareasNoCorrespondientes(Proyecto.byId(idProyecto));    
             await databaseQuery(`
             EXEC ActualizarColaborador 
                 @Id = ${this.id},
@@ -129,6 +136,7 @@ class Colaborador {
 
     async reasignarProyecto(proyecto:Proyecto) {
         try {
+            await this.eliminarTareasNoCorrespondientes(proyecto);
             await databaseQuery(`
             EXEC ReasignarProyectoColaborador 
                 @Id = ${this.id}, 
