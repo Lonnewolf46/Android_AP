@@ -40,6 +40,12 @@ interface Rutas {
     @PUT("colaboradores/{id}")
     suspend fun putAPIModificarColaborador(@Path("id") id: Int, @Body body: Map<String, String>): Response
 
+    @DELETE("proyectos/{id}/colaboradores/{id}")
+    suspend fun deleteAPIEliminarColaborador(@Path("id") idProyecto: Int,@Path("id") idColaborador: Int): Response
+
+    @PUT("colaboradores/{id}/reasignar-proyecto")
+    suspend fun putAPICambiarProyectoColaborador(@Path("id") id: Int, @Body body: Map<String, Int>):Response
+
     @GET("colaboradores/{id}/notificaciones")
     suspend fun putAPINotificaciones(@Path("id") id: Int): List<Notificacion>
 
@@ -150,6 +156,20 @@ class APIAccess {
             "idDepartamento" to idDepartamento.toString()
         )
         return api.putAPIModificarColaborador(id,body)
+    }
+
+    suspend fun deleteAPIEliminarColaborador(idProyecto: Int, idColaborador: Int): Response
+    {
+        val api = api()
+        return api.deleteAPIEliminarColaborador(idProyecto, idColaborador)
+    }
+
+    suspend fun putAPICambiarProyectoColaborador(id: Int, idProyecto: Int):Response{
+        val api = api()
+        val body = mapOf(
+            "idProyecto" to idProyecto
+        )
+        return api.putAPICambiarProyectoColaborador(id, body)
     }
 
     suspend fun putAPINotificaciones(id: Int): List<Notificacion>{

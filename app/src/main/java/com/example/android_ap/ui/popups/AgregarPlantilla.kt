@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_ap.BaseClass
 import com.example.android_ap.Colaborador
+import com.example.android_ap.Proyecto
 import com.example.android_ap.ui.theme.Android_APTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,6 +83,14 @@ fun <T: BaseClass> AgregarPlantillaLayout(
                                             onActionClick = { onAsignarQuitarClick(elemento.id) }
                                         )
                                     }
+                                }
+                                is Proyecto -> {
+                                    AgregarCard(
+                                        nombre = elemento.nombre,
+                                        textButton = "Asignar",
+                                        modifier = Modifier.fillMaxWidth(),
+                                        onActionClick = { onAsignarQuitarClick(elemento.id) }
+                                    )
                                 }
                             }
                         }

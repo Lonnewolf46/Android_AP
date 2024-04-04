@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -89,7 +90,7 @@ fun ReunionLayout(
     else{
         when(codigoResult){
             -2 ->  Warning(
-                texto = "Se ha producido un error inesperado. Por favor inténtelo de nuevo.",
+                texto = stringResource(R.string.unexpected_error_message),
                 onClose = onInfoWindowClose )
 
             0 -> Warning(
@@ -101,7 +102,7 @@ fun ReunionLayout(
                 onClose = onInfoWindowClose )
 
             3 ->  Warning(
-                texto = "Se produjo un error de red. Verifique su conexión a internet",
+                texto = stringResource(R.string.error_red_message),
                 onClose = onInfoWindowClose )
             15 -> Warning(
                 texto = "Asigne la reunión como mínimo a un colaborador.",

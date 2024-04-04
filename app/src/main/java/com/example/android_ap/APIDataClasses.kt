@@ -50,7 +50,7 @@ data class Tarea(
     val nombre: String,
     val storyPoints: Int,
     val idProyecto: Int,
-    val idEncargado: Int,
+    val idEncargado: Int?,
     val fechaInicio: String,
     val fechaFin: String,
     val idEstado: Int

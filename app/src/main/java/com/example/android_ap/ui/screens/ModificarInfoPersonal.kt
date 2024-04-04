@@ -15,6 +15,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.android_ap.Depto
 import com.example.android_ap.Proyecto
+import com.example.android_ap.R
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
 import com.example.android_ap.ui.popups.Warning
@@ -92,7 +94,7 @@ fun ModificarInfoPersonalLayout(
             texto = "Se requieren llenar todos los campos",
             onClose = { onDialogClose() })
         3 -> Warning(
-            texto = "Ha ocurrido un error de red",
+            texto = stringResource(R.string.error_red_message),
             onClose = { onDialogClose() })
         4 -> Warning(
             texto = "El correo ingresado no corresponde a uno institucional",

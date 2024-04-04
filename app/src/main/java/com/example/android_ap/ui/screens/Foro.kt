@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.android_ap.ForumMessageClass
 import com.example.android_ap.MensajeForoGeneral
 import com.example.android_ap.MensajeForoProyecto
+import com.example.android_ap.R
 import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
@@ -109,7 +111,7 @@ fun <T: ForumMessageClass>ForoLayout(
 
     when(codigoResult){
         -2 ->  Warning(
-            texto = "Se ha producido un error inesperado. Por favor inténtelo de nuevo.",
+            texto = stringResource(R.string.unexpected_error_message),
             onClose = cerrarEmergente )
 
         0 -> Warning(
@@ -121,7 +123,7 @@ fun <T: ForumMessageClass>ForoLayout(
             onClose = cerrarEmergente )
 
         3 ->  Warning(
-            texto = "Se produjo un error de red. Verifique su conexión a internet",
+            texto = stringResource(R.string.error_red_message),
             onClose = cerrarEmergente )
     }
 

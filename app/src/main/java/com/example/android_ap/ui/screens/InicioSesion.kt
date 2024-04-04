@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -116,7 +117,7 @@ fun InicioSesionLayout(nombre: String,
             texto = "Verfique sus credenciales",
             onClose = { onDialogClose() })
         3 -> Warning(
-            texto = "Se ha producido un error de red. Verifique su conexión.",
+            texto = stringResource(R.string.error_red_message),
             onClose = { onDialogClose() })
     }
 

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Android_AP</string>
+    <string name="error_red_message">Se produjo un error de red. Verifique su conexión a internet</string>
+    <string name="unexpected_error_message">Se ha producido un error inesperado. Por favor inténtelo de nuevo.</string>
 </resources>

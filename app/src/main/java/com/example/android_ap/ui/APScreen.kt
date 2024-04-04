@@ -22,11 +22,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.android_ap.Colaborador
 import com.example.android_ap.Estado
 import com.example.android_ap.Notificacion
 import com.example.android_ap.Proyecto
 import com.example.android_ap.R
+import com.example.android_ap.Response
 import com.example.android_ap.data.RegistroCampos
 import com.example.android_ap.data.UsuarioInfoCampos
 import com.example.android_ap.ui.UIAuxiliar.APAppBar
@@ -38,7 +38,6 @@ import com.example.android_ap.ui.UIAuxiliar.MinFabItem
 import com.example.android_ap.ui.screens.BurndownChartLayout
 import com.example.android_ap.ui.screens.ColaboradoresLayout
 import com.example.android_ap.ui.screens.ForoLayout
-import com.example.android_ap.ui.screens.GestionProyectosLayout
 import com.example.android_ap.ui.screens.InformeGeneralLayout
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
@@ -85,6 +84,7 @@ fun AP_App() {
     val proyectoViewModel: ProyectoViewModel = viewModel()
     val foroViewModel: ForoViewModel = viewModel()
     val userInfoView: UserInfoView = viewModel()
+    val colaboradoresViewModel: ColaboradoresViewModel = viewModel()
 
     //Inicializando elementos de navegacion
     val navController: NavHostController = rememberNavController()
@@ -102,6 +102,7 @@ fun AP_App() {
     val reunionUiState by reunionViewModel.uiState.collectAsState()
     val proyectoUiState by proyectoViewModel.uiState.collectAsState()
     val foroUiState by foroViewModel.uiState.collectAsState()
+    val colaboradoresUiState by colaboradoresViewModel.uiState.collectAsState()
     val userInfo by userInfoView.uiState.collectAsState()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -190,7 +191,12 @@ fun AP_App() {
                         MinFabItem(
                             icon = R.drawable.addperson,
                             label = "Agregar colaborador",
-                            path = { navController.navigate(APScreen.Colaboradores.name) })
+                            path = {
+                                colaboradoresViewModel.cargarProyectos()
+                                colaboradoresViewModel.cargarColaboradores()
+                                colaboradoresViewModel.filtrarColaboradoresAdministradores()
+                                navController.navigate(APScreen.Colaboradores.name)
+                            })
                     )
                     //Crear boton flotante
                     FABMenuPrincipal(
@@ -348,12 +354,17 @@ fun AP_App() {
             }
 
             //GestionProyectos
-            composable(route = APScreen.GestionProyectos.name){
-                GestionProyectosLayout(
-                    listaProyectos = obtenerProyectos(),
-                    listaColaboradores = obtenerColaboradores(),
-                    listaEstados = obtenerEstados(),
-                    onConsultar = {}
+            composable(route = APScreen.Colaboradores.name){
+                ColaboradoresLayout(
+                    listaColaboradores = colaboradoresUiState.listaColaboradores.filter { it.id != userInfo.id },
+                    listaProyectos = colaboradoresUiState.listaProyectos,
+                    codigoPopUp = colaboradoresUiState.codigoPopUps,
+                    codigoResult = colaboradoresUiState.codigoRespuesta,
+                    onProyectoSelection = colaboradoresViewModel::actualizarProyecto,
+                    onReasignarProyectoSelected = colaboradoresViewModel::actualizarIdColaborador,
+                    onAlternarProyectoPopUp = { colaboradoresViewModel.alternarReasignarProyecto() },
+                    onAlternarEliminarColaborador = { colaboradoresViewModel.alternarEliminarColaborador() },
+                    onCerrarPopups = { colaboradoresViewModel.noEmergentes() }
                 )
             }
 
@@ -386,9 +397,15 @@ fun AP_App() {
             //Colaboradores
             composable(route = APScreen.Colaboradores.name){
                 ColaboradoresLayout(
-                    onAsignarClick = { /*TODO*/ },
-                    onReasignarClick = { /*TODO*/ },
-                    onEliminarClick = { /*TODO*/ }
+                    listaColaboradores = colaboradoresUiState.listaColaboradores.filter { it.id != userInfo.id },
+                    listaProyectos = colaboradoresUiState.listaProyectos,
+                    codigoPopUp = colaboradoresUiState.codigoPopUps,
+                    codigoResult = colaboradoresUiState.codigoRespuesta,
+                    onProyectoSelection = colaboradoresViewModel::actualizarProyecto,
+                    onReasignarProyectoSelected = colaboradoresViewModel::actualizarIdColaborador,
+                    onAlternarProyectoPopUp = { colaboradoresViewModel.alternarReasignarProyecto() },
+                    onAlternarEliminarColaborador = { colaboradoresViewModel.alternarEliminarColaborador() },
+                    onCerrarPopups = { colaboradoresViewModel.noEmergentes() }
                 )
             }
 
@@ -563,17 +580,17 @@ fun obtenerEstados(): List<Estado>{
     }
 }
 
-fun obtenerColaboradores(): List<Colaborador>{
+fun eliminarColaborador(idProyecto: Int, idColaborador: Int): Response{
     val apiAccess = APIAccess()
     return try {
         val resultado = runBlocking {
-            apiAccess.getAPIColaboradores()
+            apiAccess.deleteAPIEliminarColaborador(idProyecto, idColaborador)
         }
-        resultado.ifEmpty { emptyList() }
+        resultado
     }catch (e: IOException) {
-        emptyList()
+        Response(success = false)
     } catch (e: HttpException) {
-        emptyList()
+        Response(success = false)
     }
 }
 

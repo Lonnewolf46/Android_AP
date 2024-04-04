@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_ap.Colaborador
 import com.example.android_ap.Estado
+import com.example.android_ap.R
 import com.example.android_ap.Tarea
 import com.example.android_ap.data.TareaCampos
 import com.example.android_ap.ui.popups.NuevaTarea
@@ -109,8 +111,11 @@ fun TrabajoLayout(
 
         when (codigoResult) {
             -2 -> Warning(
-                texto = "Se ha producido un error inesperado. Por favor inténtelo de nuevo.",
-                onClose = { onCerrarEmergente() })
+                texto = stringResource(R.string.unexpected_error_message),
+                onClose = {
+                    onCerrarEmergente()
+                    onTareasColaborador()
+                })
 
             0 -> Warning(
                 texto = "Tarea creada exitosamente",
