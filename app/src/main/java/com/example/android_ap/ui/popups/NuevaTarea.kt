@@ -96,7 +96,7 @@ fun NuevaTarea(nombre: String,
                         disabledContainerColor = MaterialTheme.colorScheme.surface,
                     ),
                     onValueChange = { onValueChange(TareaCampos.NOMBRE, it) },
-                    label = { Text(text = "NOMBRE DE TARERA") },
+                    label = { Text(text = "NOMBRE DE TAREA") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next
                     )

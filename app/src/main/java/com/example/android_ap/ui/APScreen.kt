@@ -38,6 +38,7 @@ import com.example.android_ap.ui.UIAuxiliar.MinFabItem
 import com.example.android_ap.ui.screens.BurndownChartLayout
 import com.example.android_ap.ui.screens.ColaboradoresLayout
 import com.example.android_ap.ui.screens.ForoLayout
+import com.example.android_ap.ui.screens.GestionProyectosLayout
 import com.example.android_ap.ui.screens.InformeGeneralLayout
 import com.example.android_ap.ui.screens.InicioSesionLayout
 import com.example.android_ap.ui.screens.MenuPrincipalLayout
@@ -182,11 +183,17 @@ fun AP_App() {
                         MinFabItem(
                             icon = R.drawable.manage_project,
                             label = "Administrar proyectos",
-                            path = { navController.navigate(APScreen.GestionProyectos.name) }),
+                            path = {
+                                proyectoViewModel.cargarColaboradores(null)
+                                navController.navigate(APScreen.GestionProyectos.name)
+                            }),
                         MinFabItem(
                             icon = R.drawable.project_new,
                             label = "Agregar proyecto",
-                            path = { proyectoViewModel.resetState()
+                            path = {
+                                proyectoViewModel.resetState()
+                                proyectoViewModel.cargarEstadosProyecto()
+                                proyectoViewModel.cargarColaboradores(userInfo.id)
                                 navController.navigate(APScreen.CrearProyecto.name) }),
                         MinFabItem(
                             icon = R.drawable.addperson,
@@ -354,18 +361,14 @@ fun AP_App() {
             }
 
             //GestionProyectos
-            composable(route = APScreen.Colaboradores.name){
-                ColaboradoresLayout(
-                    listaColaboradores = colaboradoresUiState.listaColaboradores.filter { it.id != userInfo.id },
-                    listaProyectos = colaboradoresUiState.listaProyectos,
-                    codigoPopUp = colaboradoresUiState.codigoPopUps,
-                    codigoResult = colaboradoresUiState.codigoRespuesta,
-                    onProyectoSelection = colaboradoresViewModel::actualizarProyecto,
-                    onReasignarProyectoSelected = colaboradoresViewModel::actualizarIdColaborador,
-                    onAlternarProyectoPopUp = { colaboradoresViewModel.alternarReasignarProyecto() },
-                    onAlternarEliminarColaborador = { colaboradoresViewModel.alternarEliminarColaborador() },
-                    onCerrarPopups = { colaboradoresViewModel.noEmergentes() }
+            composable(route = APScreen.GestionProyectos.name){
+                GestionProyectosLayout(
+                    listaProyectos = obtenerProyectos(),
+                    listaColaboradores = proyectoUiState.listaColaboradores,
+                    listaEstados = obtenerEstados(),
+                    onConsultar = {}
                 )
+
             }
 
             //CrearProyecto
@@ -380,17 +383,37 @@ fun AP_App() {
                     descripcion = proyectoUiState.descripcion,
                     responsable = proyectoUiState.responsable,
                     codigoResult = proyectoUiState.codigoResultado,
-                    onValueChange = proyectoViewModel::ActualizarCampos,
-                    onAsignarColaboradores = { /*TODO*/ },
-                    onCrearTareas = { /*TODO*/ },
-                    onCrearProyecto = { proyectoViewModel.CrearProyecto() },
+                    listaEstadosProyecto = proyectoUiState.listaEstadosProyecto,
+                    listaEstadosTarea = proyectoUiState.listaEstadosTarea,
+                    listaColaboradores = proyectoUiState.listaColaboradores,
+                    listaColaboradoresElegidos = proyectoUiState.listaColaboradoresElegidos,
+                    onValueChange = proyectoViewModel::actualizarCamposProyecto,
+                    onEstadoProyectoSelection = { proyectoViewModel.actualizarEstadoProyecto(it) },
+                    onResponsableProyectoSelection = { proyectoViewModel.actualizarResponsableProyecto(it) },
+                    onAsignarColaboradores = { proyectoViewModel.ventanaAsignarColaboradores() },
+                    onAgregarQuitarColaborador = { proyectoViewModel.asignarQuitarcolaborador(it) },
+                    onCrearTareas = {
+                        proyectoViewModel.cargarEstadosTarea()
+                        proyectoViewModel.ventanaCrearTarea()
+                                    },
+                    onCrearProyecto = { proyectoViewModel.crearProyecto() },
                     onCerrarPopUp = {
                         if(proyectoUiState.codigoResultado == 0){
                             navController.navigateUp()
                             proyectoViewModel.resetState() }
 
                         else proyectoViewModel.CerrarEmergente()
-                    }
+                    },
+                    nombreTarea = proyectoUiState.nombreTarea,
+                    storyPointsTarea = proyectoUiState.storyPointsTarea,
+                    fechaFinTarea = proyectoUiState.fechaFinTarea,
+                    encargadoTarea = proyectoUiState.encargadoTarea,
+                    estadoTarea = proyectoUiState.estadoTarea,
+                    onCamposTareaValueChange = proyectoViewModel::actualizarCamposTarea,
+                    onEncargadoTareaSelection = { proyectoViewModel.actualizarEncargadoTarea(it) },
+                    onEstadoTareaSelection = { proyectoViewModel.actualizarEstadoTarea(it) },
+                    onConfirmarAgregarTarea = { proyectoViewModel.crearTarea() },
+                    codigoResultTarea = proyectoUiState.codigoResultadoTarea
                 )
             }
 

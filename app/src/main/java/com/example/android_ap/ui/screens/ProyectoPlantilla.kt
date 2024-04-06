@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -26,7 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import com.example.android_ap.Colaborador
+import com.example.android_ap.Estado
+import com.example.android_ap.R
 import com.example.android_ap.data.ProyectoCampos
+import com.example.android_ap.data.TareaCampos
+import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
+import com.example.android_ap.ui.popups.AgregarPlantillaLayout
+import com.example.android_ap.ui.popups.NuevaTarea
 import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
@@ -41,11 +49,28 @@ fun ProyectoPlantillaLayout(
     descripcion: String,
     responsable: String,
     codigoResult: Int,
+    listaEstadosProyecto: List<Estado>,
+    listaEstadosTarea: List<Estado>,
+    listaColaboradores: List<Colaborador>,
+    listaColaboradoresElegidos: List<Int>,
     onValueChange: (ProyectoCampos, String) -> Unit,
+    onEstadoProyectoSelection: (String) -> Unit,
+    onResponsableProyectoSelection: (String) -> Unit,
     onAsignarColaboradores: () -> Unit,
+    onAgregarQuitarColaborador: (Int) -> Unit,
     onCrearTareas: () -> Unit,
     onCrearProyecto: () -> Unit,
-    onCerrarPopUp: () -> Unit
+    onCerrarPopUp: () -> Unit,
+    nombreTarea: String,
+    storyPointsTarea: String,
+    fechaFinTarea: String,
+    encargadoTarea: String,
+    estadoTarea: String,
+    onCamposTareaValueChange: (TareaCampos, String) -> Unit,
+    onEncargadoTareaSelection: (String) -> Unit,
+    onEstadoTareaSelection: (String) -> Unit,
+    onConfirmarAgregarTarea: () -> Unit,
+    codigoResultTarea: Int
 
 ){
     Column(
@@ -73,18 +98,63 @@ fun ProyectoPlantillaLayout(
             estado = estado,
             descripcion = descripcion,
             responsable = responsable,
+            listaEstadosProyecto = listaEstadosProyecto,
+            listaColaboradores = listaColaboradores.filter { it.id in listaColaboradoresElegidos },
             onValueChange = onValueChange,
+            onEstadoSelection = onEstadoProyectoSelection,
+            onResponsableSelection = onResponsableProyectoSelection,
             onAsignarColaboradores = onAsignarColaboradores,
             onCrearTareas = onCrearTareas,
             onCrearProyecto = onCrearProyecto,
             modifier = Modifier.fillMaxWidth())
 
         when(codigoResult){
-            0 -> Warning(texto = "Proceso exitoso",
-                onClose = { onCerrarPopUp() })
+            -2 -> Warning(
+                texto = stringResource(R.string.unexpected_error_message),
+                onClose = onCerrarPopUp )
+
+            0 -> Warning(texto = "Proceso exitoso.",
+                onClose = onCerrarPopUp )
 
             1 -> Warning(texto = "Se requiere llenar todos los campos",
-                onClose = { onCerrarPopUp() })
+                onClose = onCerrarPopUp )
+
+            3 -> Warning(
+                texto = stringResource(R.string.error_red_message),
+                onClose = onCerrarPopUp )
+
+            16 -> AgregarPlantillaLayout(
+                titulo = "Elegir colaboradores",
+                listaElementos = listaColaboradores,
+                listaElegidos = listaColaboradoresElegidos,
+                onAsignarQuitarClick = onAgregarQuitarColaborador,
+                onCerrarClick = onCerrarPopUp
+            )
+
+            17 -> NuevaTarea(
+                nombre = nombreTarea,
+                storyPoints = storyPointsTarea,
+                encargado = encargadoTarea,
+                estado = estadoTarea,
+                fechaFin = fechaFinTarea,
+                listaColaboradores = listaColaboradores.filter { it.id in listaColaboradoresElegidos },
+                listaEstados = listaEstadosTarea,
+                onValueChange = onCamposTareaValueChange,
+                onEncargadoSelectionChange = onEncargadoTareaSelection,
+                onEstadoSelectionChange = onEstadoTareaSelection,
+                codigoResult = codigoResultTarea,
+                onConfirmar = onConfirmarAgregarTarea,
+                onEliminar = { /*TODO*/ },
+                onCerrarClick = onCerrarPopUp,
+                crearTarea = true
+            )
+            18 -> Warning(
+                texto = "Tarea agregada satisfactoriamente",
+                onClose = onCerrarPopUp )
+
+            19 -> Warning(
+                texto = "Se requiere de, al menos, una tarea.",
+                onClose = onCerrarPopUp )
         }
 
     }
@@ -99,7 +169,11 @@ fun DatosProyecto(
     estado: String,
     descripcion: String,
     responsable: String,
+    listaEstadosProyecto: List<Estado>,
+    listaColaboradores: List<Colaborador>,
     onValueChange: (ProyectoCampos, String) -> Unit,
+    onEstadoSelection: (String) -> Unit,
+    onResponsableSelection: (String) -> Unit,
     onAsignarColaboradores: () -> Unit,
     onCrearTareas: () -> Unit,
     onCrearProyecto: () -> Unit,
@@ -174,7 +248,11 @@ fun DatosProyecto(
         }
 
         //Estado del proyecto
-        Demo_ExposedDropdownMenuBox("ESTADO DEL PROYECTO", modifier)
+       CustomExposedDropdownMenuBox(
+           titulo = "ESTADO DEL PROYECTO",
+           seleccionado = estado,
+           listaElementos = listaEstadosProyecto.map { it.estado },
+           onValueChange = { onEstadoSelection(it) })
 
         //Descripcion
         OutlinedTextField(
@@ -191,7 +269,11 @@ fun DatosProyecto(
         )
 
         //Responsable del proyecto
-        Demo_ExposedDropdownMenuBox("RESPONSABLE", modifier = modifier)
+        CustomExposedDropdownMenuBox(
+            titulo = "RESPONSABLE",
+            seleccionado = responsable,
+            listaElementos = listaColaboradores.map { it.nombre },
+            onValueChange = { onResponsableSelection(it) })
 
         Button(
             onClick = { onCrearProyecto() },

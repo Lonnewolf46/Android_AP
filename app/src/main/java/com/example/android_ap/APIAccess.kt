@@ -6,6 +6,7 @@ import com.example.android_ap.ForoGeneral
 import com.example.android_ap.ForoProyecto
 import com.example.android_ap.Notificacion
 import com.example.android_ap.Proyecto
+import com.example.android_ap.ProyectoEnviar
 import com.example.android_ap.Response
 import com.example.android_ap.Reunion
 import com.example.android_ap.Tarea
@@ -84,6 +85,9 @@ interface Rutas {
 
     @POST("foros/{id}/mensajes")
     suspend fun putAPIMensajeForoPro(@Path("id") id: Int ,@Body body: Map<String, String>): Response
+
+    @POST("proyectos")
+    suspend fun postAPICrearProyecto(@Body body: ProyectoEnviar): Response
 
 }
 
@@ -277,6 +281,11 @@ class APIAccess {
             "idEmisor" to idEmisor.toString()
         )
         return api.putAPIMensajeForoPro(idProyecto,body)
+    }
+
+    suspend fun postAPICrearProyecto(body: ProyectoEnviar): Response{
+        val api = api()
+        return api.postAPICrearProyecto(body)
     }
 }
 

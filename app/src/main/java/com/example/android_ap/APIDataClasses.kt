@@ -34,6 +34,20 @@ data class Proyecto(
     val fechaFin: String
 ):BaseClass()
 
+data class ProyectoEnviar(
+    val id: Int,
+    val nombre: String,
+    val recursos: String,
+    val presupuesto: Float,
+    val idEstado: Int,
+    val descripcion: String,
+    val idResponsable: Int,
+    val fechaInicio: String,
+    val fechaFin: String,
+    val tareas: List<Tarea>,
+    val colaboradores: List<Int>
+):BaseClass()
+
 data class Response(
     val success: Boolean
 )
@@ -47,13 +61,13 @@ data class Notificacion(
 
 data class Tarea(
     val id: Int,
-    val nombre: String,
-    val storyPoints: Int,
+    var nombre: String,
+    var storyPoints: Int,
     val idProyecto: Int,
-    val idEncargado: Int?,
+    var idEncargado: Int?,
     val fechaInicio: String,
-    val fechaFin: String,
-    val idEstado: Int
+    var fechaFin: String,
+    var idEstado: Int
 )
 
 data class Colaborador(
