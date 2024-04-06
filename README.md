@@ -1,5 +1,9 @@
 # API AP
 
+* [Creación de colaboradores (registro)](#creación-de-colaboradores-registro)
+* [Validación de credenciales](#validación-de-credenciales)
+* [Modificación de datos de colaborador](#modificación-de-datos-de-colaborador)
+
 ## Creación de colaboradores (registro)
 
 **Método:** POST

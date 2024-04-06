@@ -95,9 +95,7 @@ class Colaborador {
     }
 
     async crear() {
-        try {
-            await databaseQuery(`
-            EXEC CrearColaborador 
+            await databaseQuery(`EXEC CrearColaborador
                 @Nombre = '${this.nombre}',
                 @Cedula = ${this.cedula},
                 @Telefono = ${this.telefono},
@@ -106,9 +104,6 @@ class Colaborador {
                 @IdProyecto = ${this.idProyecto},
                 @IdDepartamento = ${this.idDepartamento};
             `);
-        } catch (error) {
-            console.error(error);
-        }
     }
 
     async eliminarTareasNoCorrespondientes(nuevoProyecto:Proyecto) {

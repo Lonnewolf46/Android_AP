@@ -6,15 +6,18 @@ import Tarea from "../entities/tarea.js";
 import Notificacion from "../entities/notificacion.js";
 import { ForoGeneral, ForoInterno, Mensaje } from "../entities/foro.js";
 import Reunion from "../entities/reunion.js";
-import sendMail from "../services/mail.js";
 
 const apiRoutes = Router();
 
 // Crear colaborador
 apiRoutes.post("/colaboradores", async (req, res) => {
-    const colaborador = Colaborador.deserialize(req.body);
-    await colaborador.crear();
-    return res.json({success: true});
+    try {
+        const colaborador = Colaborador.deserialize(req.body);
+        await colaborador.crear();
+        return res.json({success: true});
+    } catch (error) {
+        return res.json({success: false, error: error.message});
+    }
 });
 
 // Modificar colaborador
