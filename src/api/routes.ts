@@ -167,6 +167,13 @@ apiRoutes.post("/notificaciones", async(req, res) => {
     return res.json({success: true});
 });
 
+// Obtener notificacion
+apiRoutes.get("/notificaciones/:idProyecto", async(req, res) => {
+    const {idProyecto} = req.params;
+    const notificacion= await Notificacion.obtenerNotificaciones(idProyecto);
+    return res.json(notificacion);
+});
+
 // Foro general
 apiRoutes.get("/foros/general", async(req, res) => {
     const foro = await ForoGeneral.obtenerForo();
