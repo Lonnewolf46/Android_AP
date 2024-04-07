@@ -48,7 +48,7 @@ interface Rutas {
     suspend fun putAPICambiarProyectoColaborador(@Path("id") id: Int, @Body body: Map<String, Int>):Response
 
     @GET("colaboradores/{id}/notificaciones")
-    suspend fun putAPINotificaciones(@Path("id") id: Int): List<Notificacion>
+    suspend fun GETAPINotificaciones(@Path("id") id: Int): List<Notificacion>
 
     @GET("proyectos/{id}/tareas")
     suspend fun getAPITareasProyecto(@Path("id") id: Int):List<Tarea>
@@ -179,9 +179,9 @@ class APIAccess {
         return api.putAPICambiarProyectoColaborador(id, body)
     }
 
-    suspend fun putAPINotificaciones(id: Int): List<Notificacion>{
+    suspend fun GETAPINotificaciones(idProyecto: Int): List<Notificacion>{
         val api = api()
-        return api.putAPINotificaciones(id)
+        return api.GETAPINotificaciones(idProyecto)
     }
 
     suspend fun getAPITareasProyecto(id: Int):List<Tarea>{

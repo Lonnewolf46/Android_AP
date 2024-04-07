@@ -1,5 +1,7 @@
 package com.example.android_ap
 
+import java.util.Date
+
 open class BaseClass
 open class ForumMessageClass
 
@@ -52,12 +54,14 @@ data class Response(
     val success: Boolean
 )
 
+
 data class Notificacion(
     val id: Int,
     val mensaje: String,
     val idColaborador: Int,
-    val idEstado: Int
+    val fecha: Date? // Declarada como Date nullable
 )
+
 
 data class Tarea(
     val id: Int,

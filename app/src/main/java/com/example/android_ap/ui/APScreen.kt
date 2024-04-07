@@ -53,6 +53,7 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
 
+
 enum class APScreen() {
     InicioSesion,
     Registro,
@@ -604,13 +605,13 @@ fun obtenerNotificaciones(currentUser: UserInfoView): List<Notificacion>{
     val apiAccess = APIAccess()
     return try {
         val resultado = runBlocking {
-            apiAccess.putAPINotificaciones(currentUser.uiState.value.id)
+            apiAccess.GETAPINotificaciones(currentUser.uiState.value.idProyecto)
         }
         resultado
     } catch (e: IOException) {
-        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, 1))
+        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, null))
     } catch (e: HttpException) {
-        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, 1))
+        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, null))
     }
 }
 
