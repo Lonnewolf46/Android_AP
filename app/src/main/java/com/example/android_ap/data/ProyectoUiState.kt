@@ -24,6 +24,9 @@ data class ProyectoUiState(
     val fechaFinTarea: String = "",
     val encargadoTarea: String = "",
     val estadoTarea: String  = "",
-    val codigoResultadoTarea: Int = -1
+    val codigoResultadoTarea: Int = -1,
+
+    val idProyecto: Int = -1,
+    val crearProyecto: Boolean = true
 
     )

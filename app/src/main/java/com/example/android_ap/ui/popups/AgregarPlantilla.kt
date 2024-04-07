@@ -108,7 +108,7 @@ fun <T: BaseClass> AgregarPlantillaLayout(
 }
 
 @Composable
-fun AgregarCard(nombre: String,
+private fun AgregarCard(nombre: String,
                 textButton: String,
                 modifier: Modifier,
                 onActionClick: () -> Unit

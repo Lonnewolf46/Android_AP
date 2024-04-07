@@ -34,7 +34,8 @@ fun GestionProyectosLayout(
     listaProyectos: List<Proyecto>,
     listaColaboradores: List<Colaborador>,
     listaEstados: List<Estado>,
-    onConsultar: () -> Unit
+    onConsultar: (Proyecto) -> Unit,
+    rutaNav: () -> Unit
     ){
 
     Column(
@@ -71,10 +72,11 @@ fun GestionProyectosLayout(
 
 
                         ProyectosCard(
-                            nombreProyecto = proyecto.nombre,
+                            proyecto = proyecto,
                             estado = estado,
                             responsable = responsable,
-                            onConsultar = { onConsultar() },
+                            onConsultar = onConsultar,
+                            rutaNav = rutaNav,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -90,17 +92,18 @@ fun GestionProyectosLayout(
 
 @Composable
 private fun ProyectosCard(
-    nombreProyecto: String,
+    proyecto: Proyecto,
     estado: String,
     responsable: String,
-    onConsultar: () -> Unit,
+    onConsultar: (Proyecto) -> Unit,
+    rutaNav: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Card(modifier = modifier){
         Column(verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.padding(8.dp)) {
             Text(
-                text = nombreProyecto,
+                text = proyecto.nombre,
                 style = TextStyle(
                     fontSize = 16.sp)
             )
@@ -115,7 +118,10 @@ private fun ProyectosCard(
                     )
                     Text(text = responsable)
                 }
-                Button(onClick = { onConsultar() }) {
+                Button(onClick = {
+                    onConsultar(proyecto)
+                    rutaNav()
+                }) {
                     Text(text = "Consultar")
                 }
             }

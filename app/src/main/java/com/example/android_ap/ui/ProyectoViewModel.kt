@@ -1,7 +1,9 @@
 package com.example.android_ap.ui
 
 import APIAccess
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.android_ap.Proyecto
 import com.example.android_ap.ProyectoEnviar
 import com.example.android_ap.Tarea
 import com.example.android_ap.data.ProyectoCampos
@@ -52,14 +54,13 @@ class ProyectoViewModel : ViewModel() {
         }
     }
 
-
     fun cargarColaboradores(idActual: Int?) {
         val apiAccess = APIAccess()
         try {
             val resultado = runBlocking {
                 apiAccess.getAPIColaboradores()
             }
-            if(idActual!=null) //Si se dio un id para filtrarlo fuera, se filtra
+            if (idActual != null) //Si se dio un id para filtrarlo fuera, se filtra
                 _uiState.update { currentState -> currentState.copy(listaColaboradores = resultado.filter { it.id != idActual }) }
             else //Si no, se conserva
                 _uiState.update { currentState -> currentState.copy(listaColaboradores = resultado) }
@@ -67,6 +68,24 @@ class ProyectoViewModel : ViewModel() {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
         } catch (e: HttpException) {
             _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        }
+    }
+
+    fun cargarColaboradoresProyecto(currentProyectId: Int) {
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPIColaboradores(currentProyectId)
+            }
+            Log.d("COLABORADORES DEL PROYECTO CARGADOS: ", "$resultado")
+            _uiState.update { currentState -> currentState.copy(listaColaboradores = resultado) }
+            _uiState.update { currentState -> currentState.copy(listaColaboradoresElegidos = resultado.map { it.id }) }
+        } catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaColaboradores = listOf()) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaColaboradores = listOf()) }
         }
     }
 
@@ -129,7 +148,10 @@ class ProyectoViewModel : ViewModel() {
 
     /*
     8 nombre vacio
-
+    9 tarea vacio
+    10 encargado vacio
+    11 estado vacio
+    12 fecha fin vacio
     * */
     fun crearTarea() {
         if (_uiState.value.nombreTarea.isBlank()) {
@@ -222,6 +244,51 @@ class ProyectoViewModel : ViewModel() {
         this.actualizarCamposProyecto(ProyectoCampos.RESPONSABLE, input)
     }
 
+    fun cargarTareasProyecto(currentProyectId: Int) {
+        val apiAccess = APIAccess()
+        try {
+            val resultado = runBlocking {
+                apiAccess.getAPITareasProyecto(currentProyectId)
+            }
+            _uiState.update { currentState -> currentState.copy(listaTareas = resultado) }
+        } catch (e: IOException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaTareas = listOf()) }
+        } catch (e: HttpException) {
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            _uiState.update { currentState -> currentState.copy(listaTareas = listOf()) }
+        }
+    }
+
+    fun cargarDatosProyecto(proyectoElegido: Proyecto) {
+
+        this.cargarColaboradores(null)
+        this.cargarEstadosProyecto()
+        this.cargarTareasProyecto(proyectoElegido.id)
+
+        if (_uiState.value.listaColaboradores.isEmpty() || _uiState.value.listaEstadosProyecto.isEmpty())
+            _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+        else {
+            val nombreColaborador =
+                _uiState.value.listaColaboradores.firstOrNull { it.id == proyectoElegido.idResponsable }!!.nombre
+            val nombreEstado =
+                _uiState.value.listaEstadosProyecto.firstOrNull { it.id == proyectoElegido.idEstado }!!.estado
+            this.cargarColaboradoresProyecto(proyectoElegido.id)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    idProyecto = proyectoElegido.id,
+                    nombre = proyectoElegido.nombre,
+                    recursos = proyectoElegido.recursos,
+                    presupuesto = proyectoElegido.presupuesto.toString(),
+                    estado = nombreEstado,
+                    descripcion = proyectoElegido.descripcion,
+                    responsable = nombreColaborador,
+                    crearProyecto = false
+                )
+            }
+        }
+    }
+
     /**
     Valida que el uiState tenga información en todos sus campos. Si no es asi, avisa.
     CODIGOS:
@@ -239,7 +306,7 @@ class ProyectoViewModel : ViewModel() {
         ) {
             if (_uiState.value.listaColaboradoresElegidos.isEmpty())//Si no hay colaboradores
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 16) }
-            else if (_uiState.value.listaTareas.isEmpty())//Si no hay colaboradores
+            else if (_uiState.value.listaTareas.isEmpty())//Si no hay tareas
                 _uiState.update { currentState -> currentState.copy(codigoResultado = 19) }
             else {
 
@@ -281,12 +348,69 @@ class ProyectoViewModel : ViewModel() {
         } else _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }
     }
 
+    fun modificarProyecto() {
+        if (_uiState.value.nombre.isNotBlank() &&
+            _uiState.value.recursos.isNotBlank() &&
+            _uiState.value.presupuesto.isNotBlank() &&
+            _uiState.value.estado.isNotBlank() &&
+            _uiState.value.descripcion.isNotBlank() &&
+            _uiState.value.responsable.isNotBlank()
+        ) {
+            val idColaborador =
+                _uiState.value.listaColaboradores.firstOrNull { it.nombre == _uiState.value.responsable }!!.id
+            val idEstado =
+                _uiState.value.listaEstadosProyecto.firstOrNull { it.estado == _uiState.value.estado }!!.id
+
+            //Hacer solicitud
+            val proyecto = ProyectoEnviar(
+                id = _uiState.value.idProyecto,
+                nombre = _uiState.value.nombre,
+                recursos = _uiState.value.recursos,
+                presupuesto = _uiState.value.presupuesto.toFloat(),
+                idEstado = idEstado,
+                descripcion = _uiState.value.descripcion,
+                idResponsable = idColaborador,
+                fechaInicio = _uiState.value.listaTareas[0].fechaInicio,
+                fechaFin = _uiState.value.listaTareas[0].fechaFin,
+                tareas = _uiState.value.listaTareas,
+                colaboradores = _uiState.value.listaColaboradoresElegidos
+            )
+
+            val apiAccess = APIAccess()
+            try {
+                val resultado = runBlocking {
+                    apiAccess.putAPIModificarProyecto(_uiState.value.idProyecto,proyecto)
+                }
+                if (resultado.success)
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 0) }
+                else
+                    _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            } catch (e: IOException) {
+                _uiState.update { currentState -> currentState.copy(codigoResultado = 3) }
+            } catch (e: HttpException) {
+                _uiState.update { currentState -> currentState.copy(codigoResultado = -2) }
+            }
+        } else _uiState.update { currentState -> currentState.copy(codigoResultado = 1) }
+    }
+
     fun ventanaAsignarColaboradores() {//Abrir ventana asignar colaboradores
         _uiState.update { currentState -> currentState.copy(codigoResultado = 16) }
     }
 
     fun ventanaCrearTarea() {//Abrir ventana Crear Tarea
         _uiState.update { currentState -> currentState.copy(codigoResultado = 17) }
+    }
+
+    fun ventanaVerColaboradores() {
+        _uiState.update { currentState -> currentState.copy(codigoResultado = 20) }
+    }
+
+    fun ventanaVerTareas() {
+        _uiState.update { currentState -> currentState.copy(codigoResultado = 21) }
+    }
+
+    fun boolCrearProyecto() {
+        _uiState.update { currentState -> currentState.copy(crearProyecto = true) }
     }
 
     fun CerrarEmergente() {

@@ -89,6 +89,9 @@ interface Rutas {
     @POST("proyectos")
     suspend fun postAPICrearProyecto(@Body body: ProyectoEnviar): Response
 
+    @PUT("proyectos/{id}")
+    suspend fun putAPIModificarProyecto(@Path("id") id: Int, @Body body: ProyectoEnviar): Response
+
 }
 
 class APIAccess {
@@ -286,6 +289,12 @@ class APIAccess {
     suspend fun postAPICrearProyecto(body: ProyectoEnviar): Response{
         val api = api()
         return api.postAPICrearProyecto(body)
+    }
+
+    suspend fun putAPIModificarProyecto(id: Int,body: ProyectoEnviar): Response
+    {
+        val api = api()
+        return api.putAPIModificarProyecto(id, body)
     }
 }
 

@@ -30,11 +30,13 @@ import androidx.core.text.isDigitsOnly
 import com.example.android_ap.Colaborador
 import com.example.android_ap.Estado
 import com.example.android_ap.R
+import com.example.android_ap.Tarea
 import com.example.android_ap.data.ProyectoCampos
 import com.example.android_ap.data.TareaCampos
 import com.example.android_ap.ui.UIAuxiliar.CustomExposedDropdownMenuBox
 import com.example.android_ap.ui.popups.AgregarPlantillaLayout
 import com.example.android_ap.ui.popups.NuevaTarea
+import com.example.android_ap.ui.popups.VerPlantillaLayout
 import com.example.android_ap.ui.popups.Warning
 import com.example.android_ap.ui.theme.Android_APTheme
 
@@ -70,19 +72,21 @@ fun ProyectoPlantillaLayout(
     onEncargadoTareaSelection: (String) -> Unit,
     onEstadoTareaSelection: (String) -> Unit,
     onConfirmarAgregarTarea: () -> Unit,
-    codigoResultTarea: Int
-
-){
+    codigoResultTarea: Int,
+    crearProyecto: Boolean,
+    listaTareas: List<Tarea> = listOf()
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(32.dp)
             .fillMaxSize()
-    ){
+    ) {
         Image(
             imageVector = imagen,
             contentDescription = null,
-            modifier = Modifier.height(108.dp))
+            modifier = Modifier.height(108.dp)
+        )
         Text(
             text = titulo,
             style = TextStyle(
@@ -106,22 +110,30 @@ fun ProyectoPlantillaLayout(
             onAsignarColaboradores = onAsignarColaboradores,
             onCrearTareas = onCrearTareas,
             onCrearProyecto = onCrearProyecto,
-            modifier = Modifier.fillMaxWidth())
+            modifier = Modifier.fillMaxWidth(),
+            crearProyecto = crearProyecto
+        )
 
-        when(codigoResult){
+        when (codigoResult) {
             -2 -> Warning(
                 texto = stringResource(R.string.unexpected_error_message),
-                onClose = onCerrarPopUp )
+                onClose = onCerrarPopUp
+            )
 
-            0 -> Warning(texto = "Proceso exitoso.",
-                onClose = onCerrarPopUp )
+            0 -> Warning(
+                texto = "Proceso exitoso.",
+                onClose = onCerrarPopUp
+            )
 
-            1 -> Warning(texto = "Se requiere llenar todos los campos",
-                onClose = onCerrarPopUp )
+            1 -> Warning(
+                texto = "Se requiere llenar todos los campos",
+                onClose = onCerrarPopUp
+            )
 
             3 -> Warning(
                 texto = stringResource(R.string.error_red_message),
-                onClose = onCerrarPopUp )
+                onClose = onCerrarPopUp
+            )
 
             16 -> AgregarPlantillaLayout(
                 titulo = "Elegir colaboradores",
@@ -148,13 +160,30 @@ fun ProyectoPlantillaLayout(
                 onCerrarClick = onCerrarPopUp,
                 crearTarea = true
             )
+
             18 -> Warning(
                 texto = "Tarea agregada satisfactoriamente",
-                onClose = onCerrarPopUp )
+                onClose = onCerrarPopUp
+            )
 
             19 -> Warning(
                 texto = "Se requiere de, al menos, una tarea.",
-                onClose = onCerrarPopUp )
+                onClose = onCerrarPopUp
+            )
+
+            20 -> VerPlantillaLayout(
+                titulo = "Colaboradores",
+                listaElementos = listaColaboradores
+                    .filter { it.id in listaColaboradoresElegidos }
+                    .map { it.nombre },
+                onCerrarClick = onCerrarPopUp
+            )
+
+            21 -> VerPlantillaLayout(
+                titulo = "Tareas",
+                listaElementos = listaTareas.map { it.nombre },
+                onCerrarClick = onCerrarPopUp
+            )
         }
 
     }
@@ -177,12 +206,14 @@ fun DatosProyecto(
     onAsignarColaboradores: () -> Unit,
     onCrearTareas: () -> Unit,
     onCrearProyecto: () -> Unit,
-    modifier: Modifier){
+    modifier: Modifier,
+    crearProyecto: Boolean
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-    ){
+    ) {
 
         //Nombre
         OutlinedTextField(
@@ -236,23 +267,31 @@ fun DatosProyecto(
             modifier = modifier
         )
 
-        Button(onClick = { onAsignarColaboradores() },
-            modifier = modifier){
-            Text(text = "Asignar colaboradores",
-                fontSize = 20.sp,)
+        Button(
+            onClick = { onAsignarColaboradores() },
+            modifier = modifier
+        ) {
+            Text(
+                text =  if(crearProyecto) "Asignar colaboradores" else "Ver colaboradores",
+                fontSize = 20.sp,
+            )
         }
-        Button(onClick = { onCrearTareas() },
-            modifier = modifier){
-            Text(text = "Crear tareas",
-                fontSize = 20.sp,)
+        Button(
+            onClick = { onCrearTareas() },
+            modifier = modifier
+        ) {
+            Text(
+                text = if(crearProyecto) "Crear tareas" else "Ver tareas",
+                fontSize = 20.sp,
+            )
         }
 
         //Estado del proyecto
-       CustomExposedDropdownMenuBox(
-           titulo = "ESTADO DEL PROYECTO",
-           seleccionado = estado,
-           listaElementos = listaEstadosProyecto.map { it.estado },
-           onValueChange = { onEstadoSelection(it) })
+        CustomExposedDropdownMenuBox(
+            titulo = "ESTADO DEL PROYECTO",
+            seleccionado = estado,
+            listaElementos = listaEstadosProyecto.map { it.estado },
+            onValueChange = { onEstadoSelection(it) })
 
         //Descripcion
         OutlinedTextField(
@@ -281,7 +320,7 @@ fun DatosProyecto(
                 .align(Alignment.CenterHorizontally)
         ) {
             Text(
-                text = "Crear proyecto",
+                text = if(crearProyecto) "Crear proyecto" else "Modificar proyecto",
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center
             )

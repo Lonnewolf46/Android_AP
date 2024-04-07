@@ -63,6 +63,7 @@ enum class APScreen() {
     //Menu Principal > FAB//
     ForoGeneral,
     GestionProyectos,
+    ModificarProyecto,
     CrearProyecto,
     Colaboradores,
     //Trabajo > OpcionesProyecto
@@ -192,6 +193,7 @@ fun AP_App() {
                             label = "Agregar proyecto",
                             path = {
                                 proyectoViewModel.resetState()
+                                proyectoViewModel.boolCrearProyecto()
                                 proyectoViewModel.cargarEstadosProyecto()
                                 proyectoViewModel.cargarColaboradores(userInfo.id)
                                 navController.navigate(APScreen.CrearProyecto.name) }),
@@ -362,11 +364,13 @@ fun AP_App() {
 
             //GestionProyectos
             composable(route = APScreen.GestionProyectos.name){
+                proyectoViewModel.cargarColaboradores(null)
                 GestionProyectosLayout(
                     listaProyectos = obtenerProyectos(),
                     listaColaboradores = proyectoUiState.listaColaboradores,
                     listaEstados = obtenerEstados(),
-                    onConsultar = {}
+                    onConsultar = { proyectoViewModel.cargarDatosProyecto(it) },
+                    rutaNav = { navController.navigate(APScreen.ModificarProyecto.name) }
                 )
 
             }
@@ -413,7 +417,53 @@ fun AP_App() {
                     onEncargadoTareaSelection = { proyectoViewModel.actualizarEncargadoTarea(it) },
                     onEstadoTareaSelection = { proyectoViewModel.actualizarEstadoTarea(it) },
                     onConfirmarAgregarTarea = { proyectoViewModel.crearTarea() },
-                    codigoResultTarea = proyectoUiState.codigoResultadoTarea
+                    codigoResultTarea = proyectoUiState.codigoResultadoTarea,
+                    crearProyecto = proyectoUiState.crearProyecto
+                )
+            }
+
+            //ModificarProyecto
+            composable(route = APScreen.ModificarProyecto.name){
+                ProyectoPlantillaLayout(
+                    imagen = ImageVector.vectorResource(id = R.drawable.modify_project),
+                    titulo = "Modificación de proyecto",
+                    nombre = proyectoUiState.nombre,
+                    recursos = proyectoUiState.recursos,
+                    presupuesto = proyectoUiState.presupuesto,
+                    estado = proyectoUiState.estado,
+                    descripcion = proyectoUiState.descripcion,
+                    responsable = proyectoUiState.responsable,
+                    codigoResult = proyectoUiState.codigoResultado,
+                    listaEstadosProyecto = proyectoUiState.listaEstadosProyecto,
+                    listaEstadosTarea = proyectoUiState.listaEstadosTarea,
+                    listaColaboradores = proyectoUiState.listaColaboradores,
+                    listaColaboradoresElegidos = proyectoUiState.listaColaboradoresElegidos,
+                    onValueChange = proyectoViewModel::actualizarCamposProyecto,
+                    onEstadoProyectoSelection = { proyectoViewModel.actualizarEstadoProyecto(it) },
+                    onResponsableProyectoSelection = { proyectoViewModel.actualizarResponsableProyecto(it) },
+                    onAsignarColaboradores = { proyectoViewModel.ventanaVerColaboradores() },
+                    onAgregarQuitarColaborador = { proyectoViewModel.asignarQuitarcolaborador(it) },
+                    onCrearTareas = { proyectoViewModel.ventanaVerTareas() },
+                    onCrearProyecto = { proyectoViewModel.modificarProyecto() },
+                    onCerrarPopUp = {
+                        if(proyectoUiState.codigoResultado == 0){
+                            navController.navigateUp()
+                            proyectoViewModel.resetState() }
+
+                        else proyectoViewModel.CerrarEmergente()
+                    },
+                    nombreTarea = proyectoUiState.nombreTarea,
+                    storyPointsTarea = proyectoUiState.storyPointsTarea,
+                    fechaFinTarea = proyectoUiState.fechaFinTarea,
+                    encargadoTarea = proyectoUiState.encargadoTarea,
+                    estadoTarea = proyectoUiState.estadoTarea,
+                    onCamposTareaValueChange = proyectoViewModel::actualizarCamposTarea,
+                    onEncargadoTareaSelection = { proyectoViewModel.actualizarEncargadoTarea(it) },
+                    onEstadoTareaSelection = { proyectoViewModel.actualizarEstadoTarea(it) },
+                    onConfirmarAgregarTarea = { proyectoViewModel.crearTarea() },
+                    codigoResultTarea = proyectoUiState.codigoResultadoTarea,
+                    crearProyecto = proyectoUiState.crearProyecto,
+                    listaTareas = proyectoUiState.listaTareas
                 )
             }
 
@@ -600,20 +650,6 @@ fun obtenerEstados(): List<Estado>{
         emptyList()
     } catch (e: HttpException) {
         emptyList()
-    }
-}
-
-fun eliminarColaborador(idProyecto: Int, idColaborador: Int): Response{
-    val apiAccess = APIAccess()
-    return try {
-        val resultado = runBlocking {
-            apiAccess.deleteAPIEliminarColaborador(idProyecto, idColaborador)
-        }
-        resultado
-    }catch (e: IOException) {
-        Response(success = false)
-    } catch (e: HttpException) {
-        Response(success = false)
     }
 }
 
