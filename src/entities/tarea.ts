@@ -1,4 +1,5 @@
 import databaseQuery from "../services/database.js";
+import sendMail from "../services/mail.js";
 import Estado from "./estado.js";
 import Proyecto from "./proyecto.js";
 
@@ -45,6 +46,18 @@ class Tarea {
             INSERT INTO Tareas(nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado)
             VALUES('${this.nombre}', ${this.storyPoints}, ${this.idProyecto}, ${this.idEncargado}, '${this.fechaInicio}', '${this.fechaFin}', ${this.idEstado})
         `);
+        var string=""
+        const emails=await databaseQuery(`
+        EXEC obtenerEmailsColaboradores @inIdProyecto=${this.idProyecto}
+        `)
+        
+        for (let index = 0; index < emails.length; index++) {
+            string=emails[index].email
+            await sendMail(
+                string,
+                "Creación",`Hay una nueva tarea`
+            )
+        }
     }
 
     async actualizar() {
@@ -59,6 +72,18 @@ class Tarea {
 
     async actualizarEstado() {
         await databaseQuery(`UPDATE Tareas SET idEstado=${this.idEstado} WHERE id=${this.id}`);
+        var string=""
+        const emails=await databaseQuery(`
+        EXEC obtenerEmailsColaboradores @inIdProyecto=${this.idProyecto}
+        `)
+        
+        for (let index = 0; index < emails.length; index++) {
+            string=emails[index].email
+            await sendMail(
+                string,
+                "Actualización",`Se ha actualizado el estado de una tarea`
+            )
+        }
     }
 
     async eliminar() {
