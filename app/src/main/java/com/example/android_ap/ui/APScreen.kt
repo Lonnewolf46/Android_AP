@@ -1,6 +1,7 @@
 package com.example.android_ap.ui
 
 import APIAccess
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -52,7 +53,7 @@ import com.example.android_ap.ui.screens.TrabajoLayout
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
-
+import java.util.Date
 
 enum class APScreen() {
     InicioSesion,
@@ -604,14 +605,15 @@ private fun prepModInfoPersonalData(
 fun obtenerNotificaciones(currentUser: UserInfoView): List<Notificacion>{
     val apiAccess = APIAccess()
     return try {
+        Log.d("TAG32", currentUser.uiState.value.idProyecto.toString())
         val resultado = runBlocking {
-            apiAccess.GETAPINotificaciones(currentUser.uiState.value.idProyecto)
+            apiAccess.getAPINotificaciones(currentUser.uiState.value.idProyecto)
         }
         resultado
     } catch (e: IOException) {
-        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, null))
+        listOf(Notificacion(1, "Error de red obteniendo las notificaciones", 1, Date()))
     } catch (e: HttpException) {
-        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, null))
+        listOf(Notificacion(1, "Error obteniendo las notificaciones", 1, Date()))
     }
 }
 

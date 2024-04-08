@@ -59,7 +59,7 @@ data class Notificacion(
     val id: Int,
     val mensaje: String,
     val idColaborador: Int,
-    val fecha: Date? // Declarada como Date nullable
+    val fecha: Date
 )
 
 
