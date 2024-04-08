@@ -43,8 +43,13 @@ class Tarea {
 
     async crear() {
         await databaseQuery(`
-        EXEC CrearTarea @Nombre =${this.nombre}, @StoryPoints =${this.storyPoints}, @IdProyecto =${this.idProyecto},
-        @IdEncargado =${this.idEncargado}, @FechaInicio =${this.fechaInicio}, @FechaFin ${this.fechaFin}
+        EXEC CrearTarea 
+        @Nombre ='${this.nombre}', 
+        @StoryPoints =${this.storyPoints}, 
+        @IdProyecto =${this.idProyecto},
+        @IdEncargado =${this.idEncargado}, 
+        @FechaInicio ='${this.fechaInicio}', 
+        @FechaFin ='${this.fechaFin}'
         `);
         var string=""
         const emails=await databaseQuery(`
@@ -61,13 +66,28 @@ class Tarea {
     }
 
     async actualizar() {
-        await databaseQuery(`
-            UPDATE Tareas
-            SET
-                nombre='${this.nombre}', storyPoints=${this.storyPoints}, idEncargado=${this.idEncargado},
-                idEstado=${this.idEstado}, fechaFin='${this.fechaFin}'
-            WHERE id=${this.id}
+        const result = await databaseQuery(`
+            EXEC updateTarea 
+            @IdTarea =${this.id},
+            @IdEncargado =${this.idEncargado},
+            @IdEstado =${this.idEstado}, 
+            @FechaFin ='${this.fechaFin}', 
+            @inNewNombreTarea ='${this.nombre}', 
+            @inStoryPoints =${this.storyPoints}
         `);
+        var string=""
+        const emails=await databaseQuery(`
+        EXEC obtenerEmailIdEncargado 
+        @inIdEncargado =${this.idEncargado}
+        `)
+        
+        for (let index = 0; index < emails.length; index++) {
+            string=emails[index].email
+            await sendMail(
+                string,
+                "Actualización",`Se ha actualizado una tarea`
+            )
+        }
     }
 
     async actualizarEstado() {
