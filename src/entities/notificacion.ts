@@ -44,6 +44,7 @@ class Notificacion {
         const result = await databaseQuery(`
             EXEC  ObtenerNotificaciones @IdProyecto=${idProyecto}
         `);
+        /// comantario random
         var resultado=result.map(Notificacion.deserialize)
         await sendMail(
             "testwwr81@gmail.com ",
