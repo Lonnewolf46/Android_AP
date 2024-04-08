@@ -1,4 +1,5 @@
 import databaseQuery from "../services/database.js";
+import sendMail from "../services/mail.js";
 
 class Notificacion {
     
@@ -30,17 +31,25 @@ class Notificacion {
                     @idProyecto = ${this.idProyecto}, 
                     @Fecha =  ${this.Fecha}; 
             `);
+            await sendMail(
+                "testwwr81@gmail.com",
+                "Creación",`Se ha generado una nueva notificación`
+            )
         } catch (error) {
             console.error(error);
         }
     }
     
-    
     static async obtenerNotificaciones(idProyecto:number):Promise<Notificacion>{
         const result = await databaseQuery(`
             EXEC  ObtenerNotificaciones @IdProyecto=${idProyecto}
         `);
-        return result.map(Notificacion.deserialize);
+        var resultado=result.map(Notificacion.deserialize)
+        await sendMail(
+            "testwwr81@gmail.com ",
+            "Obtención",`Se ha obtenido una notificación con el mensaje de "${resultado[0].mensaje}"`
+        )
+        return result.map(Notificacion.deserialize);  
     }
 }
 
