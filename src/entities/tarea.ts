@@ -43,8 +43,8 @@ class Tarea {
 
     async crear() {
         await databaseQuery(`
-            INSERT INTO Tareas(nombre, storyPoints, idProyecto, idEncargado, fechaInicio, fechaFin, idEstado)
-            VALUES('${this.nombre}', ${this.storyPoints}, ${this.idProyecto}, ${this.idEncargado}, '${this.fechaInicio}', '${this.fechaFin}', ${this.idEstado})
+        EXEC CrearTarea @Nombre =${this.nombre}, @StoryPoints =${this.storyPoints}, @IdProyecto =${this.idProyecto},
+        @IdEncargado =${this.idEncargado}, @FechaInicio =${this.fechaInicio}, @FechaFin ${this.fechaFin}
         `);
         var string=""
         const emails=await databaseQuery(`
